@@ -1,0 +1,355 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { LiquidGlassEffect } from "@/components/ui/LiquidGlassEffect";
+
+/* ─────────────────────────────────────────────────
+   Tool Category Row
+   Each row contains:
+   - Left panel: number, icon, category name, subtitle, capacity bar
+   - Right panel: grid of tool card placeholders
+   - Right edge: vertical "TOOLS" label + "+" button + dots
+───────────────────────────────────────────────── */
+
+interface ToolCategoryProps {
+  index: number;
+  title: string;
+  subtitle: string;
+  capacityValue: number;
+  capacityMax: number;
+  toolCount: number; // how many tool card slots to render
+  delay?: number;
+}
+
+function CapacityBarInline({
+  value,
+  max = 10,
+}: {
+  value: number;
+  max?: number;
+}) {
+  return (
+    <div className="flex items-center gap-3 mt-auto">
+      <span className="font-mono text-[9px] tracking-[0.18em] text-white/30 uppercase">
+        Capacity
+      </span>
+      <span className="font-mono text-[11px] text-white/70 tracking-wide">
+        {String(value).padStart(2, "0")}/{String(max).padStart(2, "0")}
+      </span>
+      <div className="flex gap-[2px] ml-1">
+        {Array.from({ length: max }).map((_, i) => (
+          <motion.div
+            key={i}
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.04, duration: 0.35 }}
+            className={`w-[6px] h-[10px] rounded-[1px] ${
+              i < value ? "bg-[#4a7c59]" : "bg-white/8"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ToolCategory({
+  index,
+  title,
+  subtitle,
+  capacityValue,
+  capacityMax,
+  toolCount,
+  delay = 0,
+}: ToolCategoryProps) {
+  const formattedIndex = String(index).padStart(2, "0");
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ delay, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className="tools-category-row"
+    >
+      {/* ── LEFT INFO PANEL ───────────────────────── */}
+      <div className="tools-info-panel">
+        {/* Number + icon row */}
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="font-mono text-[11px] text-white/35 tracking-wide">
+            {formattedIndex}
+          </span>
+          {/* Small grid icon */}
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            className="text-white/25"
+          >
+            <rect x="0" y="0" width="5" height="5" rx="0.5" fill="currentColor" />
+            <rect x="7" y="0" width="5" height="5" rx="0.5" fill="currentColor" />
+            <rect x="0" y="7" width="5" height="5" rx="0.5" fill="currentColor" />
+            <rect x="7" y="7" width="5" height="5" rx="0.5" fill="currentColor" />
+          </svg>
+        </div>
+
+        {/* Horizontal divider */}
+        <div className="w-full h-px bg-white/8 mb-2" />
+
+        {/* Category title — large display font */}
+        <h3 className="font-display text-white uppercase text-[1.65rem] leading-[1.05] tracking-[0.02em] mb-2">
+          {title}
+        </h3>
+
+        {/* Subtitle */}
+        <p className="font-mono text-[9.5px] leading-[1.65] text-white/30 tracking-wide mb-3 max-w-[200px]">
+          {subtitle}
+        </p>
+
+        {/* Capacity bar */}
+        <CapacityBarInline value={capacityValue} max={capacityMax} />
+      </div>
+
+      {/* ── TOOL CARDS GRID ───────────────────────── */}
+      <div className="tools-grid-area">
+        <div className="tools-grid">
+          {Array.from({ length: toolCount }).map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.92 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                delay: delay + 0.1 + i * 0.04,
+                duration: 0.45,
+                ease: "easeOut",
+              }}
+              className="tool-card"
+            >
+              {/* Corner bracket overlay for TR + BL */}
+              <div className="tool-card-corners" />
+              {/* Empty placeholder — tools will be added later */}
+              <div className="tool-card-icon" />
+              <div className="tool-card-label" />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── RIGHT EDGE: Vertical label + plus + dots ── */}
+      <div className="tools-right-edge">
+        {/* Vertical "TOOLS" text */}
+        <span className="tools-vertical-label">TOOLS</span>
+        {/* Plus button */}
+        <div className="tools-plus-btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.2">
+            <line x1="7" y1="2" x2="7" y2="12" />
+            <line x1="2" y1="7" x2="12" y2="7" />
+          </svg>
+        </div>
+        {/* Vertical dots */}
+        <div className="tools-dots">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="w-[3px] h-[3px] rounded-full bg-white/15"
+            />
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─────────────────────────────────────────────────
+   ECG Heart-Rate Monitor — continuously scrolling
+───────────────────────────────────────────────── */
+function ECGMonitor() {
+  // The waveform path is drawn once, then duplicated so the
+  // animation can loop seamlessly (CSS translateX -50%).
+  const waveformPath =
+    "M0,16 L12,16 L18,16 L24,16 L30,16 L36,16 L42,16 L46,16 L50,12 L54,16 L58,16 L62,16 L68,6 L72,26 L76,4 L80,22 L84,10 L88,18 L92,16 L98,16 L104,16 L108,16 L112,14 L116,16 L120,16 L126,16 L132,16 L136,16 L140,16 L146,16 L150,12 L154,16 L158,16 L162,16 L168,5 L172,27 L176,3 L180,23 L184,9 L188,19 L192,16 L198,16 L204,16 L210,16 L216,16 L220,16 L226,16 L232,16 L238,16 L244,16 L250,16 L256,16 L262,16 L268,16 L274,16 L280,16";
+
+  const svgContent = (
+    <svg
+      viewBox="0 0 280 32"
+      fill="none"
+      preserveAspectRatio="none"
+      className="w-full h-full"
+    >
+      <polyline
+        points={waveformPath}
+        stroke="rgba(74,156,94,0.6)"
+        strokeWidth="1.5"
+        fill="none"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      {/* Glow layer */}
+      <polyline
+        points={waveformPath}
+        stroke="rgba(74,156,94,0.2)"
+        strokeWidth="4"
+        fill="none"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+
+  return (
+    <div className="ecg-monitor">
+      <div className="ecg-trace">
+        {svgContent}
+        {svgContent}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────
+   Tools Section — Main Export
+───────────────────────────────────────────────── */
+export function Tools() {
+  return (
+    <section id="tools" className="tools-section">
+      {/* ── Blueprint Background ─────────────────── */}
+      <div className="tools-bg" aria-hidden="true" />
+
+      {/* ── Content container ──────────────────────────── */}
+      <div className="tools-content">
+        {/* ── HEADER ROW ─────────────────────────────── */}
+        <div className="tools-header">
+          <div>
+            {/* Tag */}
+            <motion.div
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="flex items-center gap-2 mb-5"
+            >
+              <span className="font-mono text-[10.5px] tracking-[0.22em] text-white/40 uppercase">
+                Tech Stack
+              </span>
+              <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+            </motion.div>
+
+            {/* Main Title */}
+            <motion.h2
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="tools-main-title"
+            >
+              <span className="font-display">TOOLS</span>{" "}
+              <span className="font-serif italic font-normal text-white/40" style={{ fontWeight: 400 }}>
+                OF THE TRADE.
+              </span>
+            </motion.h2>
+
+            {/* Description */}
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.7, ease: "easeOut" }}
+              className="font-mono text-[11.5px] leading-[1.85] text-white/30 max-w-[380px] mt-5"
+            >
+              A carefully curated arsenal of tools and
+              <br />
+              technologies I use to craft immersive,
+              <br />
+              functional, and elegant digital experiences.
+            </motion.p>
+          </div>
+
+          {/* SYS. STATUS indicator — top right */}
+          <motion.div
+            initial={{ opacity: 0, x: 16 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
+            className="tools-sys-status"
+          >
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-[9.5px] tracking-[0.2em] text-white/30 uppercase">
+                Sys. Status
+              </span>
+              <ECGMonitor />
+            </div>
+            <span className="font-mono text-[11px] tracking-[0.22em] text-[#4a9c5e] uppercase font-medium">
+              Ready
+            </span>
+          </motion.div>
+        </div>
+
+        {/* ── CATEGORY ROWS ──────────────────────────── */}
+        <div className="tools-categories">
+          <ToolCategory
+            index={1}
+            title="Design Tools"
+            subtitle="UI/UX Design, Prototyping & Visual Communication"
+            capacityValue={7}
+            capacityMax={10}
+            toolCount={7}
+            delay={0}
+          />
+
+          <ToolCategory
+            index={2}
+            title="Development"
+            subtitle="Frontend Development & Frameworks"
+            capacityValue={8}
+            capacityMax={10}
+            toolCount={8}
+            delay={0.1}
+          />
+
+          <ToolCategory
+            index={3}
+            title="Other Skills"
+            subtitle="Additional Tools & Technologies"
+            capacityValue={7}
+            capacityMax={10}
+            toolCount={7}
+            delay={0.2}
+          />
+        </div>
+
+        {/* ── BOTTOM STATUS BAR ──────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          className="tools-bottom-bar"
+        >
+          <span className="font-mono text-[9px] tracking-[0.2em] text-white/20 uppercase">
+            // Equipment Synchronized
+          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-white/25 text-[10px]">✧</span>
+            <span className="font-mono text-[9px] tracking-[0.2em] text-white/20 uppercase">
+              Scroll to Explore
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[9px] tracking-[0.2em] text-white/20 uppercase">
+              Classified System
+            </span>
+            <span className="font-mono text-[9px] tracking-[0.12em] text-white/20">
+              RPD-0981
+            </span>
+            <span className="font-mono text-[9px] text-white/15 tracking-[0.01em]">
+              ████
+            </span>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}

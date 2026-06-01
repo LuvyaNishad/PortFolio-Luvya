@@ -101,7 +101,7 @@ function ProfileFrame() {
 export function Intro() {
   return (
     <section
-      id="intro"
+      id="about"
       className="relative w-full px-6 md:px-8 pb-0"
     >
       <motion.div
@@ -176,7 +176,7 @@ export function Intro() {
 
           {/* ── CENTER: Photo ─────────────────────────────── */}
           <div
-            className="flex-shrink-0 flex items-stretch p-6 lg:p-8"
+            className="flex-shrink-0 flex items-stretch p-6 lg:p-8 w-full max-w-[320px] lg:max-w-none aspect-[4/5] lg:aspect-auto mx-auto lg:mx-0"
             style={{ width: "clamp(260px, 30%, 360px)" }}
           >
             <ProfileFrame />

@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/sections/Hero";
 import { Intro } from "@/components/sections/Intro";
+import { Tools } from "@/components/sections/Tools";
 
 export default function Home() {
   return (
@@ -46,9 +47,11 @@ export default function Home() {
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              objectPosition: "40% 80%",
-              transform: "scale(1.5)",
-              transformOrigin: "60% 50%",
+              objectPosition: "20% 50%", // Note: objectPosition Y% has no effect when container height matches image scaled height.
+              // TWEAK THIS: Change translateY to shift the image vertically.
+              // Negative values (e.g., -100px or -10%) shift the image UPWARDS, bringing the ruins higher on the screen.
+              // Positive values shift it DOWNWARDS.
+              transform: "translateY(-200px)",
               filter: "brightness(0.50) contrast(1.1) grayscale(0.22)",
             }}
           />
@@ -78,6 +81,11 @@ export default function Home() {
         <div style={{ position: "relative", zIndex: 1 }}>
           <Intro />
         </div>
+      </div>
+
+      {/* ── TOOLS SECTION ──────────────────────────── */}
+      <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
+        <Tools />
       </div>
 
       {/* Future sections on plain dark bg */}
