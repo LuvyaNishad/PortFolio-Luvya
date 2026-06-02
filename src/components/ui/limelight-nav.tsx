@@ -118,10 +118,10 @@ export const LimelightNav = ({
               <div className="absolute top-0 -left-[100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-20 transition-all duration-700 ease-out group-hover:left-[150%]" />
             </div>
 
-            {icon && cloneElement(icon, {
+            {icon && cloneElement(icon as React.ReactElement<any>, {
               className: `w-6 h-6 transition-all duration-200 ease-in-out group-hover:scale-105 ${
                 activeIndex === index ? 'opacity-100' : 'opacity-40'
-              } ${icon.props.className || ''} ${iconClassName || ''}`,
+              } ${(icon.props as any).className || ''} ${iconClassName || ''}`,
             })}
             {label && (
               <span className={`inline-block transition-transform duration-200 ease-out group-hover:scale-108 ${labelClassName || ''}`}>

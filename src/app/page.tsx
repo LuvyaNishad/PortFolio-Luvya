@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/sections/Hero";
 import { Intro } from "@/components/sections/Intro";
 import { Tools } from "@/components/sections/Tools";
+import { WorkLibrary } from "@/components/sections/WorkLibrary";
 
 export default function Home() {
   return (
@@ -37,9 +38,8 @@ export default function Home() {
           aria-hidden="true"
         >
           {/* The image itself */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/hero_intro1.jpg"
+            src="/images/hero_bg3.png"
             alt=""
             style={{
               position: "absolute",
@@ -47,12 +47,11 @@ export default function Home() {
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              objectPosition: "20% 50%", // Note: objectPosition Y% has no effect when container height matches image scaled height.
-              // TWEAK THIS: Change translateY to shift the image vertically.
-              // Negative values (e.g., -100px or -10%) shift the image UPWARDS, bringing the ruins higher on the screen.
-              // Positive values shift it DOWNWARDS.
-              transform: "translateY(-200px)",
-              filter: "brightness(0.50) contrast(1.1) grayscale(0.22)",
+              objectPosition: "center",
+              filter: "brightness(1) contrast(1.08)",
+
+              transform: "scale(1.15)",
+              transformOrigin: "60% 80%",
             }}
           />
 
@@ -88,9 +87,9 @@ export default function Home() {
         <Tools />
       </div>
 
-      {/* Future sections on plain dark bg */}
+      {/* Work Library */}
       <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
-        <div style={{ height: "16rem" }} />
+        <WorkLibrary />
       </div>
     </div>
   );

@@ -25,17 +25,17 @@ export function CinematicBackground() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/hero_intro1.jpg"
+          src="/images/hero_bg3.png"
           alt=""
           className="absolute inset-0 w-full h-full"
           style={{
             objectFit: "cover",
-            objectPosition: "55% 42%",
+            objectPosition: "55% 0%",
             /* Zoom in — same scale as before */
             transform: "scale(1.15)",
-            transformOrigin: "55% 42%",
+            transformOrigin: "60% 40%",
             /* Cinematic grade: dark, desaturated, slight contrast boost */
-            filter: "brightness(0.48) contrast(1.12) grayscale(0.22)",
+            filter: "brightness(1) contrast(1.08)",
           }}
         />
 
