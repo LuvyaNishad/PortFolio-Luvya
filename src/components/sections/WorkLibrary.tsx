@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Code2, Layers3, Palette, Play, Plus } from "lucide-react";
 import { LiquidGlassEffect } from "@/components/ui/LiquidGlassEffect";
+import HighlightCard from "@/components/ui/highlight-card";
 import { MetadataText } from "@/components/ui/MetadataText";
 import { cn } from "@/utils/cn";
 
@@ -75,9 +76,8 @@ function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) 
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-8%" }}
       transition={{ delay, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -8, scale: 1.015 }}
       whileTap={{ scale: 0.985 }}
-      className="group relative block min-h-[300px] overflow-hidden rounded-[6px] text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+      className="group relative block w-full min-h-[300px] text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
       style={
         {
           "--archive-accent": item.accent,
@@ -85,13 +85,8 @@ function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) 
         } as React.CSSProperties
       }
     >
-      <LiquidGlassEffect
-        variant="dark"
-        intensity="subtle"
-        backdropBlur={16}
-        className="h-full rounded-[6px] border border-white/10 bg-black/30"
-      >
-        <div className="relative flex min-h-[300px] h-full flex-col justify-between overflow-hidden p-6 sm:p-7">
+      <HighlightCard accent={item.glow} className="h-full">
+        <div className="relative flex min-h-[300px] h-full flex-col justify-between p-6 sm:p-7">
           <div
             className="absolute inset-0 opacity-[0.18] transition duration-700 group-hover:opacity-[0.28]"
             style={{
@@ -211,7 +206,7 @@ function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) 
             </div>
           </div>
         </div>
-      </LiquidGlassEffect>
+      </HighlightCard>
     </motion.button>
   );
 }
@@ -222,23 +217,23 @@ export function WorkLibrary() {
       id="library"
       className="relative overflow-hidden bg-[#0a0a0c] px-6 py-28 sm:px-8 lg:px-14 lg:py-36"
     >
+      {/* Background Image exactly as requested */}
       <div
-        className="absolute inset-0 opacity-[0.16]"
+        className="absolute inset-0 opacity-100"
         style={{
-          backgroundImage: "url('/images/blueprint.png')",
+          backgroundImage: "url('/images/work_library_bg1.png')",
           backgroundSize: "cover",
-          backgroundPosition: "center top",
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+          backgroundPosition: "center",
+          transform : "scale(1)",
+          filter: "brightness(0.9) contrast(1.1)",
         }}
         aria-hidden="true"
       />
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 78% 20%, rgba(197,38,26,0.08), transparent 28%), radial-gradient(circle at 16% 68%, rgba(120,147,111,0.08), transparent 30%), linear-gradient(to bottom, #0a0a0c 0%, rgba(10,10,12,0.55) 44%, #0a0a0c 100%)",
+            "radial-gradient(circle at 78% 20%, rgba(197,38,26,0.06), transparent 30%), radial-gradient(circle at 16% 68%, rgba(120,147,111,0.06), transparent 32%), linear-gradient(to bottom, #0a0a0c 0%, transparent 15%, transparent 85%, #0a0a0c 100%)",
         }}
         aria-hidden="true"
       />
