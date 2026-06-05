@@ -39,7 +39,7 @@ export default function Home() {
         >
           {/* The image itself */}
           <img
-            src="/images/hero_bg3.png"
+            src="/images/hero_intro1.jpg"
             alt=""
             style={{
               position: "absolute",
@@ -47,11 +47,11 @@ export default function Home() {
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              objectPosition: "center",
-              filter: "brightness(1) contrast(1.08)",
+              objectPosition: "39% 12%",
+              filter: "grayscale(100%) brightness(0.85) contrast(1.12)",
 
-              transform: "scale(1.15)",
-              transformOrigin: "60% 80%",
+              transform: "scale(1.02)",
+              transformOrigin: "10% 500%",
             }}
           />
 

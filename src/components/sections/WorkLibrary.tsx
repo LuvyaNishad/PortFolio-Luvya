@@ -219,13 +219,13 @@ export function WorkLibrary() {
     >
       {/* Background Image exactly as requested */}
       <div
-        className="absolute inset-0 opacity-100"
+        className="absolute inset-0 opacity-35 work-library-bg-mask"
         style={{
           backgroundImage: "url('/images/work_library_bg1.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           transform : "scale(1)",
-          filter: "brightness(0.9) contrast(1.1)",
+          filter: "brightness(0.7) contrast(1.0)",
         }}
         aria-hidden="true"
       />

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { FC, ReactNode, useState, useRef } from "react";
+import React, { FC, ReactNode, useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { LiquidGlassEffect } from "@/components/ui/LiquidGlassEffect";
 
 interface HighlightCardProps {
@@ -16,7 +17,7 @@ interface HighlightCardProps {
  *
  * A reusable animated card container that combines:
  * - High-fidelity glassmorphism (via LiquidGlassEffect)
- * - Premium 3D perspective tilt & zoom on hover
+ * - Premium 3D perspective tilt & zoom on hover using Framer Motion springs
  * - Animated glowing accent orbs, shimmer sweep, and corner highlights
  */
 const HighlightCard: FC<HighlightCardProps> = ({
@@ -25,47 +26,59 @@ const HighlightCard: FC<HighlightCardProps> = ({
   children,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+
+  // Motion values for tracking mouse relative position (0 to 1)
+  const x = useMotionValue(0.5);
+  const y = useMotionValue(0.5);
+
+  // Spring configuration for super smooth tracking
+  const springConfig = { damping: 25, stiffness: 220, mass: 0.6 };
+  const xSpring = useSpring(x, springConfig);
+  const ySpring = useSpring(y, springConfig);
+
+  // Transform normalized spring coordinates to rotation degrees (-10deg to 10deg)
+  const rotateY = useTransform(xSpring, [0, 1], [-10, 10]);
+  const rotateX = useTransform(ySpring, [0, 1], [10, -10]);
+
+  // Spring for scale
+  const scale = useSpring(1, springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
-    const card = cardRef.current;
-    const rect = card.getBoundingClientRect();
+    const rect = cardRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
     
-    // Calculate cursor position relative to card center (-0.5 to 0.5)
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    
-    // Smooth tilt angles (max 10 degrees rotation)
-    setRotateY(x * 12);
-    setRotateX(-y * 12);
+    // Position of mouse relative to card dimensions (0 to 1)
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    x.set(mouseX / width);
+    y.set(mouseY / height);
   };
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
+    scale.set(1.04);
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
-    setRotateX(0);
-    setRotateY(0);
+    scale.set(1);
+    x.set(0.5);
+    y.set(0.5);
   };
 
   return (
-    <div
+    <motion.div
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`group/hl w-full h-full ${className ?? ""}`}
       style={{
-        perspective: "1000px",
-        transform: isHovered
-          ? `scale(1.04) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
-          : "scale(1) rotateX(0deg) rotateY(0deg)",
-        transition: isHovered ? "transform 0.08s ease-out" : "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+        perspective: 1000,
+        rotateX: rotateX,
+        rotateY: rotateY,
+        scale: scale,
         transformStyle: "preserve-3d",
       }}
     >
@@ -73,7 +86,7 @@ const HighlightCard: FC<HighlightCardProps> = ({
         variant="dark"
         intensity="subtle"
         backdropBlur={16}
-        className="w-full h-full rounded-[6px] border border-white/10 bg-black/30 overflow-hidden relative"
+        className="w-full h-full rounded-2xl border border-white/10 bg-black/30 overflow-hidden relative"
       >
         {/* ── Animated background layers ─────────────────────── */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -117,7 +130,7 @@ const HighlightCard: FC<HighlightCardProps> = ({
           style={{ background: `linear-gradient(315deg, ${accent}, transparent)` }}
         />
       </LiquidGlassEffect>
-    </div>
+    </motion.div>
   );
 };
 
