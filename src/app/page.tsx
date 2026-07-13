@@ -3,6 +3,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Intro } from "@/components/sections/Intro";
 import { Tools } from "@/components/sections/Tools";
 import { WorkLibrary } from "@/components/sections/WorkLibrary";
+import { BuiltFromScratch } from "@/components/sections/BuiltFromScratch";
 
 export default function Home() {
   return (
@@ -90,6 +91,11 @@ export default function Home() {
       {/* Work Library */}
       <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
         <WorkLibrary />
+      </div>
+
+      {/* Built From Scratch Showcase */}
+      <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
+        <BuiltFromScratch />
       </div>
     </div>
   );

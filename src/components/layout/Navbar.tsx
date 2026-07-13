@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { id: 'about', label: 'ABOUT', href: '#about' },
   { id: 'tools', label: 'TOOLS', href: '#tools' },
   { id: 'library', label: 'LIBRARY', href: '#library' },
+  { id: 'built-from-scratch', label: 'SHOWCASE', href: '#built-from-scratch' },
   { id: 'contact', label: 'CONTACT', href: '#contact' }
 ];
 

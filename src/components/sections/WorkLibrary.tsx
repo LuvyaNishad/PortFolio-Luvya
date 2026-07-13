@@ -87,16 +87,7 @@ function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) 
     >
       <HighlightCard accent={item.glow} className="h-full">
         <div className="relative flex min-h-[300px] h-full flex-col justify-between p-6 sm:p-7">
-          <div
-            className="absolute inset-0 opacity-[0.18] transition duration-700 group-hover:opacity-[0.28]"
-            style={{
-              backgroundImage: "url('/images/blueprint.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              filter: "grayscale(1) contrast(1.2)",
-            }}
-            aria-hidden="true"
-          />
+
 
           <div
             className="absolute inset-0 transition duration-700 group-hover:opacity-100"
