@@ -220,27 +220,28 @@ export function BuiltFromScratch() {
       id="built-from-scratch"
       className="relative overflow-hidden bg-[#0a0a0c] border-t border-white/5"
     >
-      {/* Background Image — grayscale/BW to match portfolio aesthetics */}
+      {/* Background Image — section_bg.png spanning all 4 showcase categories */}
       <div
         className="absolute inset-0 showcase-bg-mask"
         style={{
-          backgroundImage: "url('/images/work_showcase_bg.png')",
-          backgroundSize: "cover",
+          backgroundImage: "url('/images/section_bg.png')",
+          backgroundSize: "100% auto",
           backgroundPosition: "center top",
           backgroundRepeat: "no-repeat",
-          filter: "grayscale(100%) contrast(1.1) brightness(0.35)",
-          opacity: 0.35,
+          filter: "brightness(1) contrast(1)",
+          opacity: 0.7,
         }}
         aria-hidden="true"
       />
 
-      {/* Vignette + gradient overlays */}
+      {/* Vignette + gradient overlays for seamless blending at section boundaries */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse at 50% 0%, transparent 30%, #0a0a0c 85%),
-            linear-gradient(to bottom, #0a0a0c 0%, transparent 8%, transparent 92%, #0a0a0c 100%)
+            linear-gradient(to bottom, #0a0a0c 0%, transparent 6%, transparent 94%, #0a0a0c 100%),
+            radial-gradient(ellipse at 50% 8%, transparent 40%, rgba(10,10,12,0.5) 80%),
+            linear-gradient(to right, rgba(10,10,12,0.4) 0%, transparent 15%, transparent 85%, rgba(10,10,12,0.4) 100%)
           `,
         }}
         aria-hidden="true"

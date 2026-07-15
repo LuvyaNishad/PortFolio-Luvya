@@ -4,6 +4,7 @@ import { Intro } from "@/components/sections/Intro";
 import { Tools } from "@/components/sections/Tools";
 import { WorkLibrary } from "@/components/sections/WorkLibrary";
 import { BuiltFromScratch } from "@/components/sections/BuiltFromScratch";
+import { ContributionLog } from "@/components/sections/ContributionLog";
 
 export default function Home() {
   return (
@@ -96,6 +97,11 @@ export default function Home() {
       {/* Built From Scratch Showcase */}
       <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
         <BuiltFromScratch />
+      </div>
+
+      {/* Contribution Log */}
+      <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
+        <ContributionLog />
       </div>
     </div>
   );
