@@ -7,19 +7,9 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative w-full overflow-hidden bg-[#0a0a0c]"
+      className="relative w-full overflow-hidden bg-transparent"
       style={{ minHeight: "100vh" }}
     >
-      {/* ── BACKGROUND IMAGE ────────────────────────────────── */}
-      <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: "url('/images/contact_bg.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      />
 
       {/* ── CONTENT WRAPPER ─────────────────────────────────── */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 py-24 sm:py-32 flex flex-col justify-center min-h-screen">

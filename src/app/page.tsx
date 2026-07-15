@@ -100,13 +100,16 @@ export default function Home() {
         <BuiltFromScratch />
       </div>
 
-      {/* Contribution Log */}
-      <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
+      {/* Merged Background Wrapper (Contribution + Contact) */}
+      <div 
+        className="relative w-full"
+        style={{
+          background: "#0a0a0c url('/images/mergebg.png') no-repeat 50% 20% / cover",
+          position: "relative",
+          zIndex: 1
+        }}
+      >
         <ContributionLog />
-      </div>
-
-      {/* Contact Section */}
-      <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
         <Contact />
       </div>
     </div>

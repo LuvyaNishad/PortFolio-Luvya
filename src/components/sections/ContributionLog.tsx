@@ -225,23 +225,9 @@ export function ContributionLog() {
   return (
     <section
       id="contribution-log"
-      className="relative overflow-hidden bg-[#0a0a0c] border-t border-white/5"
+      className="relative overflow-hidden bg-transparent border-t border-white/5"
     >
-      {/* ── Background Image — Contribution_bg1 with built-in crimson glow ── */}
-      <div
-        className="absolute inset-0 contribution-bg-mask"
-        style={{
-          backgroundImage: "url('/images/contribution_bg1.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
-          backgroundRepeat: "no-repeat",
-          filter: "brightness(1.5) contrast(1)",
-          opacity: 10,
-        }}
-        aria-hidden="true"
-      />
-
-      {/* ── Edge-blending overlays — bg image already provides the crimson glow ── */}
+      {/* ── Edge-blending overlays ── */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
