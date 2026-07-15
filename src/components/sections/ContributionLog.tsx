@@ -128,11 +128,15 @@ export function ContributionLog() {
   useEffect(() => {
     async function fetchContributions() {
       try {
-        const res = await fetch("https://github-contributions-api.jogruber.de/v4/LuvyaNishad");
+        // Use cache-busting and no-cache to get the freshest data after pushes
+        const res = await fetch(
+          `https://github-contributions-api.jogruber.de/v4/LuvyaNishad?_=${Date.now()}`,
+          { cache: "no-store" }
+        );
         if (!res.ok) throw new Error("Failed to fetch github contributions");
         const data = await res.json();
         
-        // Sum total contributions
+        // Sum total contributions across all years
         const total = Object.values(data.total).reduce((sum: number, count: any) => sum + Number(count), 0);
         setTotalCount(total);
 
@@ -140,6 +144,10 @@ export function ContributionLog() {
         if (!rawContributions || rawContributions.length === 0) {
           throw new Error("Empty contributions array");
         }
+
+        // IMPORTANT: The API returns data in a non-chronological order
+        // (e.g. 2026 data first, then 2025 data). Sort by date ascending.
+        rawContributions.sort((a, b) => a.date.localeCompare(b.date));
 
         // Build a date-aware grid ending at today
         const today = new Date();
@@ -219,31 +227,27 @@ export function ContributionLog() {
       id="contribution-log"
       className="relative overflow-hidden bg-[#0a0a0c] border-t border-white/5"
     >
-      {/* ── Background Image ── */}
+      {/* ── Background Image — Contribution_bg1 with built-in crimson glow ── */}
       <div
         className="absolute inset-0 contribution-bg-mask"
         style={{
-          backgroundImage: "url('/images/contribution_bg.png')",
+          backgroundImage: "url('/images/contribution_bg1.png')",
           backgroundSize: "cover",
-          backgroundPosition: "center 30%",
+          backgroundPosition: "center top",
           backgroundRepeat: "no-repeat",
-          filter: "grayscale(100%) brightness(0.25) contrast(1.2)",
-          opacity: 0.45,
+          filter: "brightness(1.5) contrast(1)",
+          opacity: 10,
         }}
         aria-hidden="true"
       />
 
-      {/* ── Atmospheric Crimson Gradient Overlays — concentrated bottom glow ── */}
+      {/* ── Edge-blending overlays — bg image already provides the crimson glow ── */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 120% 50% at 50% 110%, rgba(197, 38, 26, 0.65) 0%, rgba(139, 0, 0, 0.35) 25%, rgba(80, 0, 0, 0.15) 50%, rgba(10, 10, 12, 0) 75%),
-            radial-gradient(ellipse 80% 35% at 50% 100%, rgba(235, 45, 32, 0.30) 0%, rgba(139, 0, 0, 0.12) 40%, transparent 70%),
-            linear-gradient(to top, rgba(120, 10, 5, 0.25) 0%, rgba(60, 5, 5, 0.10) 20%, rgba(10, 10, 12, 0) 45%),
-            linear-gradient(to bottom, #0a0a0c 0%, transparent 10%, transparent 70%, rgba(10, 10, 12, 0.3) 90%, #0a0a0c 100%),
-            radial-gradient(ellipse at 50% 15%, transparent 35%, rgba(10, 10, 12, 0.7) 85%),
-            linear-gradient(to right, rgba(10, 10, 12, 0.5) 0%, transparent 18%, transparent 82%, rgba(10, 10, 12, 0.5) 100%)
+            linear-gradient(to bottom, #0a0a0c 0%, transparent 50%),
+            linear-gradient(to right, rgba(10, 10, 12, 0.4) 0%, transparent 15%, transparent 85%, rgba(10, 10, 12, 0.4) 100%)
           `,
         }}
         aria-hidden="true"
@@ -372,7 +376,7 @@ export function ContributionLog() {
                   </div>
 
                   {/* Grid rows */}
-                  <div className="flex flex-col gap-[3px]">
+                  <div className="flex flex-col gap-1">
                     {[0, 1, 2, 3, 4, 5, 6].map((dayIndex) => (
                       <div key={dayIndex} className="flex items-center gap-0">
                         {/* Day label */}
@@ -383,16 +387,16 @@ export function ContributionLog() {
                           {DAY_LABELS[dayIndex]}
                         </span>
                         {/* Week cells */}
-                        <div className="flex gap-[3px] flex-1">
+                        <div className="flex gap-1 flex-1">
                           {currentGrid.map((week, wIdx) => (
                             <span
                               key={wIdx}
                               className="block rounded-[1.5px] transition-colors duration-300"
                               style={{
-                                width: "calc((100% - 52 * 3px) / 53)",
+                                width: "calc((100% - 52 * 4px) / 53)",
                                 aspectRatio: "1 / 1",
-                                minWidth: "8px",
-                                maxWidth: "14px",
+                                minWidth: "10px",
+                                maxWidth: "18px",
                                 background: LEVEL_COLORS[week[dayIndex]],
                               }}
                             />
