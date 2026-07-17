@@ -1,7 +1,22 @@
 "use client";
 
+import type { SVGProps } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Plus } from "lucide-react";
+
+const SERVICES = [
+  "Thumbnails & Social Graphics",
+  "Video Editing & Reels",
+  "Brand Identity & Print",
+  "Websites & Web Apps",
+];
+
+const SOCIAL_LINKS = [
+  { label: "X", href: "#", icon: XIcon },
+  { label: "LinkedIn", href: "#", icon: Linkedin },
+  { label: "GitHub", href: "#", icon: Github },
+  { label: "YouTube", href: "#", icon: Youtube },
+];
 
 export function Contact() {
   return (
@@ -14,45 +29,44 @@ export function Contact() {
       {/* ── CONTENT WRAPPER ─────────────────────────────────── */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 py-24 sm:py-32 flex flex-col justify-center min-h-screen">
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mb-14"
+        >
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#c92a2a]" />
+            <span className="font-mono text-[10px] tracking-[0.2em] text-[#c92a2a] uppercase font-bold">
+              Contact
+            </span>
+          </div>
           
-          {/* LEFT COLUMN: Text & Info */}
-          <div className="flex flex-col">
+          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl text-white/90 mb-2 leading-tight">
+            Let&apos;s build something <br />
+            <span className="font-serif italic text-[#c5a880] tracking-wide pr-2">worth sharing.</span>
+          </h2>
+
+          <p className="font-mono text-xs sm:text-sm text-white/50 leading-relaxed mt-6 max-w-md">
+            Tell me what you&apos;re working on and what you need. <br />
+            I&apos;ll get back to you within <span className="text-[#c92a2a]">24 hours</span>.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+          
+          {/* LEFT COLUMN: Email + Services */}
+          <div className="flex flex-col gap-6">
             
-            {/* Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#c92a2a]" />
-                <span className="font-mono text-[10px] tracking-[0.2em] text-[#c92a2a] uppercase font-bold">
-                  Contact
-                </span>
-              </div>
-              
-              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl text-white/90 mb-2 leading-tight">
-                Let&apos;s build something <br />
-                <span className="font-serif italic text-[#c92a2a] tracking-wide pr-2">worth sharing.</span>
-              </h2>
-
-              <p className="font-mono text-xs sm:text-sm text-white/50 leading-relaxed mt-6 mb-8 max-w-md">
-                Tell me what you&apos;re working on and what you need. <br />
-                I&apos;ll get back to you within <span className="text-[#c92a2a]">24 hours</span>.
-              </p>
-
-              <div className="w-8 h-[1px] bg-[#c92a2a]/60 mb-10" />
-            </motion.div>
-
             {/* Email Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="mb-6 p-6 sm:p-8 rounded-xl border border-[#c92a2a]/20 bg-black/40 backdrop-blur-sm"
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="p-6 sm:p-8 rounded-xl border border-[#c92a2a]/20 bg-black/40 backdrop-blur-sm"
             >
               <h3 className="font-mono text-[10px] tracking-[0.2em] text-[#c92a2a] uppercase mb-4 font-bold">
                 Email Directly
@@ -62,23 +76,51 @@ export function Contact() {
               </a>
             </motion.div>
 
-            {/* Social Links Card */}
+            {/* What I Can Help With Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="p-6 sm:p-8 rounded-xl border border-[#c92a2a]/20 bg-black/40 backdrop-blur-sm"
+            >
+              <h3 className="font-mono text-[10px] tracking-[0.2em] text-[#c92a2a] uppercase mb-5 font-bold">
+                What I Can Help With
+              </h3>
+              <ul className="flex flex-col gap-3.5">
+                {SERVICES.map((service) => (
+                  <li key={service} className="flex items-center gap-3">
+                    <Plus className="w-3.5 h-3.5 text-[#c92a2a]/70 shrink-0" />
+                    <span className="font-mono text-xs sm:text-[13px] text-white/65 tracking-wide">
+                      {service}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            {/* Social Pills */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="p-6 sm:p-8 rounded-xl border border-[#c92a2a]/20 bg-black/40 backdrop-blur-sm"
+              className="flex flex-wrap gap-2.5"
             >
-              <h3 className="font-mono text-[10px] tracking-[0.2em] text-[#c92a2a] uppercase mb-4 font-bold">
-                Let&apos;s Connect
-              </h3>
-              <div className="flex flex-col">
-                <SocialLink icon={Linkedin} label="LINKEDIN" href="#" />
-                <SocialLink icon={Github} label="GITHUB" href="#" />
-                <SocialLink icon={Instagram} label="INSTAGRAM" href="#" />
-                <SocialLink icon={Youtube} label="YOUTUBE" href="#" border={false} />
-              </div>
+              {SOCIAL_LINKS.map(({ label, href, icon: Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-[#c92a2a]/20 bg-black/30 backdrop-blur-sm hover:border-[#c92a2a]/50 hover:bg-[#c92a2a]/[0.06] transition-all duration-300"
+                >
+                  <Icon className="w-3.5 h-3.5 text-white/45 group-hover:text-white/80 transition-colors duration-300" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/55 group-hover:text-white/90 transition-colors duration-300">
+                    {label}
+                  </span>
+                </a>
+              ))}
             </motion.div>
           </div>
 
@@ -87,8 +129,8 @@ export function Contact() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="p-6 sm:p-8 lg:p-10 rounded-xl border border-[#c92a2a]/20 bg-black/40 backdrop-blur-sm mt-0 lg:mt-12"
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="p-6 sm:p-8 lg:p-10 rounded-xl border border-[#c92a2a]/20 bg-black/40 backdrop-blur-sm"
           >
             <form className="flex flex-col gap-5">
               
@@ -152,26 +194,17 @@ export function Contact() {
   );
 }
 
-function SocialLink({ icon: Icon, label, href, border = true }: { icon: any, label: string, href: string, border?: boolean }) {
+/* ── Icon Components ───────────────────────────────────── */
+
+function XIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <a 
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`group flex items-center justify-between py-4 ${border ? 'border-b border-[#c92a2a]/10' : ''} hover:bg-white/[0.02] px-2 -mx-2 rounded transition-colors`}
-    >
-      <div className="flex items-center gap-4">
-        <Icon className="w-4 h-4 text-white/50 group-hover:text-white/80 transition-colors" />
-        <span className="font-mono text-xs text-white/60 tracking-wider group-hover:text-white/90 transition-colors">
-          {label}
-        </span>
-      </div>
-      <ArrowUpRight className="w-3.5 h-3.5 text-[#c92a2a]/60 group-hover:text-[#c92a2a] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
-    </a>
+    <svg {...props} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
   );
 }
 
-function Linkedin(props: any) {
+function Linkedin(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -181,7 +214,7 @@ function Linkedin(props: any) {
   );
 }
 
-function Github(props: any) {
+function Github(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
@@ -190,7 +223,7 @@ function Github(props: any) {
   );
 }
 
-function Instagram(props: any) {
+function Instagram(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
@@ -200,7 +233,7 @@ function Instagram(props: any) {
   );
 }
 
-function Youtube(props: any) {
+function Youtube(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2.5 7.1C2.5 7.1 2.3 5 4.3 3c2.3-2.3 5.8-2.3 9.7-2.3S19.4.7 21.7 3c2 2 1.8 4.1 1.8 4.1s.2 1.7.2 3.4v3c0 1.7-.2 3.4-.2 3.4s.2 2.1-1.8 4.1c-2.3 2.3-6.2 2.3-9.7 2.3S6.6 23.3 4.3 21c-2-2-1.8-4.1-1.8-4.1s-.2-1.7-.2-3.4v-3c0-1.7.2-3.4.2-3.4z" />
