@@ -6,6 +6,7 @@ import { WorkLibrary } from "@/components/sections/WorkLibrary";
 import { BuiltFromScratch } from "@/components/sections/BuiltFromScratch";
 import { ContributionLog } from "@/components/sections/ContributionLog";
 import { Contact } from "@/components/sections/Contact";
+import { Footer } from "@/components/sections/Footer";
 
 export default function Home() {
   return (
@@ -111,6 +112,11 @@ export default function Home() {
       >
         <ContributionLog />
         <Contact />
+      </div>
+
+      {/* ── FOOTER ──────────────────────────────────── */}
+      <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
+        <Footer />
       </div>
     </div>
   );
