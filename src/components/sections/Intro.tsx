@@ -1,43 +1,40 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { LiquidGlassEffect } from "@/components/ui/LiquidGlassEffect";
 import { LightBeamButton } from "@/components/ui/LightBeamButton";
 
 /* ─────────────────────────────────────────────────
    Stat row
 ───────────────────────────────────────────────── */
-function StatRow({
-  icon,
-  value,
-  suffix = "+",
-  label,
+function PrincipleRow({
+  index,
+  title,
+  detail,
   delay = 0,
 }: {
-  icon: React.ReactNode;
-  value: number;
-  suffix?: string;
-  label: string;
+  index: string;
+  title: string;
+  detail: string;
   delay?: number;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: 16 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay, duration: 0.55, ease: "easeOut" }}
-      className="flex items-center gap-3.5"
+      transition={{ delay, duration: 0.45, ease: "easeOut" }}
+      className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 border-b border-white/8 py-4 last:border-b-0"
     >
-      <div className="w-10 h-10 flex-shrink-0 rounded-lg border border-white/10 bg-white/[0.05] flex items-center justify-center">
-        {icon}
-      </div>
+      <span className="font-mono text-[10px] tracking-[0.14em] text-[#c5a880]">
+        {index}
+      </span>
       <div>
-        <div className="text-white text-[1.3rem] font-semibold font-sans leading-none mb-0.5 tracking-tight">
-          <AnimatedCounter to={value} />{suffix}
+        <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/75">
+          {title}
         </div>
-        <div className="font-mono text-[9.5px] tracking-[0.14em] text-white/35 uppercase">
-          {label}
+        <div className="mt-1 font-mono text-[10px] leading-[1.6] text-white/32">
+          {detail}
         </div>
       </div>
     </motion.div>
@@ -184,44 +181,34 @@ export function Intro() {
 
           {/* ── RIGHT: Stats ──────────────────────────────── */}
           <div
-            className="flex flex-col justify-center gap-8 px-8 lg:px-10 py-10 border-t lg:border-t-0 lg:border-l border-white/06 flex-shrink-0"
+            className="flex flex-col justify-center px-8 lg:px-10 py-10 border-t lg:border-t-0 lg:border-l border-white/06 flex-shrink-0"
             style={{ minWidth: 190 }}
           >
-            <StatRow
-              value={3}
-              label="Years Experience"
+            <div className="mb-2 flex items-center justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">
+                Working principles
+              </span>
+              <span className="font-mono text-[10px] tracking-[0.16em] text-white/20">
+                02
+              </span>
+            </div>
+            <PrincipleRow
+              index="01"
+              title="Clear interfaces"
+              detail="Structure first, polish second."
               delay={0.1}
-              icon={
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-                  <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-                  <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-                  <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-                </svg>
-              }
             />
-            <StatRow
-              value={15}
-              label="Projects Completed"
-              delay={0.22}
-              icon={
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
-                  <polyline points="3.29 7 12 12 20.71 7"/>
-                  <line x1="12" y1="22" x2="12" y2="12"/>
-                </svg>
-              }
+            <PrincipleRow
+              index="02"
+              title="Human context"
+              detail="Design for the moment behind the screen."
+              delay={0.2}
             />
-            <StatRow
-              value={10}
-              label="Happy Clients"
-              delay={0.36}
-              icon={
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M12 6v6l4 2"/>
-                </svg>
-              }
+            <PrincipleRow
+              index="03"
+              title="Built to last"
+              detail="Useful systems over surface-level noise."
+              delay={0.3}
             />
           </div>
         </div>

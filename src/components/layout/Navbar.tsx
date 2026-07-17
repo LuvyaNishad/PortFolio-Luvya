@@ -54,10 +54,10 @@ export function Navbar() {
       transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
       // IMPORTANT: NO backdrop-blur here — blur on a fixed full-width header
       // bleeds into all page content underneath it. Blur only on the inner pill.
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center px-2 pt-4 pb-3 sm:px-8 sm:pt-6 pointer-events-none"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center px-2 pt-4 pb-3 sm:pt-6 pointer-events-none"
     >
       {/* Pill nav container — blur is scoped ONLY to this element */}
-      <div className="flex max-w-[calc(100vw-1rem)] items-center gap-0 overflow-x-auto border border-white/12 rounded-full bg-white/[0.1] bg-neutral-00/30 backdrop-blur-xl px-1.5 py-1.5 pointer-events-auto sm:max-w-none sm:overflow-visible sm:px-2" style={{ isolation: "isolate", scrollbarWidth: "none" }}>
+      <div className="flex max-w-[calc(100vw-1rem)] items-center gap-0 overflow-x-auto border border-white/10 rounded-full bg-black/30 backdrop-blur-md px-1.5 py-1.5 shadow-[0_12px_34px_rgba(0,0,0,0.22)] pointer-events-auto sm:max-w-none sm:overflow-visible sm:px-2" style={{ isolation: "isolate", scrollbarWidth: "none" }}>
         {/* Logo shield mark */}
         <div className="hidden items-center justify-center w-9 h-9 mr-2 border border-white/12 rounded-full bg-white/[0.02] sm:flex">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-white/80">
