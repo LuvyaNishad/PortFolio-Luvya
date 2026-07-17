@@ -34,7 +34,7 @@ export default function Home() {
         <div
           className="absolute top-0 left-0 right-0 overflow-hidden"
           style={{
-            height: "calc(100vh + 450px)",
+            height: "calc(100vh + 220px)",
             zIndex: 0,
             maskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
@@ -52,7 +52,8 @@ export default function Home() {
               height: "100%",
               objectFit: "cover",
               objectPosition: "39% 12%",
-              filter: "grayscale(100%) brightness(0.85) contrast(1.12)",
+              filter: "grayscale(100%) brightness(0.62) contrast(1.08)",
+              opacity: 0.88,
 
               transform: "scale(1.02)",
               transformOrigin: "10% 500%",
@@ -87,23 +88,23 @@ export default function Home() {
       </div>
 
       {/* ── TOOLS SECTION ──────────────────────────── */}
-      <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
+      <div className="portfolio-band portfolio-band--tools" style={{ position: "relative", zIndex: 1 }}>
         <Tools />
       </div>
 
       {/* Work Library */}
-      <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
+      <div className="portfolio-band portfolio-band--library" style={{ position: "relative", zIndex: 1 }}>
         <WorkLibrary />
       </div>
 
       {/* Built From Scratch Showcase */}
-      <div style={{ background: "#0a0a0c", position: "relative", zIndex: 1 }}>
+      <div className="portfolio-band portfolio-band--showcase" style={{ position: "relative", zIndex: 1 }}>
         <BuiltFromScratch />
       </div>
 
       {/* Merged Background Wrapper (Contribution + Contact) */}
       <div 
-        className="relative w-full"
+        className="portfolio-band portfolio-band--contact relative w-full"
         style={{
           background: "#0a0a0c url('/images/mergebg.png') no-repeat 50% 20% / cover",
           position: "relative",

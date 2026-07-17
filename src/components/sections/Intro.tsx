@@ -102,20 +102,20 @@ export function Intro() {
   return (
     <section
       id="about"
-      className="relative w-full px-6 md:px-8 pb-0"
+      className="relative w-full px-6 pt-5 md:px-8 md:pt-8 lg:pt-12 pb-0"
     >
       <motion.div
         initial={{ opacity: 0, y: 36 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-5%" }}
         transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full rounded-2xl overflow-hidden"
+        className="w-full rounded-xl overflow-hidden"
       >
         <LiquidGlassEffect
           variant="dark"
-          backdropBlur={10}
-          intensity="medium"
-          className="w-full rounded-2xl border border-white/10"
+          backdropBlur={6}
+          intensity="subtle"
+          className="w-full rounded-xl border border-white/8"
         >
           <div className="relative flex flex-col lg:flex-row">
 

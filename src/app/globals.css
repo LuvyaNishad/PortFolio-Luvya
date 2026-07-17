@@ -69,6 +69,51 @@ body {
   overflow-x: hidden;
 }
 
+/* Give each major block a slightly different visual job while keeping the
+   same palette. This keeps the page cohesive without making every section
+   read like the same panel repeated down the page. */
+.portfolio-band {
+  position: relative;
+  isolation: isolate;
+}
+
+.portfolio-band::before,
+.portfolio-band::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.portfolio-band::before {
+  top: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 22%, rgba(255,255,255,0.04) 78%, transparent);
+}
+
+.portfolio-band::after {
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(197,38,26,0.14) 28%, transparent 72%);
+}
+
+.portfolio-band--tools {
+  background: #0c0c0f;
+}
+
+.portfolio-band--library {
+  background: #0a0a0c;
+}
+
+.portfolio-band--showcase {
+  background: #0e0e11;
+}
+
+.portfolio-band--contact {
+  background-color: #0a0a0c;
+}
+
 /* ─── Grain overlay ─────────────────────────────────── */
 .grain-overlay {
   position: fixed;

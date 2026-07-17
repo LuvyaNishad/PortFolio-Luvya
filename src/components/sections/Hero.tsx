@@ -13,7 +13,7 @@ export function Hero() {
     <section
       id="home"
       className="relative w-full overflow-hidden"
-      style={{ minHeight: "100vh", background: "transparent" }}
+      style={{ minHeight: "clamp(700px, 86vh, 900px)", background: "transparent" }}
     >
       {/* ── MASSIVE BACKDROP WATERMARK ─────────────────────────────── */}
       <div
@@ -32,9 +32,9 @@ export function Hero() {
       <div
         className="flex flex-col justify-start w-full max-w-[90%] sm:max-w-[80%] md:max-w-[70%] lg:max-w-[55%] relative"
         style={{
-          minHeight: "100vh",
+          minHeight: "clamp(700px, 86vh, 900px)",
           paddingLeft: "clamp(1.5rem, 6vw, 6rem)",
-          paddingTop: "clamp(6.5rem, 18vh, 12rem)",
+          paddingTop: "clamp(6rem, 15vh, 9rem)",
           paddingBottom: "8rem",
           zIndex: 1,
         }}
@@ -59,7 +59,7 @@ export function Hero() {
           transition={{ delay: 0.45, duration: 1, ease: [0.16, 1, 0.3, 1] }}
           className="font-display uppercase text-white mb-6 sm:mb-8 leading-[0.95] sm:leading-[0.90]"
           style={{
-            fontSize: "clamp(2.4rem, 5.5vw, 5.8rem)",
+            fontSize: "clamp(2.4rem, 5.1vw, 5.25rem)",
             fontWeight: 400,
             letterSpacing: "0.01em",
           }}
