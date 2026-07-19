@@ -7,10 +7,14 @@ import { BuiltFromScratch } from "@/components/sections/BuiltFromScratch";
 import { ContributionLog } from "@/components/sections/ContributionLog";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 
 export default function Home() {
   return (
     <div style={{ background: "#0a0a0c" }}>
+      {/* Custom animated cursor */}
+      <CustomCursor />
+
       {/* Grain film overlay */}
       <div className="grain-overlay" />
 
