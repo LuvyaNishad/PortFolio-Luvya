@@ -1,21 +1,39 @@
 import { useState, useEffect } from 'react';
 
-export function useActiveSection(sectionIds: string[], defaultIndex = 0) {
+export type NavSectionItem = {
+  id: string;
+  subIds?: string[];
+};
+
+export function useActiveSection(sections: (string | NavSectionItem)[], defaultIndex = 0) {
   const [activeIndex, setActiveIndex] = useState(defaultIndex);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 3;
+      // If at bottom of page, activate last item
+      if (
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 60
+      ) {
+        setActiveIndex(sections.length - 1);
+        return;
+      }
 
+      const scrollPosition = window.scrollY + window.innerHeight * 0.35;
       let currentSectionIndex = defaultIndex;
 
-      for (let i = 0; i < sectionIds.length; i++) {
-        const section = document.getElementById(sectionIds[i]);
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          const absoluteTop = rect.top + window.scrollY;
-          if (absoluteTop <= scrollPosition) {
-            currentSectionIndex = i;
+      for (let i = 0; i < sections.length; i++) {
+        const item = sections[i];
+        const ids = typeof item === 'string' ? [item] : [item.id, ...(item.subIds || [])];
+
+        for (const id of ids) {
+          const element = document.getElementById(id);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            const absoluteTop = rect.top + window.scrollY;
+            if (absoluteTop <= scrollPosition) {
+              currentSectionIndex = i;
+            }
           }
         }
       }
@@ -23,12 +41,11 @@ export function useActiveSection(sectionIds: string[], defaultIndex = 0) {
       setActiveIndex(currentSectionIndex);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    // Call once on mount to set initial state
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [sectionIds, defaultIndex]);
+  }, [JSON.stringify(sections), defaultIndex]);
 
   return activeIndex;
 }

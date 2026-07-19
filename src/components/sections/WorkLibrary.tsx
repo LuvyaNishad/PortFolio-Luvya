@@ -218,7 +218,7 @@ export function WorkLibrary() {
   return (
     <section
       id="library"
-      className="relative overflow-hidden bg-[#0a0a0c] px-6 py-28 sm:px-8 lg:px-14 lg:py-36"
+      className="relative overflow-hidden bg-[#0a0a0c] px-6 py-28 sm:px-8 lg:px-14 lg:py-36 scroll-mt-24 md:scroll-mt-32"
     >
       {/* Background Image exactly as requested */}
       <div

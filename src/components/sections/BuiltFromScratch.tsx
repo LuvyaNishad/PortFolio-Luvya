@@ -218,7 +218,7 @@ export function BuiltFromScratch() {
   return (
     <section
       id="built-from-scratch"
-      className="relative overflow-hidden bg-[#0a0a0c] border-t border-white/5"
+      className="relative overflow-hidden bg-[#0a0a0c] border-t border-white/5 scroll-mt-24 md:scroll-mt-32"
     >
       {/* Background Image — section_bg.png spanning all 4 showcase categories */}
       <div

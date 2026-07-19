@@ -11,12 +11,22 @@ const NAV_LINKS = [
   { id: 'about', label: 'ABOUT', href: '#about' },
   { id: 'tools', label: 'TOOLS', href: '#tools' },
   { id: 'library', label: 'LIBRARY', href: '#library' },
-  { id: 'built-from-scratch', label: 'SHOWCASE', href: '#built-from-scratch' },
+  { 
+    id: 'built-from-scratch', 
+    label: 'SHOWCASE', 
+    href: '#built-from-scratch',
+    subIds: [
+      'graphic-design-showcase',
+      'video-edits-showcase',
+      'ui-ux-design-showcase',
+      'code-projects-showcase'
+    ]
+  },
   { id: 'contact', label: 'CONTACT', href: '#contact' }
 ];
 
 export function Navbar() {
-  const scrollActiveIndex = useActiveSection(NAV_LINKS.map(link => link.id));
+  const scrollActiveIndex = useActiveSection(NAV_LINKS);
   const [activeIndex, setActiveIndex] = useState(0);
   const isManualScrollRef = useRef(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
