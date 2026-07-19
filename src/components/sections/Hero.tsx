@@ -1,34 +1,28 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { LightBeamButton } from "@/components/ui/LightBeamButton";
+import { TextScramble } from "@/components/ui/text-scramble";
 
 /**
  * Hero — Redesigned with the user's original text copy, formatted beautifully using
  * editorial typography, responsive layout structures, dual CTA buttons,
  * a massive background name watermark, and a rotating circular scroll indicator.
+ *
+ * TextScramble is applied to headline words, the availability badge, and the
+ * vertical pillar labels to create a cinematic "decoding" entrance effect.
  */
 export function Hero() {
+  const [designingComplete, setDesigningComplete] = useState(false);
+  const [survivingComplete, setSurvivingComplete] = useState(false);
+
   return (
     <section
       id="home"
       className="relative w-full overflow-hidden"
       style={{ minHeight: "clamp(700px, 86vh, 900px)", background: "transparent" }}
     >
-      {/* ── MASSIVE BACKDROP WATERMARK ─────────────────────────────── */}
-      <div
-        className="absolute select-none pointer-events-none font-serif italic text-white/[0.015] sm:text-white/[0.02] uppercase leading-none hidden md:block"
-        style={{
-          fontSize: "clamp(8rem, 16vw, 16rem)",
-          top: "clamp(8rem, 25vh, 18rem)",
-          right: "2vw",
-          zIndex: 0,
-          letterSpacing: "-0.04em",
-        }}
-      >
-        AURELIUS
-      </div>
-
       <div
         className="flex flex-col justify-start w-full max-w-[90%] sm:max-w-[80%] md:max-w-[70%] lg:max-w-[55%] relative"
         style={{
@@ -52,7 +46,7 @@ export function Hero() {
           </span>
         </motion.div>
 
-        {/* Headline — Serif + Sans-Serif Editorial Mix (Copying formatting from reference) */}
+        {/* Headline — Serif + Sans-Serif Editorial Mix with TextScramble */}
         <motion.h1
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
@@ -64,15 +58,49 @@ export function Hero() {
             letterSpacing: "0.01em",
           }}
         >
-          <span className="font-sans">Designing</span>{" "}
-          <span className="font-serif italic font-normal tracking-normal text-[#c5a880] normal-case pr-1">
+          <TextScramble
+            as="span"
+            className="font-sans"
+            duration={0.9}
+            speed={0.04}
+            characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            trigger={true}
+            onScrambleComplete={() => setDesigningComplete(true)}
+          >
+            Designing
+          </TextScramble>{" "}
+          <TextScramble
+            as="span"
+            className="font-serif italic font-normal tracking-normal text-[#c5a880] normal-case pr-1"
+            duration={1.0}
+            speed={0.04}
+            characterSet="abcdefghijklmnopqrstuvwxyz."
+            trigger={designingComplete}
+          >
             experiences.
-          </span>
+          </TextScramble>
           <br />
-          <span className="font-sans">Surviving</span>{" "}
-          <span className="font-serif italic font-normal tracking-normal text-[#c5a880] normal-case">
+          <TextScramble
+            as="span"
+            className="font-sans"
+            duration={0.9}
+            speed={0.04}
+            characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            trigger={designingComplete}
+            onScrambleComplete={() => setSurvivingComplete(true)}
+          >
+            Surviving
+          </TextScramble>{" "}
+          <TextScramble
+            as="span"
+            className="font-serif italic font-normal tracking-normal text-[#c5a880] normal-case"
+            duration={1.0}
+            speed={0.04}
+            characterSet="abcdefghijklmnopqrstuvwxyz."
+            trigger={survivingComplete}
+          >
             the details.
-          </span>
+          </TextScramble>
         </motion.h1>
 
         {/* Structured vertical pillars using original subtitle themes */}
@@ -84,26 +112,58 @@ export function Hero() {
         >
           <div className="flex items-center gap-4 text-[10px] sm:text-[11px] font-mono tracking-[0.18em] text-white/45">
             <span className="text-[#c5a880] font-medium">01</span>
-            <span>UI/UX DESIGN</span>
+            <TextScramble
+              as="span"
+              duration={0.5}
+              speed={0.03}
+              characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ/"
+              trigger={survivingComplete}
+            >
+              UI/UX DESIGN
+            </TextScramble>
           </div>
           <div className="flex items-center gap-4 text-[10px] sm:text-[11px] font-mono tracking-[0.18em] text-white/45">
             <span className="text-[#c5a880] font-medium">02</span>
-            <span>USER-CENTERED EXPERIENCES</span>
+            <TextScramble
+              as="span"
+              duration={0.6}
+              speed={0.03}
+              characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ-"
+              trigger={survivingComplete}
+            >
+              USER-CENTERED EXPERIENCES
+            </TextScramble>
           </div>
           <div className="flex items-center gap-4 text-[10px] sm:text-[11px] font-mono tracking-[0.18em] text-white/45">
             <span className="text-[#c5a880] font-medium">03</span>
-            <span>PRECISION & PURPOSE</span>
+            <TextScramble
+              as="span"
+              duration={0.7}
+              speed={0.03}
+              characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ&"
+              trigger={survivingComplete}
+            >
+              PRECISION & PURPOSE
+            </TextScramble>
           </div>
         </motion.div>
 
-        {/* Subtitle — Exact original copy */}
+        {/* Subtitle — Exact original copy with scramble */}
         <motion.p
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.72, duration: 0.8, ease: "easeOut" }}
           className="font-mono text-[12px] sm:text-[12.5px] leading-[1.8] sm:leading-[1.9] text-white/35 mb-8 sm:mb-10 max-w-[340px] sm:max-w-[420px]"
         >
-          UI/UX Designer crafting immersive, user-centered experiences with precision and purpose.
+          <TextScramble
+            as="span"
+            duration={1.2}
+            speed={0.03}
+            characterSet="abcdefghijklmnopqrstuvwxyz,.-/"
+            trigger={survivingComplete}
+          >
+            UI/UX Designer crafting immersive, user-centered experiences with precision and purpose.
+          </TextScramble>
         </motion.p>
 
         {/* CTA Button Block */}

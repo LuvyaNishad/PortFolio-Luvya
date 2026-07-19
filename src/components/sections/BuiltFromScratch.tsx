@@ -134,7 +134,7 @@ function CategoryBlock({
   sectionDelay: number;
 }) {
   return (
-    <div className="relative py-16 lg:py-20">
+    <div id={category.id} className="relative py-16 lg:py-20 scroll-mt-24 md:scroll-mt-32">
       {/* Left vertical sidebar text */}
       <div className="hidden lg:flex absolute left-0 top-0 bottom-0 items-center">
         <span

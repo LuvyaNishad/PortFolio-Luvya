@@ -69,15 +69,27 @@ const archiveItems: WorkArchiveItem[] = [
 function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) {
   const Icon = item.Icon;
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const targetId = `${item.id}-showcase`;
+    const element = document.getElementById(targetId);
+    if (element) {
+      const yOffset = -90; // Offset for sticky navbar
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  };
+
   return (
-    <motion.button
-      type="button"
+    <motion.a
+      href={`#${item.id}-showcase`}
+      onClick={handleClick}
       initial={{ opacity: 0, y: 34, scale: 0.985 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-8%" }}
       transition={{ delay, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
       whileTap={{ scale: 0.985 }}
-      className="group relative block w-full min-h-[300px] text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+      className="group relative block w-full min-h-[300px] text-left cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
       style={
         {
           "--archive-accent": item.accent,
@@ -198,7 +210,7 @@ function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) 
           </div>
         </div>
       </HighlightCard>
-    </motion.button>
+    </motion.a>
   );
 }
 

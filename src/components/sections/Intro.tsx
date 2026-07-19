@@ -99,7 +99,7 @@ export function Intro() {
   return (
     <section
       id="about"
-      className="relative w-full px-6 pt-5 md:px-8 md:pt-8 lg:pt-12 pb-0"
+      className="relative w-full px-6 pt-5 md:px-8 md:pt-8 lg:pt-12 pb-0 scroll-mt-32 md:scroll-mt-40"
     >
       <motion.div
         initial={{ opacity: 0, y: 36 }}
