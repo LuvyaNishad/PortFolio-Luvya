@@ -896,6 +896,24 @@ body {
   background: white;
 }
 
+/* ─── Expandable Card Modal Scrollbar ─── */
+.expandable-card-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.expandable-card-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.expandable-card-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.expandable-card-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 /* ─── Hide on touch devices ─── */
 @media (hover: none) {
   .cursor-dot-wrapper,

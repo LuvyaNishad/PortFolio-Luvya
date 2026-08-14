@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { MetadataText } from "@/components/ui/MetadataText";
+import { ExpandableArtifactCards } from "@/components/ui/ExpandableArtifactCard";
+import { VISUAL_ARTIFACTS } from "@/data/visualArtifacts";
 
 /* ─── Category data matching Work Library chronology ─── */
 type ShowcaseCategory = {
@@ -200,14 +202,22 @@ function CategoryBlock({
 
       {/* Cards grid — 4 columns on desktop */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5 lg:px-8">
-        {Array.from({ length: category.cardCount }).map((_, i) => (
-          <ProjectSlot
-            key={i}
-            prefix={category.cardPrefix}
+        {category.id === "graphic-design-showcase" ? (
+          <ExpandableArtifactCards
+            artifacts={VISUAL_ARTIFACTS}
             accent={category.accent}
-            delay={sectionDelay + 0.08 + i * 0.06}
+            sectionDelay={sectionDelay}
           />
-        ))}
+        ) : (
+          Array.from({ length: category.cardCount }).map((_, i) => (
+            <ProjectSlot
+              key={i}
+              prefix={category.cardPrefix}
+              accent={category.accent}
+              delay={sectionDelay + 0.08 + i * 0.06}
+            />
+          ))
+        )}
       </div>
     </div>
   );
