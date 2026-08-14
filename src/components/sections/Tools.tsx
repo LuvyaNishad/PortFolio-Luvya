@@ -1,13 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { LiquidGlassEffect } from "@/components/ui/LiquidGlassEffect";
 
 /* ─────────────────────────────────────────────────
    Tool Category Row
    Each row contains:
-   - Left panel: number, icon, category name, subtitle, capacity bar
-   - Right panel: grid of tool card placeholders
+   - Left panel: number, icon, category name, subtitle, sequential capacity bar
+   - Right panel: grid of tool card placeholders with reticle hover
    - Right edge: vertical "TOOLS" label + "+" button + dots
 ───────────────────────────────────────────────── */
 
@@ -24,31 +25,59 @@ interface ToolCategoryProps {
 function CapacityBarInline({
   value,
   max = 10,
+  baseDelay = 0,
 }: {
   value: number;
   max?: number;
+  baseDelay?: number;
 }) {
+  const [displayVal, setDisplayVal] = useState(0);
+  const [hasStarted, setHasStarted] = useState(false);
+
   return (
     <div className="flex items-center gap-3 mt-auto">
       <span className="font-mono text-[9px] tracking-[0.18em] text-white/30 uppercase">
         Capacity
       </span>
-      <span className="font-mono text-[11px] text-white/70 tracking-wide">
-        {String(value).padStart(2, "0")}/{String(max).padStart(2, "0")}
+      <span className="font-mono text-[11px] text-white/75 tracking-wide tabular-nums">
+        {String(displayVal).padStart(2, "0")}/{String(max).padStart(2, "0")}
       </span>
       <div className="flex gap-[2px] ml-1">
-        {Array.from({ length: max }).map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.04, duration: 0.35 }}
-            className={`w-[6px] h-[10px] rounded-[1px] ${
-              i < value ? "bg-[#4a7c59]" : "bg-white/8"
-            }`}
-          />
-        ))}
+        {Array.from({ length: max }).map((_, i) => {
+          const isActive = i < value;
+          return (
+            <motion.div
+              key={i}
+              initial={{ scaleY: 0, opacity: 0.15 }}
+              whileInView={{ scaleY: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              onViewportEnter={() => {
+                if (!hasStarted && i === 0) {
+                  setHasStarted(true);
+                  let current = 0;
+                  const interval = setInterval(() => {
+                    current++;
+                    if (current <= value) {
+                      setDisplayVal(current);
+                    } else {
+                      clearInterval(interval);
+                    }
+                  }, 55);
+                }
+              }}
+              transition={{
+                delay: baseDelay + 0.2 + i * 0.045,
+                duration: 0.38,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className={`w-[6px] h-[10px] rounded-[1px] origin-bottom transition-all duration-300 ${
+                isActive
+                  ? "bg-[#4a7c59] shadow-[0_0_8px_rgba(74,156,94,0.45)]"
+                  : "bg-white/8"
+              }`}
+            />
+          );
+        })}
       </div>
     </div>
   );
@@ -67,17 +96,17 @@ function ToolCategory({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{ delay, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="tools-category-row"
+      initial={{ opacity: 0, y: 32, scale: 0.985 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-8%" }}
+      transition={{ delay, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+      className="tools-category-row group/row"
     >
       {/* ── LEFT INFO PANEL ───────────────────────── */}
       <div className="tools-info-panel">
         {/* Number + icon row */}
         <div className="flex items-center gap-2 mb-1.5">
-          <span className="font-mono text-[11px] text-white/35 tracking-wide">
+          <span className="font-mono text-[11px] text-white/35 tracking-wide group-hover/row:text-[#4a9c5e] transition-colors duration-300">
             {formattedIndex}
           </span>
           {/* Small grid icon */}
@@ -86,7 +115,7 @@ function ToolCategory({
             height="12"
             viewBox="0 0 12 12"
             fill="none"
-            className="text-white/25"
+            className="text-white/25 group-hover/row:text-[#4a9c5e]/60 transition-colors duration-300"
           >
             <rect x="0" y="0" width="5" height="5" rx="0.5" fill="currentColor" />
             <rect x="7" y="0" width="5" height="5" rx="0.5" fill="currentColor" />
@@ -96,10 +125,10 @@ function ToolCategory({
         </div>
 
         {/* Horizontal divider */}
-        <div className="w-full h-px bg-white/8 mb-2" />
+        <div className="w-full h-px bg-white/8 mb-2 group-hover/row:bg-white/14 transition-colors duration-300" />
 
         {/* Category title — large display font */}
-        <h3 className="font-display text-white uppercase text-[1.65rem] leading-[1.05] tracking-[0.02em] mb-2">
+        <h3 className="font-display text-white uppercase text-[1.65rem] leading-[1.05] tracking-[0.02em] mb-2 group-hover/row:text-white transition-colors duration-300">
           {title}
         </h3>
 
@@ -108,8 +137,12 @@ function ToolCategory({
           {subtitle}
         </p>
 
-        {/* Capacity bar */}
-        <CapacityBarInline value={capacityValue} max={capacityMax} />
+        {/* Capacity bar with sequential charge */}
+        <CapacityBarInline
+          value={capacityValue}
+          max={capacityMax}
+          baseDelay={delay}
+        />
       </div>
 
       {/* ── TOOL CARDS GRID ───────────────────────── */}
@@ -122,11 +155,11 @@ function ToolCategory({
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{
-                delay: delay + 0.1 + i * 0.04,
+                delay: delay + 0.15 + i * 0.035,
                 duration: 0.45,
-                ease: "easeOut",
+                ease: [0.16, 1, 0.3, 1],
               }}
-              className="tool-card"
+              className="tool-card group/card"
             >
               {/* Corner bracket overlay for TR + BL */}
               <div className="tool-card-corners" />
@@ -143,7 +176,7 @@ function ToolCategory({
         {/* Vertical "TOOLS" text */}
         <span className="tools-vertical-label">TOOLS</span>
         {/* Plus button */}
-        <div className="tools-plus-btn">
+        <div className="tools-plus-btn group-hover/row:border-[#4a9c5e]/50 group-hover/row:text-[#4a9c5e] transition-colors duration-300">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.2">
             <line x1="7" y1="2" x2="7" y2="12" />
             <line x1="2" y1="7" x2="12" y2="7" />
@@ -167,8 +200,6 @@ function ToolCategory({
    ECG Heart-Rate Monitor — continuously scrolling
 ───────────────────────────────────────────────── */
 function ECGMonitor() {
-  // The waveform path is drawn once, then duplicated so the
-  // animation can loop seamlessly (CSS translateX -50%).
   const waveformPath =
     "M0,16 L12,16 L18,16 L24,16 L30,16 L36,16 L42,16 L46,16 L50,12 L54,16 L58,16 L62,16 L68,6 L72,26 L76,4 L80,22 L84,10 L88,18 L92,16 L98,16 L104,16 L108,16 L112,14 L116,16 L120,16 L126,16 L132,16 L136,16 L140,16 L146,16 L150,12 L154,16 L158,16 L162,16 L168,5 L172,27 L176,3 L180,23 L184,9 L188,19 L192,16 L198,16 L204,16 L210,16 L216,16 L220,16 L226,16 L232,16 L238,16 L244,16 L250,16 L256,16 L262,16 L268,16 L274,16 L280,16";
 
@@ -215,8 +246,15 @@ function ECGMonitor() {
 export function Tools() {
   return (
     <section id="tools" className="tools-section">
-      {/* ── Blueprint Background ─────────────────── */}
-      <div className="tools-bg" aria-hidden="true" />
+      {/* ── Animated Blueprint Background ─────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+        className="tools-bg"
+        aria-hidden="true"
+      />
 
       {/* ── Content container ──────────────────────────── */}
       <div className="tools-content">
@@ -272,7 +310,7 @@ export function Tools() {
             initial={{ opacity: 0, x: 16 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
+            transition={{ delay: 0.25, duration: 0.6, ease: "easeOut" }}
             className="tools-sys-status"
           >
             <div className="flex items-center gap-3">
@@ -287,7 +325,7 @@ export function Tools() {
           </motion.div>
         </div>
 
-        {/* ── CATEGORY ROWS ──────────────────────────── */}
+        {/* ── CATEGORY ROWS (150ms Calibration Stagger) ──────────────── */}
         <div className="tools-categories">
           <ToolCategory
             index={1}
@@ -306,7 +344,7 @@ export function Tools() {
             capacityValue={8}
             capacityMax={10}
             toolCount={8}
-            delay={0.1}
+            delay={0.15}
           />
 
           <ToolCategory
@@ -316,7 +354,7 @@ export function Tools() {
             capacityValue={7}
             capacityMax={10}
             toolCount={7}
-            delay={0.2}
+            delay={0.30}
           />
         </div>
 
@@ -325,7 +363,7 @@ export function Tools() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4, duration: 0.8 }}
+          transition={{ delay: 0.45, duration: 0.8 }}
           className="tools-bottom-bar"
         >
           <span className="font-mono text-[9px] tracking-[0.2em] text-white/20 uppercase">

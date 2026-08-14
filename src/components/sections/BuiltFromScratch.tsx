@@ -4,7 +4,9 @@ import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { MetadataText } from "@/components/ui/MetadataText";
 import { ExpandableArtifactCards } from "@/components/ui/ExpandableArtifactCard";
+import { ExpandableMotionCards } from "@/components/ui/ExpandableMotionCard";
 import { VISUAL_ARTIFACTS } from "@/data/visualArtifacts";
+import { MOTION_ARTIFACTS } from "@/data/motionArtifacts";
 
 /* ─── Category data matching Work Library chronology ─── */
 type ShowcaseCategory = {
@@ -205,6 +207,12 @@ function CategoryBlock({
         {category.id === "graphic-design-showcase" ? (
           <ExpandableArtifactCards
             artifacts={VISUAL_ARTIFACTS}
+            accent={category.accent}
+            sectionDelay={sectionDelay}
+          />
+        ) : category.id === "video-edits-showcase" ? (
+          <ExpandableMotionCards
+            artifacts={MOTION_ARTIFACTS}
             accent={category.accent}
             sectionDelay={sectionDelay}
           />

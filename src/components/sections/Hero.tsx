@@ -215,13 +215,13 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 20 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-center justify-center text-center select-none mb-1.5 sm:mb-2.5 relative"
+          className="flex flex-col items-center justify-center text-center select-none mb-2 sm:mb-4 relative z-20"
         >
           {/* Level 1 (Top Line): Primary Headline */}
           <span
             className="font-display uppercase text-white tracking-[0.03em] leading-[0.88] drop-shadow-[0_4px_28px_rgba(0,0,0,0.9)]"
             style={{
-              fontSize: "clamp(2.2rem, 5.2vw, 4.8rem)",
+              fontSize: "clamp(3rem, 8.5vw, 8.2rem)",
               fontWeight: 400,
               textShadow: "0 0 45px rgba(220,165,85,0.22)",
             }}
@@ -242,7 +242,7 @@ export function Hero() {
           <span
             className="font-serif italic font-normal tracking-[0.01em] text-[#e5be8a] my-[-0.15em] sm:my-[-0.18em] z-10 select-none drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)]"
             style={{
-              fontSize: "clamp(1.2rem, 2.7vw, 2.45rem)",
+              fontSize: "clamp(1.8rem, 4.2vw, 4.2rem)",
               lineHeight: 1.1,
               textShadow: "0 0 35px rgba(229,190,138,0.35)",
             }}
@@ -263,7 +263,7 @@ export function Hero() {
           <span
             className="font-display uppercase text-white tracking-[0.03em] leading-[0.88] drop-shadow-[0_4px_28px_rgba(0,0,0,0.9)]"
             style={{
-              fontSize: "clamp(2.2rem, 5.2vw, 4.8rem)",
+              fontSize: "clamp(3rem, 8.5vw, 8.2rem)",
               fontWeight: 400,
               textShadow: "0 0 45px rgba(220,165,85,0.22)",
             }}
@@ -286,7 +286,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 12 }}
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          className="font-sans text-[11px] sm:text-[12.5px] md:text-[13.5px] leading-[1.55] sm:leading-[1.6] text-white/80 font-normal mb-2 sm:mb-3 max-w-[92vw] sm:max-w-[460px] px-2"
+          className="font-sans text-[13px] sm:text-[15px] md:text-[18px] leading-[1.55] sm:leading-[1.6] text-white/80 font-normal mb-3 sm:mb-5 max-w-[92vw] sm:max-w-[650px] px-2 relative z-20"
           style={{
             textShadow: "0 2px 14px rgba(0,0,0,0.9)",
           }}
