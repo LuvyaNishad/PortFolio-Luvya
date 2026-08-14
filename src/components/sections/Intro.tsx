@@ -167,17 +167,15 @@ export function Intro() {
             </p>
 
             {/* CTA — Opens the expandable About dossier modal */}
-            <div>
-              <LightBeamButton
-                onClick={() => setIsAboutModalOpen(true)}
-                className="px-6 py-3"
-              >
-                MORE ABOUT ME{" "}
-                <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5 text-white/30 ml-1">
-                  →
-                </span>
-              </LightBeamButton>
-            </div>
+            <LightBeamButton
+              onClick={() => setIsAboutModalOpen(true)}
+              className="w-full max-w-[360px] justify-between px-6 py-3.5"
+            >
+              <span>MORE ABOUT ME</span>
+              <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5 text-white/40">
+                →
+              </span>
+            </LightBeamButton>
           </div>
 
           {/* ── CENTER: Photo ─────────────────────────────── */}

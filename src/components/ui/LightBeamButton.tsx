@@ -38,7 +38,9 @@ export function LightBeamButton({
 
   const innerContent = (
     <>
-      <span className="relative z-10 flex items-center gap-2.5">{children}</span>
+      <span className="relative z-10 flex items-center justify-inherit w-full gap-2.5">
+        {children}
+      </span>
 
       {/* Rotating gradient border */}
       <div

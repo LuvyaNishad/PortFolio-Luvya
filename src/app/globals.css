@@ -677,9 +677,9 @@ body {
   will-change: transform;
 }
 
-.cursor-dot-wrapper  { z-index: 9999; }
-.cursor-ring-wrapper { z-index: 9998; }
-.cursor-trail        { z-index: 9997; }
+.cursor-dot-wrapper  { z-index: 999999; }
+.cursor-ring-wrapper { z-index: 999998; }
+.cursor-trail        { z-index: 999997; }
 
 /* ─── DOT — precision point ─── */
 .cursor-dot-inner {
