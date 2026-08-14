@@ -153,8 +153,12 @@ export function Hero() {
 
       {/* ── CENTERED HERO CONTENT COLUMN ── */}
       <div
-        className="relative flex flex-col items-center text-center w-full px-6 flex-1 justify-center"
-        style={{ zIndex: 1, paddingTop: "clamp(3rem, 6vh, 5rem)", paddingBottom: "clamp(1.5rem, 3vh, 2.5rem)" }}
+        className="relative flex flex-col items-center text-center w-full px-4 sm:px-6 flex-1 justify-center"
+        style={{
+          zIndex: 1,
+          paddingTop: "clamp(4.5rem, 8.5vh, 6.5rem)",
+          paddingBottom: "clamp(1.5rem, 3.5vh, 2.5rem)",
+        }}
       >
         {/* ── VOLUMETRIC UPWARD GLOW SYSTEM (Behind Headline & Subtitle) ── */}
         <div className="absolute top-[8%] left-1/2 -translate-x-1/2 w-full max-w-[900px] h-[520px] pointer-events-none -z-10 overflow-visible">
@@ -192,103 +196,116 @@ export function Hero() {
           />
         </div>
 
-        {/* ── Role Badge ── */}
+        {/* ── Role Badge (Always visible with clear navbar offset) ── */}
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : -12 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="flex items-center gap-3 mb-2.5 sm:mb-3"
+          className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2.5"
         >
-          <span className="w-1 h-1 rounded-full bg-[#c5a880]" />
-          <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] text-white/50 uppercase">
-            Product Designer
+          <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#c5a880]/90 shadow-[0_0_8px_rgba(197,168,128,0.6)]" />
+          <span className="font-mono text-[8px] sm:text-[9.5px] md:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] text-[#c5a880]/90 uppercase font-medium">
+            Product Designer &amp; Technologist
           </span>
-          <span className="w-1 h-1 rounded-full bg-[#c5a880]" />
+          <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#c5a880]/90 shadow-[0_0_8px_rgba(197,168,128,0.6)]" />
         </motion.div>
 
-        {/* ── Main Headline ── */}
+        {/* ── LEVEL 1 & LEVEL 2: Typographic Headline Lockup ── */}
         <motion.h1
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 25 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 20 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-display uppercase text-white leading-[0.92] mb-0 relative"
-          style={{
-            fontSize: "clamp(3.2rem, 8vw, 7.5rem)",
-            fontWeight: 400,
-            letterSpacing: "0.02em",
-            textShadow: "0 0 40px rgba(220,165,85,0.18)",
-          }}
+          className="flex flex-col items-center justify-center text-center select-none mb-1.5 sm:mb-2.5 relative"
         >
-          <TextScramble
-            as="span"
-            duration={0.8}
-            speed={0.03}
-            characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            trigger={impactHappened}
-            onScrambleComplete={() => setDesigningComplete(true)}
-          >
-            Designing
-          </TextScramble>
-        </motion.h1>
-
-        {/* ── Serif Subtitle with Bracket Details ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 15 }}
-          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-2.5 sm:mb-3 flex items-center justify-center gap-2"
-        >
-          <span className="font-serif text-[#c5a880]/40 text-[clamp(1.5rem,3.8vw,3.5rem)] font-light select-none">
-            {"{"}
-          </span>
+          {/* Level 1 (Top Line): Primary Headline */}
           <span
-            className="font-serif italic text-[#c5a880]/95"
+            className="font-display uppercase text-white tracking-[0.03em] leading-[0.88] drop-shadow-[0_4px_28px_rgba(0,0,0,0.9)]"
             style={{
-              fontSize: "clamp(1.7rem, 4.2vw, 4.2rem)",
+              fontSize: "clamp(2.2rem, 5.2vw, 4.8rem)",
               fontWeight: 400,
-              letterSpacing: "0.01em",
-              textShadow: "0 0 35px rgba(220,165,85,0.25)",
+              textShadow: "0 0 45px rgba(220,165,85,0.22)",
+            }}
+          >
+            <TextScramble
+              as="span"
+              duration={0.7}
+              speed={0.03}
+              characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+              trigger={impactHappened}
+              onScrambleComplete={() => setDesigningComplete(true)}
+            >
+              TURNING
+            </TextScramble>
+          </span>
+
+          {/* Level 2: Editorial Serif Italic Accent (50% scale of Level 1) */}
+          <span
+            className="font-serif italic font-normal tracking-[0.01em] text-[#e5be8a] my-[-0.15em] sm:my-[-0.18em] z-10 select-none drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)]"
+            style={{
+              fontSize: "clamp(1.2rem, 2.7vw, 2.45rem)",
+              lineHeight: 1.1,
+              textShadow: "0 0 35px rgba(229,190,138,0.35)",
             }}
           >
             <TextScramble
               as="span"
               className="font-serif italic"
-              duration={0.9}
+              duration={0.8}
               speed={0.03}
-              characterSet="abcdefghijklmnopqrstuvwxyz "
+              characterSet="abcdefghijklmnopqrstuvwxyz"
+              trigger={designingComplete}
+            >
+              complexity
+            </TextScramble>
+          </span>
+
+          {/* Level 1 (Bottom Line): Primary Headline */}
+          <span
+            className="font-display uppercase text-white tracking-[0.03em] leading-[0.88] drop-shadow-[0_4px_28px_rgba(0,0,0,0.9)]"
+            style={{
+              fontSize: "clamp(2.2rem, 5.2vw, 4.8rem)",
+              fontWeight: 400,
+              textShadow: "0 0 45px rgba(220,165,85,0.22)",
+            }}
+          >
+            <TextScramble
+              as="span"
+              duration={0.8}
+              speed={0.03}
+              characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ."
               trigger={designingComplete}
               onScrambleComplete={() => setSubtitleComplete(true)}
             >
-              impactful experiences
+              INTO CLARITY.
             </TextScramble>
           </span>
-          <span className="font-serif text-[#c5a880]/40 text-[clamp(1.5rem,3.8vw,3.5rem)] font-light select-none">
-            {"}"}
-          </span>
-        </motion.div>
+        </motion.h1>
 
-        {/* ── Description ── */}
+        {/* ── LEVEL 3: Supporting Description (Clean neutral sans-serif, high contrast) ── */}
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 12 }}
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          className="font-mono text-[11px] sm:text-[12.5px] leading-[1.85] text-white/40 mb-3 sm:mb-4 max-w-[460px]"
+          className="font-sans text-[11px] sm:text-[12.5px] md:text-[13.5px] leading-[1.55] sm:leading-[1.6] text-white/80 font-normal mb-2 sm:mb-3 max-w-[92vw] sm:max-w-[460px] px-2"
+          style={{
+            textShadow: "0 2px 14px rgba(0,0,0,0.9)",
+          }}
         >
           <TextScramble
             as="span"
-            duration={1.0}
-            speed={0.025}
+            duration={0.9}
+            speed={0.02}
             characterSet="abcdefghijklmnopqrstuvwxyz,.- "
             trigger={subtitleComplete}
           >
-            I craft digital products and experiences that are intentional, intuitive and built to make a difference.
+            I design and build digital experiences where clarity, technology and visual storytelling meet.
           </TextScramble>
         </motion.p>
 
-        {/* ── FLOATING MONOLITH + 3D ORBIT RINGS + DEBRIS (HEROIC SCALE) ── */}
+        {/* ── FLOATING MONOLITH + 3D ORBIT RINGS + DEBRIS (HEROIC SCALE, RESPONSIVE) ── */}
         <div
           ref={monolithRef}
-          className="relative w-[35vh] h-[35vh] sm:w-[40vh] sm:h-[40vh] max-w-[420px] max-h-[420px] min-w-[260px] min-h-[260px] my-0 sm:my-1 select-none flex items-center justify-center"
+          className="relative w-[20vh] h-[20vh] min-w-[150px] min-h-[150px] max-w-[220px] max-h-[220px] sm:w-[25vh] sm:h-[25vh] sm:min-w-[190px] sm:min-h-[190px] sm:max-w-[280px] sm:max-h-[280px] md:w-[28vh] md:h-[28vh] md:max-w-[340px] md:max-h-[340px] lg:w-[32vh] lg:h-[32vh] lg:max-w-[380px] lg:max-h-[380px] my-0 sm:my-0.5 select-none flex items-center justify-center"
           style={{
             perspective: "1100px",
             transformStyle: "preserve-3d",
@@ -583,13 +600,13 @@ export function Hero() {
                 }}
                 className="w-full h-full relative flex items-center justify-center"
               >
-              <img
-                src="/images/monolith.png"
-                alt="Monolith Centerpiece"
-                className="w-[90%] h-[90%] object-contain drop-shadow-[0_0_55px_rgba(215,165,100,0.22)]"
-                draggable={false}
-              />
-            </motion.div>
+                <img
+                  src="/images/monolith.png"
+                  alt="Monolith Centerpiece"
+                  className="w-[90%] h-[90%] object-contain drop-shadow-[0_0_55px_rgba(215,165,100,0.22)]"
+                  draggable={false}
+                />
+              </motion.div>
             </motion.div>
           </motion.div>
 
@@ -605,31 +622,31 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: impactHappened ? 1 : 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="flex items-center gap-2.5 mb-4 sm:mb-5"
+          className="flex items-center gap-2 mb-3 sm:mb-4"
         >
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/80 animate-pulse" />
-          <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.25em] text-white/45 uppercase">
+          <span className="font-mono text-[8.5px] sm:text-[9.5px] md:text-[10px] tracking-[0.2em] sm:tracking-[0.25em] text-white/45 uppercase">
             Available for exciting projects
           </span>
         </motion.div>
 
-        {/* ── CTA Buttons ── */}
+        {/* ── CTA Buttons (Responsive layout) ── */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 14 }}
           transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
-          className="flex flex-wrap justify-center gap-4 items-center"
+          className="flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full px-2"
         >
-          <LightBeamButton href="#built-from-scratch">
+          <LightBeamButton href="#built-from-scratch" className="text-[9.5px] sm:text-[11px] px-5 sm:px-7 py-2.5 sm:py-3 tracking-[0.16em] sm:tracking-[0.2em]">
             VIEW MY WORK <span className="text-white/40 ml-1">→</span>
           </LightBeamButton>
 
           <a
             href="#contact"
-            className="h-[46px] inline-flex items-center justify-center px-7 rounded-full border border-white/10 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 text-[10.5px] font-mono tracking-[0.2em] text-white/60 uppercase group"
+            className="h-[40px] sm:h-[46px] inline-flex items-center justify-center px-4 sm:px-7 rounded-full border border-white/10 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 text-[9.5px] sm:text-[10.5px] font-mono tracking-[0.16em] sm:tracking-[0.2em] text-white/60 uppercase group"
           >
             GET IN TOUCH
-            <span className="text-white/30 ml-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">
+            <span className="text-white/30 ml-1.5 sm:ml-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">
               ↗
             </span>
           </a>
@@ -637,7 +654,7 @@ export function Hero() {
       </div>
 
       {/* ── BOTTOM CORNER HUD ELEMENTS ── */}
-      {/* Bottom-left: Rotating scroll indicator */}
+      {/* Bottom-left: Rotating scroll indicator (Desktop only) */}
       <div className="absolute bottom-6 left-6 sm:left-10 hidden md:flex items-center justify-center w-20 h-20 select-none pointer-events-none">
         <motion.div
           animate={{ rotate: 360 }}
@@ -674,21 +691,6 @@ export function Hero() {
             <polyline points="19 12 12 19 5 12"></polyline>
           </svg>
         </div>
-      </div>
-
-      {/* Bottom-right: Tactical Bookmark / Save for later badge */}
-      <div className="absolute bottom-6 right-6 sm:right-10 hidden md:flex items-center select-none">
-        <a
-          href="mailto:contact@example.com?subject=Portfolio%20Inquiry"
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/20 transition-all text-white/40 hover:text-white/70"
-        >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-          </svg>
-          <span className="font-mono text-[8.5px] tracking-[0.18em] uppercase">
-            SAVE FOR LATER
-          </span>
-        </a>
       </div>
     </motion.section>
   );
