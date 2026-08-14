@@ -31,8 +31,8 @@ export default function Home() {
       <div className="relative" style={{ background: "#0a0a0c" }}>
 
         {/* ── BACKGROUND IMAGE ──────────────────────────────────
-          Covers from top of hero down to ~450px past 100vh.
-          Has a gradient that fades opacity to 0 at the bottom.
+          Symmetrical ruins backdrop — covers hero + extends into intro.
+          Centered, slightly blurred for depth-of-field effect.
           z-index: 0 — behind all section content.
         */}
         <div
@@ -40,14 +40,14 @@ export default function Home() {
           style={{
             height: "calc(100vh + 220px)",
             zIndex: 0,
-            maskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
+            maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
           }}
           aria-hidden="true"
         >
-          {/* The image itself */}
+          {/* The symmetrical ruins image */}
           <img
-            src="/images/hero_intro1.jpg"
+            src="/images/hero_bg.jpg"
             alt=""
             style={{
               position: "absolute",
@@ -55,28 +55,35 @@ export default function Home() {
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              objectPosition: "39% 12%",
-              filter: "grayscale(100%) brightness(0.62) contrast(1.08)",
-              opacity: 0.88,
-
-              transform: "scale(1.02)",
-              transformOrigin: "10% 500%",
+              objectPosition: "center 30%",
+              filter: "grayscale(100%) brightness(0.50) contrast(1.1) blur(1.5px)",
+              opacity: 0.75,
+              transform: "scale(1.04)",
+              transformOrigin: "center center",
             }}
           />
 
-          {/* Left gradient — keeps hero text readable */}
+          {/* Center-mist radial vignette — masks the gate details for monolith clarity */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               background:
-                "linear-gradient(105deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.50) 36%, rgba(0,0,0,0.12) 60%, transparent 80%)",
+                "radial-gradient(ellipse 50% 55% at 50% 55%, rgba(10,10,12,0.88) 0%, rgba(10,10,12,0.5) 40%, transparent 75%)",
             }}
           />
 
-          {/* Bottom fade is now handled by mask-image on the <img> above */}
+          {/* Heavy edge vignette — pulls focus to center */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "radial-gradient(ellipse 70% 65% at 50% 45%, transparent 30%, rgba(10,10,12,0.7) 65%, rgba(10,10,12,0.95) 100%)",
+            }}
+          />
 
-          {/* Vignette around edges */}
+          {/* Classic vignette class */}
           <div className="vignette" style={{ position: "absolute", inset: 0 }} />
         </div>
 
