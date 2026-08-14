@@ -55,36 +55,53 @@ export default function Home() {
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              objectPosition: "center 30%",
-              filter: "grayscale(100%) brightness(0.50) contrast(1.1) blur(1.5px)",
-              opacity: 0.75,
+              objectPosition: "center 25%",
+              filter: "grayscale(100%) brightness(0.55) contrast(1.12) blur(1px)",
+              opacity: 0.82,
               transform: "scale(1.04)",
               transformOrigin: "center center",
             }}
           />
 
-          {/* Center-mist radial vignette — masks the gate details for monolith clarity */}
+          {/* Layer 1: Soft center-bottom mist — fades the gate but keeps ruins visible on sides */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               background:
-                "radial-gradient(ellipse 50% 55% at 50% 55%, rgba(10,10,12,0.88) 0%, rgba(10,10,12,0.5) 40%, transparent 75%)",
+                "radial-gradient(ellipse 45% 40% at 50% 62%, rgba(10,10,12,0.82) 0%, rgba(10,10,12,0.35) 50%, transparent 80%)",
             }}
           />
 
-          {/* Heavy edge vignette — pulls focus to center */}
+          {/* Layer 2: Atmospheric fog — natural horizontal haze band */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               background:
-                "radial-gradient(ellipse 70% 65% at 50% 45%, transparent 30%, rgba(10,10,12,0.7) 65%, rgba(10,10,12,0.95) 100%)",
+                "linear-gradient(to bottom, rgba(10,10,12,0.3) 0%, transparent 15%, transparent 40%, rgba(10,10,12,0.15) 55%, rgba(10,10,12,0.6) 75%, rgba(10,10,12,0.95) 100%)",
             }}
           />
 
-          {/* Classic vignette class */}
-          <div className="vignette" style={{ position: "absolute", inset: 0 }} />
+          {/* Layer 3: Organic edge vignette — heavier at corners, softer at sides */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "radial-gradient(ellipse 80% 70% at 50% 40%, transparent 25%, rgba(10,10,12,0.4) 55%, rgba(10,10,12,0.85) 80%, rgba(10,10,12,1) 100%)",
+            }}
+          />
+
+          {/* Layer 4: Top edge shadow — prevents header from floating */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to bottom, rgba(10,10,12,0.5) 0%, transparent 12%)",
+            }}
+          />
         </div>
 
         {/* Hero content — z-index 1 so it sits above the bg image */}

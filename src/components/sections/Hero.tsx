@@ -64,7 +64,7 @@ export function Hero() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
-          className="flex items-center gap-3 mb-6 sm:mb-8"
+          className="flex items-center gap-3 mb-3 sm:mb-4"
         >
           <span className="w-1 h-1 rounded-full bg-[#c5a880]" />
           <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] text-white/50 uppercase">
@@ -78,7 +78,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="font-display uppercase text-white leading-[0.92] mb-2"
+          className="font-display uppercase text-white leading-[0.92] mb-0"
           style={{
             fontSize: "clamp(3rem, 7.5vw, 7rem)",
             fontWeight: 400,
@@ -102,7 +102,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-6 sm:mb-8"
+          className="mb-3 sm:mb-4"
         >
           <span
             className="font-serif italic text-[#c5a880]/90"
@@ -131,7 +131,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.75, duration: 0.8, ease: "easeOut" }}
-          className="font-mono text-[11px] sm:text-[12px] leading-[1.9] text-white/30 mb-8 sm:mb-10 max-w-[420px]"
+          className="font-mono text-[11px] sm:text-[12px] leading-[1.9] text-white/30 mb-4 sm:mb-5 max-w-[420px]"
         >
           <TextScramble
             as="span"
@@ -150,17 +150,30 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] md:w-[260px] md:h-[260px] mb-8 sm:mb-10 select-none"
+          className="relative w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] md:w-[380px] md:h-[380px] mb-4 sm:mb-6 select-none"
           style={{
             perspective: "1000px",
           }}
         >
-          {/* Specular glow behind monolith — follows cursor */}
+          {/* Warm ambient glow — radiates upward toward text */}
           <div
-            className="absolute inset-[-30%] rounded-full pointer-events-none transition-all duration-700 ease-out"
+            className="absolute pointer-events-none"
             style={{
-              background: `radial-gradient(circle at ${glowPos.x}% ${glowPos.y}%, rgba(197, 168, 128, 0.15) 0%, rgba(197, 168, 128, 0.05) 30%, transparent 65%)`,
-              filter: "blur(20px)",
+              left: "-40%",
+              right: "-40%",
+              top: "-80%",
+              bottom: "-20%",
+              background: "radial-gradient(ellipse 60% 50% at 50% 70%, rgba(197, 148, 80, 0.18) 0%, rgba(197, 148, 80, 0.06) 35%, transparent 70%)",
+              filter: "blur(30px)",
+            }}
+          />
+
+          {/* Specular highlight — follows cursor for depth */}
+          <div
+            className="absolute inset-[-35%] rounded-full pointer-events-none transition-all duration-700 ease-out"
+            style={{
+              background: `radial-gradient(circle at ${glowPos.x}% ${glowPos.y}%, rgba(197, 168, 128, 0.22) 0%, rgba(197, 148, 80, 0.08) 25%, transparent 55%)`,
+              filter: "blur(16px)",
             }}
           />
 
