@@ -8,6 +8,7 @@ export interface ProjectItem {
   mediaUrl?: string; // For MP4 or other media
   description?: string;
   link?: string;
+  aspectRatio?: string;
 }
 
 // These are the 4 main categories as requested

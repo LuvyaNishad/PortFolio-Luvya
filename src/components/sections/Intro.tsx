@@ -1,8 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { LiquidGlassEffect } from "@/components/ui/LiquidGlassEffect";
 import { LightBeamButton } from "@/components/ui/LightBeamButton";
+import { AboutModal } from "@/components/ui/AboutModal";
 
 /* ─────────────────────────────────────────────────
    Stat row
@@ -96,6 +98,8 @@ function ProfileFrame() {
    Intro Section
 ───────────────────────────────────────────────── */
 export function Intro() {
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+
   return (
     <section
       id="about"
@@ -162,13 +166,18 @@ export function Intro() {
               interfaces that not only look good but feel intuitive.
             </p>
 
-            {/* CTA */}
-            <LightBeamButton href="#about" className="px-6 py-3">
-              MORE ABOUT ME{" "}
-              <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5 text-white/30 ml-1">
-                →
-              </span>
-            </LightBeamButton>
+            {/* CTA — Opens the expandable About dossier modal */}
+            <div>
+              <LightBeamButton
+                onClick={() => setIsAboutModalOpen(true)}
+                className="px-6 py-3"
+              >
+                MORE ABOUT ME{" "}
+                <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5 text-white/30 ml-1">
+                  →
+                </span>
+              </LightBeamButton>
+            </div>
           </div>
 
           {/* ── CENTER: Photo ─────────────────────────────── */}
@@ -214,6 +223,13 @@ export function Intro() {
         </div>
       </LiquidGlassEffect>
     </motion.div>
+
+    {/* ── Expandable About Dossier Modal ── */}
+    <AnimatePresence>
+      {isAboutModalOpen && (
+        <AboutModal onClose={() => setIsAboutModalOpen(false)} />
+      )}
+    </AnimatePresence>
     </section>
   );
 }
