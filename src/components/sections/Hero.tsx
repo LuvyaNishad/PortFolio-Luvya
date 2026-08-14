@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LightBeamButton } from "@/components/ui/LightBeamButton";
 import { TextScramble } from "@/components/ui/text-scramble";
 
-/* ── Debris Particle Data Definition ── */
+/* ── Debris Particle Data Definition (Scaled for larger monolith) ── */
 interface DebrisParticle {
   id: number;
   angle: number; // Angle in degrees
@@ -20,29 +20,27 @@ interface DebrisParticle {
 }
 
 const DEBRIS_CONFIG: DebrisParticle[] = [
-  { id: 1, angle: 35, distance: 165, size: 6, opacity: 0.75, floatSpeed: 3.2, floatAmp: 6, depth: 0.8, shape: "shard", color: "#c5a880" },
-  { id: 2, angle: 80, distance: 195, size: 4, opacity: 0.6, floatSpeed: 4.1, floatAmp: 8, depth: 0.5, shape: "ember", color: "#e8c99b" },
-  { id: 3, angle: 125, distance: 150, size: 7, opacity: 0.8, floatSpeed: 3.8, floatAmp: 5, depth: 1.1, shape: "rock", color: "#8a7862" },
-  { id: 4, angle: 160, distance: 220, size: 3, opacity: 0.5, floatSpeed: 5.0, floatAmp: 9, depth: 0.4, shape: "ember", color: "#ffd59e" },
-  { id: 5, angle: 210, distance: 175, size: 8, opacity: 0.7, floatSpeed: 3.5, floatAmp: 7, depth: 0.9, shape: "shard", color: "#c5a880" },
-  { id: 6, angle: 255, distance: 200, size: 5, opacity: 0.65, floatSpeed: 4.4, floatAmp: 6, depth: 0.6, shape: "rock", color: "#706050" },
-  { id: 7, angle: 295, distance: 160, size: 6, opacity: 0.85, floatSpeed: 3.1, floatAmp: 5, depth: 1.2, shape: "shard", color: "#e0b888" },
-  { id: 8, angle: 330, distance: 210, size: 4, opacity: 0.55, floatSpeed: 4.8, floatAmp: 8, depth: 0.5, shape: "ember", color: "#ffd59e" },
-  { id: 9, angle: 15, distance: 235, size: 5, opacity: 0.6, floatSpeed: 3.9, floatAmp: 7, depth: 0.7, shape: "rock", color: "#9a8570" },
-  { id: 10, angle: 190, distance: 240, size: 4, opacity: 0.5, floatSpeed: 4.6, floatAmp: 9, depth: 0.4, shape: "shard", color: "#c5a880" },
-  { id: 11, angle: 105, distance: 170, size: 3, opacity: 0.7, floatSpeed: 3.6, floatAmp: 4, depth: 1.0, shape: "ember", color: "#ffe0b2" },
-  { id: 12, angle: 280, distance: 225, size: 7, opacity: 0.65, floatSpeed: 4.2, floatAmp: 6, depth: 0.8, shape: "rock", color: "#8a7862" },
+  { id: 1, angle: 28, distance: 250, size: 7, opacity: 0.8, floatSpeed: 3.2, floatAmp: 8, depth: 0.9, shape: "shard", color: "#c5a880" },
+  { id: 2, angle: 75, distance: 290, size: 5, opacity: 0.65, floatSpeed: 4.1, floatAmp: 10, depth: 0.5, shape: "ember", color: "#f0d4ab" },
+  { id: 3, angle: 120, distance: 230, size: 8, opacity: 0.85, floatSpeed: 3.8, floatAmp: 7, depth: 1.1, shape: "rock", color: "#8a7862" },
+  { id: 4, angle: 165, distance: 320, size: 4, opacity: 0.55, floatSpeed: 5.0, floatAmp: 11, depth: 0.4, shape: "ember", color: "#ffd59e" },
+  { id: 5, angle: 205, distance: 260, size: 9, opacity: 0.75, floatSpeed: 3.5, floatAmp: 9, depth: 1.0, shape: "shard", color: "#c5a880" },
+  { id: 6, angle: 250, distance: 300, size: 6, opacity: 0.7, floatSpeed: 4.4, floatAmp: 8, depth: 0.6, shape: "rock", color: "#706050" },
+  { id: 7, angle: 290, distance: 240, size: 7, opacity: 0.9, floatSpeed: 3.1, floatAmp: 7, depth: 1.2, shape: "shard", color: "#e0b888" },
+  { id: 8, angle: 335, distance: 310, size: 5, opacity: 0.6, floatSpeed: 4.8, floatAmp: 10, depth: 0.5, shape: "ember", color: "#ffe2ba" },
+  { id: 9, angle: 10, distance: 345, size: 6, opacity: 0.65, floatSpeed: 3.9, floatAmp: 9, depth: 0.7, shape: "rock", color: "#9a8570" },
+  { id: 10, angle: 185, distance: 350, size: 5, opacity: 0.55, floatSpeed: 4.6, floatAmp: 11, depth: 0.4, shape: "shard", color: "#c5a880" },
+  { id: 11, angle: 100, distance: 255, size: 4, opacity: 0.75, floatSpeed: 3.6, floatAmp: 6, depth: 1.0, shape: "ember", color: "#ffe0b2" },
+  { id: 12, angle: 275, distance: 330, size: 8, opacity: 0.7, floatSpeed: 4.2, floatAmp: 8, depth: 0.8, shape: "rock", color: "#8a7862" },
 ];
 
 /**
  * Hero — Centered cinematic layout with:
- *  - Monolith Loading Screen / Hyper-descent Impact Crash sequence
- *  - Camera shake, expanding shockwave ring, and explosion debris burst
- *  - 3D perspective orbit ring on ground plane
- *  - Floating orbital stone & ember particles with mouse parallax
- *  - Specular glow tracking cursor and illuminating upper text
- *  - Bebas Neue + Cormorant Italic typography with TextScramble
- *  - Trusted By & Collaborated With client logos bar
+ *  - High-impact Monolith centerpiece scaled up prominently
+ *  - 3D perspective orbital rings lying flat on horizontal axis behind the monolith
+ *  - Volumetric upward-beaming gold spotlight illuminating "Designing" and subtitle
+ *  - Floating orbital space shards & embers with parallax depth
+ *  - Cleaned layout (no client logos) with balanced vertical rhythm
  */
 export function Hero() {
   /* ── Animation & Crash State ── */
@@ -100,7 +98,7 @@ export function Hero() {
     const dx = (e.clientX - centerX) / (window.innerWidth / 2);
     const dy = (e.clientY - centerY) / (window.innerHeight / 2);
 
-    const maxTilt = 8;
+    const maxTilt = 7;
     setTilt({
       x: Math.max(-maxTilt, Math.min(maxTilt, dy * -maxTilt)),
       y: Math.max(-maxTilt, Math.min(maxTilt, dx * maxTilt)),
@@ -110,7 +108,7 @@ export function Hero() {
     const glowY = ((e.clientY - rect.top) / rect.height) * 100;
     setGlowPos({ x: glowX, y: glowY });
 
-    setMouseOffset({ x: dx * 15, y: dy * 15 });
+    setMouseOffset({ x: dx * 18, y: dy * 18 });
   }, []);
 
   useEffect(() => {
@@ -156,14 +154,50 @@ export function Hero() {
       {/* ── CENTERED HERO CONTENT COLUMN ── */}
       <div
         className="relative flex flex-col items-center text-center w-full px-6 flex-1 justify-center"
-        style={{ zIndex: 1, paddingTop: "clamp(6.5rem, 13vh, 9rem)" }}
+        style={{ zIndex: 1, paddingTop: "clamp(6rem, 11vh, 8.5rem)", paddingBottom: "clamp(3rem, 6vh, 4.5rem)" }}
       >
+        {/* ── VOLUMETRIC UPWARD GLOW SYSTEM (Behind Headline & Subtitle) ── */}
+        <div className="absolute top-[8%] left-1/2 -translate-x-1/2 w-full max-w-[900px] h-[520px] pointer-events-none -z-10 overflow-visible">
+          {/* Layer 1: Wide ambient gold backlight across headline band */}
+          <div
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{
+              background:
+                "radial-gradient(ellipse 70% 60% at 50% 65%, rgba(220, 165, 85, 0.16) 0%, rgba(185, 125, 50, 0.08) 40%, rgba(140, 90, 25, 0.02) 70%, transparent 90%)",
+              filter: "blur(40px)",
+              opacity: impactHappened ? 1 : 0,
+            }}
+          />
+
+          {/* Layer 2: Focused upward beam fanning from the monolith apex */}
+          <div
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[480px] h-[400px] transition-opacity duration-1000"
+            style={{
+              background:
+                "radial-gradient(ellipse 60% 80% at 50% 100%, rgba(255, 205, 130, 0.24) 0%, rgba(215, 150, 65, 0.12) 40%, rgba(160, 100, 30, 0.03) 70%, transparent 90%)",
+              filter: "blur(32px)",
+              opacity: impactHappened ? 1 : 0,
+            }}
+          />
+
+          {/* Layer 3: High-brightness apex flare right at the top rim of the rock */}
+          <div
+            className="absolute bottom-[10%] left-1/2 -translate-x-1/2 w-[240px] h-[160px] transition-opacity duration-1000"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 80%, rgba(255, 235, 180, 0.40) 0%, rgba(230, 170, 80, 0.22) 35%, rgba(180, 120, 40, 0.05) 65%, transparent 80%)",
+              filter: "blur(18px)",
+              opacity: impactHappened ? 1 : 0,
+            }}
+          />
+        </div>
+
         {/* ── Role Badge ── */}
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : -12 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="flex items-center gap-3 mb-3 sm:mb-4"
+          className="flex items-center gap-3 mb-2.5 sm:mb-3"
         >
           <span className="w-1 h-1 rounded-full bg-[#c5a880]" />
           <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] text-white/50 uppercase">
@@ -177,11 +211,12 @@ export function Hero() {
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 25 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-display uppercase text-white leading-[0.92] mb-0"
+          className="font-display uppercase text-white leading-[0.92] mb-0 relative"
           style={{
-            fontSize: "clamp(3rem, 7.5vw, 7rem)",
+            fontSize: "clamp(3.2rem, 8vw, 7.5rem)",
             fontWeight: 400,
             letterSpacing: "0.02em",
+            textShadow: "0 0 40px rgba(220,165,85,0.18)",
           }}
         >
           <TextScramble
@@ -201,17 +236,18 @@ export function Hero() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 15 }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-3 sm:mb-4 flex items-center justify-center gap-2"
+          className="mb-2.5 sm:mb-3 flex items-center justify-center gap-2"
         >
-          <span className="font-serif text-[#c5a880]/40 text-[clamp(1.4rem,3.5vw,3.2rem)] font-light">
+          <span className="font-serif text-[#c5a880]/40 text-[clamp(1.5rem,3.8vw,3.5rem)] font-light select-none">
             {"{"}
           </span>
           <span
             className="font-serif italic text-[#c5a880]/95"
             style={{
-              fontSize: "clamp(1.6rem, 4vw, 3.8rem)",
+              fontSize: "clamp(1.7rem, 4.2vw, 4.2rem)",
               fontWeight: 400,
               letterSpacing: "0.01em",
+              textShadow: "0 0 35px rgba(220,165,85,0.25)",
             }}
           >
             <TextScramble
@@ -226,7 +262,7 @@ export function Hero() {
               impactful experiences
             </TextScramble>
           </span>
-          <span className="font-serif text-[#c5a880]/40 text-[clamp(1.4rem,3.5vw,3.2rem)] font-light">
+          <span className="font-serif text-[#c5a880]/40 text-[clamp(1.5rem,3.8vw,3.5rem)] font-light select-none">
             {"}"}
           </span>
         </motion.div>
@@ -236,7 +272,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 12 }}
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          className="font-mono text-[11px] sm:text-[12px] leading-[1.9] text-white/35 mb-4 sm:mb-5 max-w-[440px]"
+          className="font-mono text-[11px] sm:text-[12.5px] leading-[1.85] text-white/40 mb-3 sm:mb-4 max-w-[460px]"
         >
           <TextScramble
             as="span"
@@ -249,12 +285,12 @@ export function Hero() {
           </TextScramble>
         </motion.p>
 
-        {/* ── FLOATING MONOLITH + CRASH SYSTEM + DEBRIS + 3D ORBIT ── */}
+        {/* ── FLOATING MONOLITH + 3D ORBIT RINGS + DEBRIS (HEROIC SCALE) ── */}
         <div
           ref={monolithRef}
-          className="relative w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] md:w-[380px] md:h-[380px] mb-3 sm:mb-5 select-none flex items-center justify-center"
+          className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] md:w-[460px] md:h-[460px] lg:w-[500px] lg:h-[500px] my-1 sm:my-2 select-none flex items-center justify-center"
           style={{
-            perspective: "1000px",
+            perspective: "1100px",
           }}
         >
           {/* ── Expanding Shockwave Ring on Impact ── */}
@@ -263,7 +299,7 @@ export function Hero() {
               <>
                 <motion.div
                   initial={{ scale: 0.2, opacity: 0.95 }}
-                  animate={{ scale: 3.2, opacity: 0 }}
+                  animate={{ scale: 3.5, opacity: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.9, ease: [0.15, 0.9, 0.2, 1] }}
                   className="absolute rounded-full pointer-events-none"
@@ -271,12 +307,13 @@ export function Hero() {
                     width: "100%",
                     height: "100%",
                     border: "2px solid rgba(225, 185, 120, 0.75)",
-                    boxShadow: "0 0 45px rgba(225, 175, 100, 0.45)",
+                    boxShadow: "0 0 50px rgba(225, 175, 100, 0.5)",
+                    zIndex: 2,
                   }}
                 />
                 <motion.div
                   initial={{ scale: 0.1, opacity: 1 }}
-                  animate={{ scale: 4.5, opacity: 0 }}
+                  animate={{ scale: 4.8, opacity: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 1.1, ease: [0.1, 0.8, 0.2, 1], delay: 0.05 }}
                   className="absolute rounded-full pointer-events-none"
@@ -284,78 +321,73 @@ export function Hero() {
                     width: "100%",
                     height: "100%",
                     border: "1px solid rgba(255, 255, 255, 0.4)",
+                    zIndex: 2,
                   }}
                 />
               </>
             )}
           </AnimatePresence>
 
-          {/* ── Warm ambient glow — illuminates upward toward text ── */}
+          {/* ── Specular highlight behind monolith — follows cursor ── */}
           <div
-            className="absolute pointer-events-none transition-opacity duration-1000"
+            className="absolute inset-[-25%] rounded-full pointer-events-none transition-all duration-700 ease-out"
             style={{
-              left: "-40%",
-              right: "-40%",
-              top: "-80%",
-              bottom: "-20%",
-              background:
-                "radial-gradient(ellipse 60% 50% at 50% 70%, rgba(197, 148, 80, 0.20) 0%, rgba(197, 148, 80, 0.06) 35%, transparent 70%)",
-              filter: "blur(30px)",
+              background: `radial-gradient(circle at ${glowPos.x}% ${glowPos.y}%, rgba(225, 180, 110, 0.28) 0%, rgba(197, 148, 80, 0.10) 25%, transparent 60%)`,
+              filter: "blur(20px)",
               opacity: impactHappened ? 1 : 0,
+              zIndex: 1,
             }}
           />
 
-          {/* ── Specular highlight — follows cursor for depth ── */}
-          <div
-            className="absolute inset-[-35%] rounded-full pointer-events-none transition-all duration-700 ease-out"
-            style={{
-              background: `radial-gradient(circle at ${glowPos.x}% ${glowPos.y}%, rgba(197, 168, 128, 0.25) 0%, rgba(197, 148, 80, 0.08) 25%, transparent 55%)`,
-              filter: "blur(16px)",
-              opacity: impactHappened ? 1 : 0,
-            }}
-          />
-
-          {/* ── 3D PERSPECTIVE ORBIT RING (Ground / Orbital Plane) ── */}
+          {/* ── 3D PERSPECTIVE ORBIT RINGS (Passing horizontally BEHIND the monolith) ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: impactHappened ? 1 : 0, scale: impactHappened ? 1 : 0.5 }}
-            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="absolute pointer-events-none"
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: impactHappened ? 1 : 0, scale: impactHappened ? 1 : 0.6 }}
+            transition={{ duration: 1.1, delay: 0.15, ease: "easeOut" }}
+            className="absolute pointer-events-none flex items-center justify-center"
             style={{
-              width: "140%",
-              height: "140%",
-              transform: "perspective(700px) rotateX(68deg)",
+              width: "160%",
+              height: "160%",
+              transform: "perspective(800px) rotateX(76deg)",
               transformStyle: "preserve-3d",
+              zIndex: 3, // Sits BEHIND the monolith image (monolith is zIndex: 10)
             }}
           >
-            {/* Outer dotted orbital ellipse */}
+            {/* Ring 1: Primary Outer Orbital Ellipse (dashed with rotation) */}
             <motion.div
               animate={{ rotateZ: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              className="w-full h-full rounded-full border border-white/[0.08] border-dashed"
+              transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
+              className="w-full h-full rounded-full border border-white/[0.09] border-dashed"
             />
-            {/* Inner glowing accent orbital ring */}
+
+            {/* Ring 2: Secondary Golden Mid Orbital Ellipse */}
             <motion.div
               animate={{ rotateZ: -360 }}
-              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-[15%] rounded-full border border-[#c5a880]/15"
+              transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-[12%] rounded-full border border-[#c5a880]/20"
               style={{
-                boxShadow: "0 0 25px rgba(197, 168, 128, 0.08)",
+                boxShadow: "0 0 35px rgba(197, 168, 128, 0.12), inset 0 0 20px rgba(197, 168, 128, 0.06)",
               }}
             />
-            {/* Cardinal coordinate ticks */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-2 bg-[#c5a880]/50" />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-2 bg-[#c5a880]/50" />
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 w-2 bg-[#c5a880]/50" />
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 h-1 w-2 bg-[#c5a880]/50" />
+
+            {/* Ring 3: Tight Inner Luminous Ring */}
+            <div
+              className="absolute inset-[24%] rounded-full border border-white/[0.07]"
+            />
+
+            {/* Cardinal orbital ticks */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-3 bg-[#c5a880]/60 rounded-full" />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-3 bg-[#c5a880]/60 rounded-full" />
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1.5 w-3 bg-[#c5a880]/60 rounded-full" />
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 h-1.5 w-3 bg-[#c5a880]/60 rounded-full" />
           </motion.div>
 
-          {/* ── FLOATING ORBITAL DEBRIS PARTICLES ── */}
+          {/* ── FLOATING ORBITAL DEBRIS PARTICLES (3D Distribution) ── */}
           {DEBRIS_CONFIG.map((p) => {
-            // Calculate rest polar coordinates
             const rad = (p.angle * Math.PI) / 180;
             const targetX = Math.cos(rad) * p.distance;
-            const targetY = Math.sin(rad) * p.distance;
+            // Flatten the vertical Y distribution slightly to match the 3D perspective angle
+            const targetY = Math.sin(rad) * (p.distance * 0.65);
 
             return (
               <motion.div
@@ -364,7 +396,7 @@ export function Hero() {
                 animate={
                   impactHappened
                     ? {
-                        x: [targetX, targetX + 4, targetX - 3, targetX],
+                        x: [targetX, targetX + 5, targetX - 4, targetX],
                         y: [
                           targetY,
                           targetY - p.floatAmp,
@@ -399,17 +431,17 @@ export function Hero() {
                     mouseOffset.y * p.depth
                   }px, 0px)`,
                   transition: "transform 0.15s ease-out",
-                  zIndex: p.depth > 0.8 ? 5 : 0,
+                  zIndex: p.depth > 0.8 ? 15 : 2, // Foreground shards in front of rock, background behind
                 }}
               >
                 {p.shape === "shard" ? (
                   <div
                     style={{
                       width: `${p.size}px`,
-                      height: `${p.size * 1.3}px`,
-                      background: `linear-gradient(135deg, ${p.color} 0%, rgba(30,30,35,0.9) 100%)`,
+                      height: `${p.size * 1.35}px`,
+                      background: `linear-gradient(135deg, ${p.color} 0%, rgba(25,25,30,0.95) 100%)`,
                       clipPath: "polygon(50% 0%, 100% 70%, 75% 100%, 25% 100%, 0% 60%)",
-                      boxShadow: `0 0 6px ${p.color}40`,
+                      boxShadow: `0 0 8px ${p.color}50`,
                       transform: `rotate(${p.angle * 2}deg)`,
                     }}
                   />
@@ -420,7 +452,7 @@ export function Hero() {
                       height: `${p.size}px`,
                       borderRadius: "50%",
                       background: p.color,
-                      boxShadow: `0 0 ${p.size * 2}px ${p.color}, 0 0 ${p.size * 4}px ${p.color}60`,
+                      boxShadow: `0 0 ${p.size * 2}px ${p.color}, 0 0 ${p.size * 5}px ${p.color}70`,
                     }}
                   />
                 ) : (
@@ -428,9 +460,9 @@ export function Hero() {
                     style={{
                       width: `${p.size}px`,
                       height: `${p.size}px`,
-                      background: `linear-gradient(45deg, #18181c 0%, ${p.color} 100%)`,
+                      background: `linear-gradient(45deg, #151518 0%, ${p.color} 100%)`,
                       clipPath: "polygon(30% 0%, 70% 10%, 100% 50%, 80% 90%, 20% 100%, 0% 60%)",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.6)",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.8)",
                       transform: `rotate(${p.angle}deg)`,
                     }}
                   />
@@ -439,7 +471,7 @@ export function Hero() {
             );
           })}
 
-          {/* ── THE MONOLITH (Initial High-Scale Descent to Slam) ── */}
+          {/* ── THE MONOLITH (Dominant & Centered, zIndex: 10) ── */}
           <motion.div
             initial={{
               scale: 3.2,
@@ -476,15 +508,16 @@ export function Hero() {
             }
             className="w-full h-full relative flex items-center justify-center"
             style={{
-              transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+              transform: `perspective(1100px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
               transition: "transform 0.15s ease-out",
+              zIndex: 10,
             }}
           >
             {/* Ambient continuous vertical drift after landing */}
             <motion.div
-              animate={impactHappened ? { y: [0, -8, 0] } : {}}
+              animate={impactHappened ? { y: [0, -9, 0] } : {}}
               transition={{
-                duration: 5,
+                duration: 5.2,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
@@ -493,16 +526,16 @@ export function Hero() {
               <img
                 src="/images/monolith.png"
                 alt="Monolith Centerpiece"
-                className="w-full h-full object-contain drop-shadow-[0_0_45px_rgba(197,168,128,0.18)]"
+                className="w-[90%] h-[90%] object-contain drop-shadow-[0_0_55px_rgba(215,165,100,0.22)]"
                 draggable={false}
               />
             </motion.div>
           </motion.div>
 
           {/* Centered HUD crosshair */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-40">
-            <div className="w-4 h-[1px] bg-white/[0.15]" />
-            <div className="w-[1px] h-4 bg-white/[0.15] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-30" style={{ zIndex: 12 }}>
+            <div className="w-4 h-[1px] bg-white/[0.2]" />
+            <div className="w-[1px] h-4 bg-white/[0.2] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           </div>
         </div>
 
@@ -511,7 +544,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: impactHappened ? 1 : 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="flex items-center gap-2.5 mb-5"
+          className="flex items-center gap-2.5 mb-4 sm:mb-5"
         >
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/80 animate-pulse" />
           <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.25em] text-white/45 uppercase">
@@ -524,7 +557,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 14 }}
           transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
-          className="flex flex-wrap justify-center gap-4 items-center mb-8 sm:mb-10"
+          className="flex flex-wrap justify-center gap-4 items-center"
         >
           <LightBeamButton href="#built-from-scratch">
             VIEW MY WORK <span className="text-white/40 ml-1">→</span>
@@ -539,62 +572,6 @@ export function Hero() {
               ↗
             </span>
           </a>
-        </motion.div>
-
-        {/* ── TRUSTED BY & COLLABORATED WITH CLIENT LOGOS ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 15 }}
-          transition={{ delay: 0.55, duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-[860px] flex flex-col items-center gap-3.5 mb-6"
-        >
-          <span className="font-mono text-[8.5px] tracking-[0.28em] text-white/30 uppercase">
-            TRUSTED BY & COLLABORATED WITH
-          </span>
-          <div className="w-full flex flex-wrap items-center justify-center gap-6 sm:gap-10 md:gap-14 opacity-50 hover:opacity-75 transition-opacity duration-500">
-            {/* Hindustan Times */}
-            <div className="flex items-center gap-2 text-white/80">
-              <span className="font-serif text-[15px] sm:text-[17px] font-bold tracking-tight">
-                HT
-              </span>
-              <span className="font-serif text-[13px] sm:text-[15px] tracking-wide font-normal">
-                Hindustan Times
-              </span>
-            </div>
-
-            {/* DotPe */}
-            <div className="flex items-center gap-1 text-white/80">
-              <span className="w-2 h-2 rounded-full bg-[#c5a880]" />
-              <span className="font-sans font-bold text-[14px] sm:text-[16px] tracking-tight">
-                DotPe
-              </span>
-            </div>
-
-            {/* Parchi Digital */}
-            <div className="flex items-center gap-1.5 text-white/80">
-              <span className="w-4 h-4 rounded border border-white/30 flex items-center justify-center font-mono text-[9px]">
-                P
-              </span>
-              <span className="font-mono text-[11px] sm:text-[12px] tracking-[0.14em] uppercase">
-                Parchi Digital
-              </span>
-            </div>
-
-            {/* XENCOV */}
-            <div className="text-white/80">
-              <span className="font-sans font-black text-[13px] sm:text-[15px] tracking-[0.2em] uppercase">
-                XENCOV
-              </span>
-            </div>
-
-            {/* Olive */}
-            <div className="flex items-center gap-1.5 text-white/80">
-              <span className="w-2.5 h-2.5 rounded-full border border-[#c5a880]/70" />
-              <span className="font-sans font-medium text-[13px] sm:text-[14px] lowercase tracking-wide text-white/70">
-                olive
-              </span>
-            </div>
-          </div>
         </motion.div>
       </div>
 
