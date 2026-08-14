@@ -32,7 +32,8 @@ export default function Home() {
 
         {/* ── BACKGROUND IMAGE ──────────────────────────────────
           Symmetrical ruins backdrop — covers hero + extends into intro.
-          Centered, slightly blurred for depth-of-field effect.
+          Atmospheric cinematic grading: volumetric mist, atmospheric fog,
+          and deep edge vignette with crisp architectural depth.
           z-index: 0 — behind all section content.
         */}
         <div
@@ -40,12 +41,12 @@ export default function Home() {
           style={{
             height: "calc(100vh + 220px)",
             zIndex: 0,
-            maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            maskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
           }}
           aria-hidden="true"
         >
-          {/* The symmetrical ruins image */}
+          {/* The symmetrical ruins image — high contrast, moody, textured */}
           <img
             src="/images/hero_bg.jpg"
             alt=""
@@ -55,51 +56,61 @@ export default function Home() {
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              objectPosition: "center 25%",
-              filter: "grayscale(100%) brightness(0.55) contrast(1.12) blur(1px)",
-              opacity: 0.82,
-              transform: "scale(1.04)",
+              objectPosition: "center 26%",
+              filter: "grayscale(100%) brightness(0.70) contrast(1.22)",
+              opacity: 0.90,
+              transform: "scale(1.03)",
               transformOrigin: "center center",
             }}
           />
 
-          {/* Layer 1: Soft center-bottom mist — fades the gate but keeps ruins visible on sides */}
+          {/* Layer 1: Ground mist — soft volumetric haze across gate and rubble */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               background:
-                "radial-gradient(ellipse 45% 40% at 50% 62%, rgba(10,10,12,0.82) 0%, rgba(10,10,12,0.35) 50%, transparent 80%)",
+                "radial-gradient(ellipse 55% 42% at 50% 64%, rgba(10,10,12,0.72) 0%, rgba(10,10,12,0.3) 50%, transparent 80%)",
             }}
           />
 
-          {/* Layer 2: Atmospheric fog — natural horizontal haze band */}
+          {/* Layer 2: Atmospheric fog — natural horizontal depth haze band */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               background:
-                "linear-gradient(to bottom, rgba(10,10,12,0.3) 0%, transparent 15%, transparent 40%, rgba(10,10,12,0.15) 55%, rgba(10,10,12,0.6) 75%, rgba(10,10,12,0.95) 100%)",
+                "linear-gradient(to bottom, rgba(10,10,12,0.35) 0%, transparent 18%, transparent 42%, rgba(10,10,12,0.18) 58%, rgba(10,10,12,0.62) 78%, rgba(10,10,12,0.96) 100%)",
             }}
           />
 
-          {/* Layer 3: Organic edge vignette — heavier at corners, softer at sides */}
+          {/* Layer 3: Cinematic organic vignette — deep moody corners & edge framing */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               background:
-                "radial-gradient(ellipse 80% 70% at 50% 40%, transparent 25%, rgba(10,10,12,0.4) 55%, rgba(10,10,12,0.85) 80%, rgba(10,10,12,1) 100%)",
+                "radial-gradient(ellipse 80% 70% at 50% 42%, transparent 28%, rgba(10,10,12,0.45) 58%, rgba(10,10,12,0.85) 82%, rgba(10,10,12,1) 100%)",
             }}
           />
 
-          {/* Layer 4: Top edge shadow — prevents header from floating */}
+          {/* Layer 4: Localized typography scrim — clear contrast behind headline */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               background:
-                "linear-gradient(to bottom, rgba(10,10,12,0.5) 0%, transparent 12%)",
+                "radial-gradient(ellipse 60% 45% at 50% 26%, rgba(10,10,12,0.78) 0%, rgba(10,10,12,0.42) 48%, transparent 80%)",
+            }}
+          />
+
+          {/* Layer 5: Top edge shadow — anchors header navigation */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to bottom, rgba(10,10,12,0.6) 0%, transparent 15%)",
             }}
           />
         </div>
