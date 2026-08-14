@@ -154,7 +154,7 @@ export function Hero() {
       {/* ── CENTERED HERO CONTENT COLUMN ── */}
       <div
         className="relative flex flex-col items-center text-center w-full px-6 flex-1 justify-center"
-        style={{ zIndex: 1, paddingTop: "clamp(6rem, 11vh, 8.5rem)", paddingBottom: "clamp(3rem, 6vh, 4.5rem)" }}
+        style={{ zIndex: 1, paddingTop: "clamp(3rem, 6vh, 5rem)", paddingBottom: "clamp(1.5rem, 3vh, 2.5rem)" }}
       >
         {/* ── VOLUMETRIC UPWARD GLOW SYSTEM (Behind Headline & Subtitle) ── */}
         <div className="absolute top-[8%] left-1/2 -translate-x-1/2 w-full max-w-[900px] h-[520px] pointer-events-none -z-10 overflow-visible">
@@ -288,9 +288,10 @@ export function Hero() {
         {/* ── FLOATING MONOLITH + 3D ORBIT RINGS + DEBRIS (HEROIC SCALE) ── */}
         <div
           ref={monolithRef}
-          className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] md:w-[460px] md:h-[460px] lg:w-[500px] lg:h-[500px] my-1 sm:my-2 select-none flex items-center justify-center"
+          className="relative w-[35vh] h-[35vh] sm:w-[40vh] sm:h-[40vh] max-w-[420px] max-h-[420px] min-w-[260px] min-h-[260px] my-0 sm:my-1 select-none flex items-center justify-center"
           style={{
             perspective: "1100px",
+            transformStyle: "preserve-3d",
           }}
         >
           {/* ── Expanding Shockwave Ring on Impact ── */}
@@ -339,47 +340,113 @@ export function Hero() {
             }}
           />
 
-          {/* ── 3D PERSPECTIVE ORBIT RINGS (Passing horizontally BEHIND the monolith) ── */}
+          {/* ── 3D PERSPECTIVE ORBIT RINGS (Split Front & Back) ── */}
+          {/* BACK RINGS (Behind Monolith) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: impactHappened ? 1 : 0, scale: impactHappened ? 1 : 0.6 }}
-            transition={{ duration: 1.1, delay: 0.15, ease: "easeOut" }}
+            initial={{ scale: 0.6, rotateX: 0 }}
+            animate={
+              impactHappened
+                ? { scale: 1, rotateX: [0, 40, 76] }
+                : { scale: 0.6, rotateX: 0 }
+            }
+            transition={{
+              scale: { duration: 1.1, delay: 0.15, ease: "easeOut" },
+              rotateX: { duration: 1.8, delay: 0.15, ease: "easeOut" },
+            }}
             className="absolute pointer-events-none flex items-center justify-center"
             style={{
               width: "160%",
               height: "160%",
-              transform: "perspective(800px) rotateX(76deg)",
-              transformStyle: "preserve-3d",
-              zIndex: 3, // Sits BEHIND the monolith image (monolith is zIndex: 10)
+              zIndex: 2, // Behind monolith
+              clipPath: "inset(0 0 50% 0)", // Keep top half
             }}
           >
-            {/* Ring 1: Primary Outer Orbital Ellipse (dashed with rotation) */}
             <motion.div
-              animate={{ rotateZ: 360 }}
-              transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
-              className="w-full h-full rounded-full border border-white/[0.09] border-dashed"
-            />
-
-            {/* Ring 2: Secondary Golden Mid Orbital Ellipse */}
-            <motion.div
-              animate={{ rotateZ: -360 }}
-              transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-[12%] rounded-full border border-[#c5a880]/20"
-              style={{
-                boxShadow: "0 0 35px rgba(197, 168, 128, 0.12), inset 0 0 20px rgba(197, 168, 128, 0.06)",
+              initial={{ opacity: 0, rotateZ: 0 }}
+              animate={
+                impactHappened
+                  ? { opacity: 1, rotateZ: [0, 360, 720] }
+                  : { opacity: 0, rotateZ: 0 }
+              }
+              transition={{
+                opacity: { duration: 0.6, delay: 0.15 },
+                rotateZ: { duration: 2.2, delay: 0.15, ease: "easeOut" },
               }}
-            />
+              className="w-full h-full relative flex items-center justify-center"
+            >
+              <motion.div
+                animate={{ rotateZ: 360 }}
+                transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 rounded-full border border-white/[0.09] border-dashed"
+              />
+              <motion.div
+                animate={{ rotateZ: -360 }}
+                transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-[12%] rounded-full border border-[#c5a880]/20"
+                style={{
+                  boxShadow: "0 0 35px rgba(197, 168, 128, 0.12), inset 0 0 20px rgba(197, 168, 128, 0.06)",
+                }}
+              />
+              <div className="absolute inset-[24%] rounded-full border border-white/[0.07]" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-3 bg-[#c5a880]/60 rounded-full" />
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-3 bg-[#c5a880]/60 rounded-full" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1.5 w-3 bg-[#c5a880]/60 rounded-full" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-1.5 w-3 bg-[#c5a880]/60 rounded-full" />
+            </motion.div>
+          </motion.div>
 
-            {/* Ring 3: Tight Inner Luminous Ring */}
-            <div
-              className="absolute inset-[24%] rounded-full border border-white/[0.07]"
-            />
-
-            {/* Cardinal orbital ticks */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-3 bg-[#c5a880]/60 rounded-full" />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-3 bg-[#c5a880]/60 rounded-full" />
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1.5 w-3 bg-[#c5a880]/60 rounded-full" />
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 h-1.5 w-3 bg-[#c5a880]/60 rounded-full" />
+          {/* FRONT RINGS (In Front of Monolith) */}
+          <motion.div
+            initial={{ scale: 0.6, rotateX: 0 }}
+            animate={
+              impactHappened
+                ? { scale: 1, rotateX: [0, 40, 76] }
+                : { scale: 0.6, rotateX: 0 }
+            }
+            transition={{
+              scale: { duration: 1.1, delay: 0.15, ease: "easeOut" },
+              rotateX: { duration: 1.8, delay: 0.15, ease: "easeOut" },
+            }}
+            className="absolute pointer-events-none flex items-center justify-center"
+            style={{
+              width: "160%",
+              height: "160%",
+              zIndex: 20, // In front of monolith
+              clipPath: "inset(50% 0 0 0)", // Keep bottom half
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, rotateZ: 0 }}
+              animate={
+                impactHappened
+                  ? { opacity: 1, rotateZ: [0, 360, 720] }
+                  : { opacity: 0, rotateZ: 0 }
+              }
+              transition={{
+                opacity: { duration: 0.6, delay: 0.15 },
+                rotateZ: { duration: 2.2, delay: 0.15, ease: "easeOut" },
+              }}
+              className="w-full h-full relative flex items-center justify-center"
+            >
+              <motion.div
+                animate={{ rotateZ: 360 }}
+                transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 rounded-full border border-white/[0.09] border-dashed"
+              />
+              <motion.div
+                animate={{ rotateZ: -360 }}
+                transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-[12%] rounded-full border border-[#c5a880]/20"
+                style={{
+                  boxShadow: "0 0 35px rgba(197, 168, 128, 0.12), inset 0 0 20px rgba(197, 168, 128, 0.06)",
+                }}
+              />
+              <div className="absolute inset-[24%] rounded-full border border-white/[0.07]" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-3 bg-[#c5a880]/60 rounded-full" />
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-3 bg-[#c5a880]/60 rounded-full" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1.5 w-3 bg-[#c5a880]/60 rounded-full" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-1.5 w-3 bg-[#c5a880]/60 rounded-full" />
+            </motion.div>
           </motion.div>
 
           {/* ── FLOATING ORBITAL DEBRIS PARTICLES (3D Distribution) ── */}
@@ -471,64 +538,58 @@ export function Hero() {
             );
           })}
 
-          {/* ── THE MONOLITH (Dominant & Centered, zIndex: 10) ── */}
+          {/* ── THE MONOLITH (Dominant & Centered) ── */}
           <motion.div
-            initial={{
-              scale: 3.2,
-              y: -180,
-              opacity: 0,
-              filter: "blur(12px) brightness(1.6)",
-            }}
+            initial={{ scale: 3.2, y: -180 }}
             animate={
               impactHappened
-                ? {
-                    scale: 1,
-                    y: 0,
-                    opacity: 1,
-                    filter: "blur(0px) brightness(1)",
-                  }
-                : {
-                    scale: [3.2, 2.9, 3.2],
-                    y: -180,
-                    opacity: [0.7, 0.9, 0.7],
-                    filter: "blur(8px) brightness(1.8)",
-                  }
+                ? { scale: 1, y: 0 }
+                : { scale: [3.2, 2.9, 3.2], y: -180 }
             }
             transition={
               impactHappened
-                ? {
-                    duration: 0.65,
-                    ease: [0.16, 1, 0.3, 1], // Heavy kinetic slam with spring-like landing
-                  }
-                : {
-                    duration: 1.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }
+                ? { duration: 0.65, ease: [0.16, 1, 0.3, 1] }
+                : { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
             }
             className="w-full h-full relative flex items-center justify-center"
             style={{
-              transform: `perspective(1100px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+              transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
               transition: "transform 0.15s ease-out",
-              zIndex: 10,
+              zIndex: 10, // Back to explicit zIndex so it sits between Back(2) and Front(20) Rings
             }}
           >
-            {/* Ambient continuous vertical drift after landing */}
+            {/* Inner wrapper for opacity and filter to prevent breaking parent 3D context */}
             <motion.div
-              animate={impactHappened ? { y: [0, -9, 0] } : {}}
-              transition={{
-                duration: 5.2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              initial={{ opacity: 0, filter: "blur(12px) brightness(1.6)" }}
+              animate={
+                impactHappened
+                  ? { opacity: 1, filter: "blur(0px) brightness(1)" }
+                  : { opacity: [0.7, 0.9, 0.7], filter: "blur(8px) brightness(1.8)" }
+              }
+              transition={
+                impactHappened
+                  ? { duration: 0.65, ease: [0.16, 1, 0.3, 1] }
+                  : { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+              }
               className="w-full h-full relative flex items-center justify-center"
             >
+              {/* Ambient continuous vertical drift after landing */}
+              <motion.div
+                animate={impactHappened ? { y: [0, -9, 0] } : {}}
+                transition={{
+                  duration: 5.2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="w-full h-full relative flex items-center justify-center"
+              >
               <img
                 src="/images/monolith.png"
                 alt="Monolith Centerpiece"
                 className="w-[90%] h-[90%] object-contain drop-shadow-[0_0_55px_rgba(215,165,100,0.22)]"
                 draggable={false}
               />
+            </motion.div>
             </motion.div>
           </motion.div>
 
