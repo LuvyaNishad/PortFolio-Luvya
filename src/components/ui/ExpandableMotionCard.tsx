@@ -8,56 +8,54 @@ import type { MotionArtifact } from "@/data/motionArtifacts";
 /* ─── Reusable corner bracket ornament ─── */
 function TacticalBrackets({
   accent,
-  size = 5,
+  size = 6,
   className = "",
 }: {
   accent: string;
   size?: number;
   className?: string;
 }) {
-  const px = `${size}px`;
-  const style = (
-    borders: Record<string, string>
-  ): React.CSSProperties => ({
-    position: "absolute",
-    width: "18px",
-    height: "18px",
-    ...borders,
-  });
-
   return (
     <div className={`absolute inset-0 pointer-events-none ${className}`}>
+      {/* Top-left corner bracket */}
       <div
-        style={style({
-          top: px,
-          left: px,
+        className="absolute w-[18px] h-[18px] transition-all duration-300 ease-out group-hover:top-[3px] group-hover:left-[3px] group-hover:border-l-[2px] group-hover:border-t-[2px]"
+        style={{
+          top: `${size}px`,
+          left: `${size}px`,
           borderLeft: `1.5px solid ${accent}`,
           borderTop: `1.5px solid ${accent}`,
-        })}
+        }}
       />
+      {/* Top-right corner bracket */}
       <div
-        style={style({
-          top: px,
-          right: px,
-          borderRight: `1.5px solid rgba(255,255,255,0.15)`,
-          borderTop: `1.5px solid rgba(255,255,255,0.15)`,
-        })}
+        className="absolute w-[18px] h-[18px] transition-all duration-300 ease-out group-hover:top-[3px] group-hover:right-[3px] group-hover:border-r-[2px] group-hover:border-t-[2px] group-hover:border-white/50"
+        style={{
+          top: `${size}px`,
+          right: `${size}px`,
+          borderRight: `1.5px solid rgba(255,255,255,0.22)`,
+          borderTop: `1.5px solid rgba(255,255,255,0.22)`,
+        }}
       />
+      {/* Bottom-left corner bracket */}
       <div
-        style={style({
-          bottom: px,
-          left: px,
-          borderLeft: `1.5px solid rgba(255,255,255,0.15)`,
-          borderBottom: `1.5px solid rgba(255,255,255,0.15)`,
-        })}
+        className="absolute w-[18px] h-[18px] transition-all duration-300 ease-out group-hover:bottom-[3px] group-hover:left-[3px] group-hover:border-l-[2px] group-hover:border-b-[2px] group-hover:border-white/50"
+        style={{
+          bottom: `${size}px`,
+          left: `${size}px`,
+          borderLeft: `1.5px solid rgba(255,255,255,0.22)`,
+          borderBottom: `1.5px solid rgba(255,255,255,0.22)`,
+        }}
       />
+      {/* Bottom-right corner bracket */}
       <div
-        style={style({
-          bottom: px,
-          right: px,
+        className="absolute w-[18px] h-[18px] transition-all duration-300 ease-out group-hover:bottom-[3px] group-hover:right-[3px] group-hover:border-r-[2px] group-hover:border-b-[2px]"
+        style={{
+          bottom: `${size}px`,
+          right: `${size}px`,
           borderRight: `1.5px solid ${accent}`,
           borderBottom: `1.5px solid ${accent}`,
-        })}
+        }}
       />
     </div>
   );
@@ -78,15 +76,15 @@ function MotionGridCard({
   return (
     <motion.div
       layoutId={layoutId}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 28, x: -8, filter: "blur(4px)" }}
+      whileInView={{ opacity: 1, y: 0, x: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-6%" }}
-      transition={{ delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ delay, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
       onClick={onOpen}
       className="group relative cursor-pointer"
     >
-      <div className="relative border border-white/10 bg-black/30 aspect-[4/3] overflow-hidden transition-all duration-500 hover:border-white/18 hover:bg-black/40">
-        {/* Corner brackets */}
+      <div className="relative border border-white/10 bg-black/30 aspect-[4/3] overflow-hidden transition-all duration-500 hover:border-white/20 hover:bg-black/40">
+        {/* Corner brackets with viewfinder snap */}
         <TacticalBrackets accent={artifact.accent} size={6} />
 
         {/* Image with overlay */}
@@ -490,7 +488,7 @@ export function ExpandableMotionCards({
         <MotionGridCard
           key={artifact.id}
           artifact={artifact}
-          delay={sectionDelay + 0.08 + i * 0.06}
+          delay={sectionDelay + 0.08 + i * 0.09}
           onOpen={() => setOpenId(artifact.id)}
         />
       ))}
