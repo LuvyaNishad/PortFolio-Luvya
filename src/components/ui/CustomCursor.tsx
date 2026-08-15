@@ -54,6 +54,15 @@ export function CustomCursor() {
     const ringInner = ring?.querySelector<HTMLElement>(".cursor-ring-inner");
     const dotInner = dot?.querySelector<HTMLElement>(".cursor-dot-inner");
 
+    let isLooping = false;
+
+    const startLoop = () => {
+      if (!isLooping) {
+        isLooping = true;
+        rafId.current = requestAnimationFrame(animate);
+      }
+    };
+
     /* ── Mouse move — dot tracks instantly ── */
     const onMove = (e: MouseEvent) => {
       mouse.current.x = e.clientX;
@@ -70,12 +79,15 @@ export function CustomCursor() {
       if (dot) {
         dot.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
       }
+
+      startLoop();
     };
 
     /* ── Click states ── */
     const onDown = () => {
       ringInner?.classList.add("cursor-clicking");
       dotInner?.classList.add("cursor-clicking");
+      startLoop();
     };
 
     const onUp = () => {
@@ -85,14 +97,15 @@ export function CustomCursor() {
 
     /* ── Hover detection for interactive elements ── */
     const onOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
       const isInteractive =
         target.tagName === "A" ||
         target.tagName === "BUTTON" ||
         target.tagName === "INPUT" ||
         target.tagName === "TEXTAREA" ||
         target.tagName === "SELECT" ||
-        !!target.closest(
+        !!target.closest?.(
           "a, button, [role='button'], label, [data-cursor-hover]"
         );
 
@@ -118,13 +131,22 @@ export function CustomCursor() {
       trailRefs.current.forEach((t) => {
         if (t) t.style.opacity = "1";
       });
+      startLoop();
     };
 
-    /* ── Animation loop (RAF) ── */
+    /* ── Animation loop (RAF) — idles when settled ── */
     const animate = () => {
+      let isSettled = true;
+
       // Ring — smooth spring-like lerp follow
-      ringPos.current.x += (mouse.current.x - ringPos.current.x) * 0.13;
-      ringPos.current.y += (mouse.current.y - ringPos.current.y) * 0.13;
+      const ringDx = mouse.current.x - ringPos.current.x;
+      const ringDy = mouse.current.y - ringPos.current.y;
+      ringPos.current.x += ringDx * 0.13;
+      ringPos.current.y += ringDy * 0.13;
+
+      if (Math.abs(ringDx) > 0.15 || Math.abs(ringDy) > 0.15) {
+        isSettled = false;
+      }
 
       if (ring) {
         ring.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
@@ -139,26 +161,37 @@ export function CustomCursor() {
       ];
 
       trailPos.current.forEach((pos, i) => {
-        pos.x += (targets[i].x - pos.x) * lerps[i];
-        pos.y += (targets[i].y - pos.y) * lerps[i];
+        const tDx = targets[i].x - pos.x;
+        const tDy = targets[i].y - pos.y;
+        pos.x += tDx * lerps[i];
+        pos.y += tDy * lerps[i];
+
+        if (Math.abs(tDx) > 0.15 || Math.abs(tDy) > 0.15) {
+          isSettled = false;
+        }
+
         const el = trailRefs.current[i];
         if (el) {
           el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
         }
       });
 
-      rafId.current = requestAnimationFrame(animate);
+      if (!isSettled) {
+        rafId.current = requestAnimationFrame(animate);
+      } else {
+        isLooping = false;
+      }
     };
 
     /* ── Attach listeners ── */
     document.addEventListener("mousemove", onMove, { passive: true });
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("mouseup", onUp);
+    document.addEventListener("mousedown", onDown, { passive: true });
+    document.addEventListener("mouseup", onUp, { passive: true });
     document.addEventListener("mouseover", onOver, { passive: true });
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("mouseenter", onEnter);
 
-    rafId.current = requestAnimationFrame(animate);
+    startLoop();
 
     /* ── Cleanup ── */
     return () => {
@@ -168,7 +201,7 @@ export function CustomCursor() {
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("mouseenter", onEnter);
-      cancelAnimationFrame(rafId.current);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
       const tag = document.getElementById("aurelius-cursor-hide");
       if (tag) tag.remove();
     };

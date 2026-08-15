@@ -95,20 +95,14 @@ const HighlightCard: FC<HighlightCardProps> = ({
 
           {/* Floating glow orb — bottom-left */}
           <div
-            className="absolute -bottom-16 -left-16 w-40 h-40 rounded-full blur-3xl opacity-20 group-hover/hl:opacity-40 transform group-hover/hl:scale-110 transition-all duration-700 animate-bounce"
-            style={{ background: `radial-gradient(circle, ${accent}, transparent)` }}
+            className="absolute -bottom-16 -left-16 w-40 h-40 rounded-full blur-2xl opacity-15 group-hover/hl:opacity-35 transform group-hover/hl:scale-110 transition-all duration-700 pointer-events-none"
+            style={{ background: `radial-gradient(circle, ${accent}, transparent 70%)` }}
           />
 
-          {/* Subtle ping orb — top-left */}
+          {/* Corner accent glow orb — top-right */}
           <div
-            className="absolute top-8 left-8 w-12 h-12 rounded-full blur-xl animate-ping"
-            style={{ background: accent, opacity: 0.05 }}
-          />
-
-          {/* Subtle ping orb — bottom-right */}
-          <div
-            className="absolute bottom-12 right-12 w-10 h-10 rounded-full blur-lg animate-ping"
-            style={{ background: accent, opacity: 0.05 }}
+            className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 group-hover/hl:opacity-30 transform group-hover/hl:scale-110 transition-all duration-700 pointer-events-none"
+            style={{ background: `radial-gradient(circle, ${accent}, transparent 70%)` }}
           />
 
           {/* Diagonal shimmer sweep on hover */}

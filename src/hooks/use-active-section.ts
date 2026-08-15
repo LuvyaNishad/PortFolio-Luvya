@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export type NavSectionItem = {
   id: string;
@@ -7,15 +7,22 @@ export type NavSectionItem = {
 
 export function useActiveSection(sections: (string | NavSectionItem)[], defaultIndex = 0) {
   const [activeIndex, setActiveIndex] = useState(defaultIndex);
+  const activeIndexRef = useRef(defaultIndex);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let rafId: number | null = null;
+
+    const checkActiveSection = () => {
       // If at bottom of page, activate last item
       if (
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 60
       ) {
-        setActiveIndex(sections.length - 1);
+        const lastIdx = sections.length - 1;
+        if (activeIndexRef.current !== lastIdx) {
+          activeIndexRef.current = lastIdx;
+          setActiveIndex(lastIdx);
+        }
         return;
       }
 
@@ -38,13 +45,28 @@ export function useActiveSection(sections: (string | NavSectionItem)[], defaultI
         }
       }
 
-      setActiveIndex(currentSectionIndex);
+      if (activeIndexRef.current !== currentSectionIndex) {
+        activeIndexRef.current = currentSectionIndex;
+        setActiveIndex(currentSectionIndex);
+      }
+    };
+
+    const handleScroll = () => {
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          checkActiveSection();
+          rafId = null;
+        });
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    checkActiveSection();
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [JSON.stringify(sections), defaultIndex]);
 
   return activeIndex;

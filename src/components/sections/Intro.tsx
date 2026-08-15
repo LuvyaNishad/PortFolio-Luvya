@@ -87,10 +87,10 @@ function ProfileFrame() {
           />
         </div>
 
-        {/* Single Luminous Radar Scanner Laser Bar (Bounded to photo area) */}
+        {/* Single Luminous Radar Scanner Laser Bar (Bounded to photo area, GPU accelerated) */}
         <motion.div
           animate={{
-            top: ["-2%", "100%"],
+            y: ["0%", "100%"],
             opacity: [0, 1, 1, 0.8, 0],
           }}
           transition={{
@@ -99,14 +99,18 @@ function ProfileFrame() {
             repeatDelay: 0.6,
             ease: "easeInOut",
           }}
-          className="absolute left-0 right-0 h-[2px] pointer-events-none z-20"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent 0%, rgba(197, 168, 128, 0.7) 15%, #fff2db 50%, rgba(197, 168, 128, 0.7) 85%, transparent 100%)",
-            boxShadow:
-              "0 0 10px 2px rgba(197, 168, 128, 0.7), 0 0 20px 4px rgba(197, 168, 128, 0.25)",
-          }}
-        />
+          className="absolute inset-0 pointer-events-none z-20 h-full flex flex-col justify-start will-change-transform"
+        >
+          <div
+            className="w-full h-[2px]"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 0%, rgba(197, 168, 128, 0.7) 15%, #fff2db 50%, rgba(197, 168, 128, 0.7) 85%, transparent 100%)",
+              boxShadow:
+                "0 0 10px 2px rgba(197, 168, 128, 0.7), 0 0 20px 4px rgba(197, 168, 128, 0.25)",
+            }}
+          />
+        </motion.div>
 
         {/* Center Tactical Reticle Target */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 group-hover/profile:opacity-65 transition-opacity duration-500 z-10">

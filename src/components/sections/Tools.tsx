@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { LiquidGlassEffect } from "@/components/ui/LiquidGlassEffect";
 
 /* ─────────────────────────────────────────────────
    Tool Category Row
@@ -25,14 +24,33 @@ interface ToolCategoryProps {
 function CapacityBarInline({
   value,
   max = 10,
-  baseDelay = 0,
 }: {
   value: number;
   max?: number;
   baseDelay?: number;
 }) {
   const [displayVal, setDisplayVal] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startCount = useCallback(() => {
+    if (intervalRef.current) return;
+    let current = 0;
+    intervalRef.current = setInterval(() => {
+      current++;
+      if (current <= value) {
+        setDisplayVal(current);
+      } else {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }, 55);
+  }, [value]);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
 
   return (
     <div className="flex items-center gap-3 mt-auto">
@@ -48,28 +66,8 @@ function CapacityBarInline({
           return (
             <motion.div
               key={i}
-              initial={{ scaleY: 0, opacity: 0.15 }}
-              whileInView={{ scaleY: 1, opacity: 1 }}
+              onViewportEnter={i === 0 ? startCount : undefined}
               viewport={{ once: true }}
-              onViewportEnter={() => {
-                if (!hasStarted && i === 0) {
-                  setHasStarted(true);
-                  let current = 0;
-                  const interval = setInterval(() => {
-                    current++;
-                    if (current <= value) {
-                      setDisplayVal(current);
-                    } else {
-                      clearInterval(interval);
-                    }
-                  }, 55);
-                }
-              }}
-              transition={{
-                delay: baseDelay + 0.2 + i * 0.045,
-                duration: 0.38,
-                ease: [0.16, 1, 0.3, 1],
-              }}
               className={`w-[6px] h-[10px] rounded-[1px] origin-bottom transition-all duration-300 ${
                 isActive
                   ? "bg-[#4a7c59] shadow-[0_0_8px_rgba(74,156,94,0.45)]"
@@ -149,16 +147,8 @@ function ToolCategory({
       <div className="tools-grid-area">
         <div className="tools-grid">
           {Array.from({ length: toolCount }).map((_, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 0, scale: 0.92 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{
-                delay: delay + 0.15 + i * 0.035,
-                duration: 0.45,
-                ease: [0.16, 1, 0.3, 1],
-              }}
               className="tool-card group/card"
             >
               {/* Corner bracket overlay for TR + BL */}
@@ -166,7 +156,7 @@ function ToolCategory({
               {/* Empty placeholder — tools will be added later */}
               <div className="tool-card-icon" />
               <div className="tool-card-label" />
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

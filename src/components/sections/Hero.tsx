@@ -52,9 +52,6 @@ export function Hero() {
   const [subtitleComplete, setSubtitleComplete] = useState(false);
 
   const monolithRef = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [glowPos, setGlowPos] = useState({ x: 50, y: 50 });
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
 
   /* ── Initial Load & Crash Timeline Sequence ── */
   useEffect(() => {
@@ -88,33 +85,69 @@ export function Hero() {
     };
   }, []);
 
-  /* ── Cursor tracking for 3D tilt, specular glow & particle parallax ── */
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!monolithRef.current) return;
-    const rect = monolithRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const dx = (e.clientX - centerX) / (window.innerWidth / 2);
-    const dy = (e.clientY - centerY) / (window.innerHeight / 2);
-
-    const maxTilt = 7;
-    setTilt({
-      x: Math.max(-maxTilt, Math.min(maxTilt, dy * -maxTilt)),
-      y: Math.max(-maxTilt, Math.min(maxTilt, dx * maxTilt)),
-    });
-
-    const glowX = ((e.clientX - rect.left) / rect.width) * 100;
-    const glowY = ((e.clientY - rect.top) / rect.height) * 100;
-    setGlowPos({ x: glowX, y: glowY });
-
-    setMouseOffset({ x: dx * 18, y: dy * 18 });
-  }, []);
-
+  /* ── Performant cursor tracking via RAF & CSS variables (zero React re-renders) ── */
   useEffect(() => {
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [handleMouseMove]);
+    let rect = monolithRef.current?.getBoundingClientRect();
+    const updateRect = () => {
+      if (monolithRef.current) {
+        rect = monolithRef.current.getBoundingClientRect();
+      }
+    };
+    window.addEventListener("resize", updateRect, { passive: true });
+    window.addEventListener("scroll", updateRect, { passive: true });
+
+    let rafId: number | null = null;
+    let targetTiltX = 0;
+    let targetTiltY = 0;
+    let targetGlowX = 50;
+    let targetGlowY = 50;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!rect) rect = monolithRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const halfW = window.innerWidth / 2 || 1;
+      const halfH = window.innerHeight / 2 || 1;
+      const dx = (e.clientX - centerX) / halfW;
+      const dy = (e.clientY - centerY) / halfH;
+
+      const maxTilt = 7;
+      targetTiltX = Math.max(-maxTilt, Math.min(maxTilt, dy * -maxTilt));
+      targetTiltY = Math.max(-maxTilt, Math.min(maxTilt, dx * maxTilt));
+
+      targetGlowX = ((e.clientX - rect.left) / (rect.width || 1)) * 100;
+      targetGlowY = ((e.clientY - rect.top) / (rect.height || 1)) * 100;
+
+      targetMouseX = dx * 18;
+      targetMouseY = dy * 18;
+
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          if (monolithRef.current) {
+            monolithRef.current.style.setProperty("--tilt-x", `${targetTiltX.toFixed(2)}deg`);
+            monolithRef.current.style.setProperty("--tilt-y", `${targetTiltY.toFixed(2)}deg`);
+            monolithRef.current.style.setProperty("--glow-x", `${targetGlowX.toFixed(2)}%`);
+            monolithRef.current.style.setProperty("--glow-y", `${targetGlowY.toFixed(2)}%`);
+            monolithRef.current.style.setProperty("--mouse-x", `${targetMouseX.toFixed(2)}px`);
+            monolithRef.current.style.setProperty("--mouse-y", `${targetMouseY.toFixed(2)}px`);
+          }
+          rafId = null;
+        });
+      }
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("resize", updateRect);
+      window.removeEventListener("scroll", updateRect);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   return (
     <motion.section
@@ -348,9 +381,9 @@ export function Hero() {
 
           {/* ── Specular highlight behind monolith — follows cursor ── */}
           <div
-            className="absolute inset-[-25%] rounded-full pointer-events-none transition-all duration-700 ease-out"
+            className="absolute inset-[-25%] rounded-full pointer-events-none transition-opacity duration-700 ease-out"
             style={{
-              background: `radial-gradient(circle at ${glowPos.x}% ${glowPos.y}%, rgba(225, 180, 110, 0.28) 0%, rgba(197, 148, 80, 0.10) 25%, transparent 60%)`,
+              background: "radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(225, 180, 110, 0.28) 0%, rgba(197, 148, 80, 0.10) 25%, transparent 60%)",
               filter: "blur(20px)",
               opacity: impactHappened ? 1 : 0,
               zIndex: 1,
@@ -511,9 +544,7 @@ export function Hero() {
                 }
                 className="absolute pointer-events-none"
                 style={{
-                  transform: `translate3d(${mouseOffset.x * p.depth}px, ${
-                    mouseOffset.y * p.depth
-                  }px, 0px)`,
+                  transform: `translate3d(calc(var(--mouse-x, 0px) * ${p.depth}), calc(var(--mouse-y, 0px) * ${p.depth}), 0px)`,
                   transition: "transform 0.15s ease-out",
                   zIndex: p.depth > 0.8 ? 15 : 2, // Foreground shards in front of rock, background behind
                 }}
@@ -570,7 +601,7 @@ export function Hero() {
             }
             className="w-full h-full relative flex items-center justify-center"
             style={{
-              transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+              transform: "rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))",
               transition: "transform 0.15s ease-out",
               zIndex: 10, // Back to explicit zIndex so it sits between Back(2) and Front(20) Rings
             }}
