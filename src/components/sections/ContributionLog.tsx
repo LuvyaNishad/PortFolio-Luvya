@@ -159,32 +159,41 @@ function ContribTooltip({ hoveredDay }: { hoveredDay: { day: ContributionDay; x:
   return (
     <AnimatePresence>
       {hoveredDay && (
-        <motion.div
-          initial={{ opacity: 0, y: 5, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.97 }}
-          transition={{ duration: 0.12, ease: "easeOut" }}
-          style={{ position: "fixed", left: hoveredDay.x, top: hoveredDay.y, transform: "translate(-50%, calc(-100% - 10px))", pointerEvents: "none", zIndex: 9999 }}
-          className="whitespace-nowrap select-none"
+        <div
+          style={{
+            position: "fixed",
+            left: hoveredDay.x,
+            top: hoveredDay.y,
+            transform: "translate(-50%, calc(-100% - 10px))",
+            pointerEvents: "none",
+            zIndex: 9999,
+          }}
         >
-          <div
-            className="relative px-3.5 py-2 rounded-[5px] border border-white/[0.14] bg-[rgba(8,8,12,0.97)] backdrop-blur-[18px] flex items-center gap-2"
-            style={{ boxShadow: "0 8px 28px rgba(0,0,0,0.92), 0 0 14px rgba(197,38,26,0.16), inset 0 1px 0 rgba(255,255,255,0.16)" }}
+          <motion.div
+            initial={{ opacity: 0, y: 5, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.12, ease: "easeOut" }}
+            className="whitespace-nowrap select-none"
           >
-            <div className="absolute top-0 left-3 right-3 h-px bg-gradient-to-r from-transparent via-white/28 to-transparent" />
-            <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${hoveredDay.day.count > 0 ? "bg-[#c5261a]" : "bg-white/25"}`}
-              style={hoveredDay.day.count > 0 ? { boxShadow: "0 0 6px #c5261a" } : undefined} />
-            <span className="font-mono text-[10px] tracking-wide text-white/90">
-              <strong className={hoveredDay.day.count > 0 ? "text-[#c5261a] font-bold" : "text-white/55 font-semibold"}>
-                {hoveredDay.day.count === 0 ? "No" : hoveredDay.day.count}
-              </strong>{" "}
-              <span className="text-white/75">{hoveredDay.day.count === 1 ? "contribution" : "contributions"}</span>{" "}
-              <span className="text-white/35">on</span>{" "}
-              <span className="text-white font-medium">{formatContributionDate(hoveredDay.day.date)}</span>
-            </span>
-            <div className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-[9px] h-[9px] bg-[rgba(8,8,12,0.97)] border-r border-b border-white/[0.14] rotate-45" />
-          </div>
-        </motion.div>
+            <div
+              className="relative px-3.5 py-2 rounded-[5px] border border-white/[0.14] bg-[rgba(8,8,12,0.97)] backdrop-blur-[18px] flex items-center gap-2"
+              style={{ boxShadow: "0 8px 28px rgba(0,0,0,0.92), 0 0 14px rgba(197,38,26,0.16), inset 0 1px 0 rgba(255,255,255,0.16)" }}
+            >
+              <div className="absolute top-0 left-3 right-3 h-px bg-gradient-to-r from-transparent via-white/28 to-transparent" />
+              <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${hoveredDay.day.count > 0 ? "bg-[#c5261a]" : "bg-white/25"}`}
+                style={hoveredDay.day.count > 0 ? { boxShadow: "0 0 6px #c5261a" } : undefined} />
+              <span className="font-mono text-[10px] tracking-wide text-white/90">
+                <strong className={hoveredDay.day.count > 0 ? "text-[#c5261a] font-bold" : "text-white/55 font-semibold"}>
+                  {hoveredDay.day.count === 0 ? "No" : hoveredDay.day.count}
+                </strong>{" "}
+                <span className="text-white/75">{hoveredDay.day.count === 1 ? "contribution" : "contributions"}</span>{" "}
+                <span className="text-white/35">on</span>{" "}
+                <span className="text-white font-medium">{formatContributionDate(hoveredDay.day.date)}</span>
+              </span>
+            </div>
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );
