@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
+import Image from "next/image";
+import { siteConfig } from "@/config/site";
 
 const NAV_LINKS = [
   { label: "HOME", href: "#home" },
@@ -54,6 +56,7 @@ function useLocalTime() {
 
 export function Footer() {
   const time = useLocalTime();
+  const [year] = useState(() => new Date().getFullYear());
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -62,10 +65,12 @@ export function Footer() {
   return (
     <footer className="relative w-full overflow-hidden bg-[#070708]">
       <div className="absolute inset-0 z-0" aria-hidden="true">
-        <img
+        <Image
           src="/images/footer_bg.png"
           alt=""
-          className="absolute inset-0 h-full w-full object-cover object-center opacity-75"
+          fill
+          sizes="100vw"
+          className="object-cover object-center opacity-75"
           style={{
             filter: "brightness(0.8) contrast(1.22) saturate(1.05)",
           }}
@@ -83,10 +88,10 @@ export function Footer() {
           className="relative border border-white/10 bg-black/35 p-5 shadow-[0_28px_90px_rgba(0,0,0,0.52)] backdrop-blur-md sm:p-7 lg:p-9"
         >
           {/* Corner accents */}
-          <div className="pointer-events-none absolute left-3 top-3 h-5 w-5 border-l border-t border-[#c92a2a]/70" />
+          <div className="pointer-events-none absolute left-3 top-3 h-5 w-5 border-l border-t border-red/70" />
           <div className="pointer-events-none absolute right-3 top-3 h-5 w-5 border-r border-t border-white/25" />
           <div className="pointer-events-none absolute bottom-3 left-3 h-5 w-5 border-b border-l border-white/25" />
-          <div className="pointer-events-none absolute bottom-3 right-3 h-5 w-5 border-b border-r border-[#c92a2a]/70" />
+          <div className="pointer-events-none absolute bottom-3 right-3 h-5 w-5 border-b border-r border-red/70" />
 
           {/* ── QUOTE AREA ─────────────────────────────────── */}
           <div className="flex flex-col items-center justify-center py-16 sm:py-20 lg:py-28 relative">
@@ -100,7 +105,7 @@ export function Footer() {
               </span>
             </div>
 
-            <h2 className="relative text-center font-serif italic text-[clamp(1.6rem,4.5vw,4rem)] leading-[1.2] text-[#c5a880]/90 max-w-3xl">
+            <h2 className="relative text-center font-serif italic text-[clamp(1.6rem,4.5vw,4rem)] leading-[1.2] text-gold/90 max-w-3xl">
               &ldquo;Let&apos;s make something worth remembering.&rdquo;
             </h2>
             <p className="relative mt-5 font-mono text-[10px] uppercase tracking-[0.32em] text-white/35">
@@ -114,7 +119,7 @@ export function Footer() {
             <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-8">
                 <span className="font-display text-2xl tracking-wide text-white">
-                  LN<span className="text-[#c92a2a]">.</span>
+                  {siteConfig.initials}<span className="text-red">.</span>
                 </span>
 
                 <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/42">
@@ -149,7 +154,7 @@ export function Footer() {
                   aria-label="Scroll to top"
                 >
                   Back to top
-                  <span className="flex h-9 w-9 items-center justify-center border border-white/15 bg-white/[0.025] transition-all duration-300 group-hover:border-[#c92a2a]/60 group-hover:bg-[#c92a2a]/10">
+                  <span className="flex h-9 w-9 items-center justify-center border border-white/15 bg-white/[0.025] transition-all duration-300 group-hover:border-red/60 group-hover:bg-red/10">
                     <ArrowUp className="h-4 w-4" />
                   </span>
                 </button>
@@ -159,7 +164,7 @@ export function Footer() {
             {/* Bottom line: copyright */}
             <div className="mt-4 flex items-center justify-between border-t border-white/[0.05] pt-4 xl:justify-end">
               <span className="font-mono text-[9px] text-white/25 uppercase tracking-wide">
-                © 2025 · Crafted with care
+                © {year} {siteConfig.legalName} · Crafted with care
               </span>
             </div>
           </div>

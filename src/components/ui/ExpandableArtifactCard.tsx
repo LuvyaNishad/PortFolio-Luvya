@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import type { VisualArtifact } from "@/data/visualArtifacts";
+import { ArtifactMedia } from "@/components/ui/ArtifactMedia";
+import { ShowcaseSlot } from "@/components/ui/ShowcaseSlot";
 
 /* ─── Reusable corner bracket ornament ─── */
 function TacticalBrackets({
@@ -88,10 +90,12 @@ function ArtifactGridCard({
         <TacticalBrackets accent={artifact.accent} size={6} />
 
         {/* Image with overlay */}
-        <motion.img
+        <ArtifactMedia
           layoutId={`image-${layoutId}`}
           src={artifact.imageSrc}
           alt={`${artifact.title} ${artifact.titleAccent}`}
+          accent={artifact.accent}
+          prefix={artifact.title}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           style={{ filter: "brightness(0.55) contrast(1.05)" }}
         />
@@ -262,10 +266,12 @@ function ArtifactModal({
 
         {/* ─── LEFT: Image viewport ─── */}
         <div className="relative h-56 w-full shrink-0 overflow-hidden md:h-auto md:w-[48%]">
-          <motion.img
+          <ArtifactMedia
             layoutId={`image-${layoutId}`}
             src={artifact.imageSrc}
             alt={`${artifact.title} ${artifact.titleAccent}`}
+            accent={artifact.accent}
+            prefix={artifact.title}
             className="h-full w-full object-cover"
             style={{ filter: "brightness(0.6) contrast(1.08)" }}
           />
@@ -457,13 +463,33 @@ export function ExpandableArtifactCards({
   artifacts,
   accent,
   sectionDelay = 0.05,
+  prefix = "GD",
+  emptyCount = 4,
 }: {
   artifacts: VisualArtifact[];
   accent: string;
   sectionDelay?: number;
+  prefix?: string;
+  emptyCount?: number;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const openArtifact = artifacts.find((a) => a.id === openId) ?? null;
+
+  // No entries yet — show tactical placeholder slots.
+  if (artifacts.length === 0) {
+    return (
+      <>
+        {Array.from({ length: emptyCount }).map((_, i) => (
+          <ShowcaseSlot
+            key={i}
+            prefix={prefix}
+            accent={accent}
+            delay={sectionDelay + 0.08 + i * 0.09}
+          />
+        ))}
+      </>
+    );
+  }
 
   return (
     <>

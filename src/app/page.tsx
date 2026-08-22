@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/layout/Navbar";
+import Image from "next/image";
 import { Hero } from "@/components/sections/Hero";
 import { Intro } from "@/components/sections/Intro";
 import { Tools } from "@/components/sections/Tools";
@@ -47,14 +48,13 @@ export default function Home() {
           aria-hidden="true"
         >
           {/* The symmetrical ruins image — high contrast, moody, textured */}
-          <img
+          <Image
             src="/images/hero_bg.jpg"
             alt=""
+            fill
+            priority
+            sizes="100vw"
             style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
               objectFit: "cover",
               objectPosition: "center 26%",
               filter: "grayscale(100%) brightness(0.70) contrast(1.22)",

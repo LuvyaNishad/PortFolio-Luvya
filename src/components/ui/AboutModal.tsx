@@ -2,9 +2,11 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { X, ShieldCheck, Mail } from "lucide-react";
-import type { SVGProps } from "react";
+import { siteConfig, activeSocials } from "@/config/site";
+import { SOCIAL_ICONS } from "@/components/ui/SocialIcons";
 
 /* ─── Reusable corner bracket ornament ─── */
 function TacticalBrackets({
@@ -88,7 +90,7 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
   }, [handleKeyDown]);
 
   const specs = [
-    { label: "ROLE", value: "Product Designer & Technologist" },
+    { label: "ROLE", value: siteConfig.role },
     { label: "EXPERIENCE", value: "5+ Years Crafting Digital Systems" },
     { label: "LOCATION", value: "Remote / Global Mobility" },
     { label: "METHODOLOGY", value: "Intentional, Tactile & Systems-First" },
@@ -201,10 +203,12 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
         {/* ─── LEFT: Portrait / Visual Viewport ─── */}
         <div className="relative h-48 sm:h-64 w-full shrink-0 overflow-hidden md:h-auto md:w-[360px] lg:w-[400px] bg-black/40">
           {/* Symmetrical background artwork & portrait frame */}
-          <img
+          <Image
             src="/images/hero_bg.jpg"
-            alt="Aurelius Environment"
-            className="h-full w-full object-cover"
+            alt=""
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover"
             style={{ filter: "grayscale(100%) brightness(0.65) contrast(1.15)" }}
           />
 
@@ -225,11 +229,15 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
             <div className="relative w-28 h-28 flex items-center justify-center">
               <div className="absolute inset-0 rounded-full border border-[#c5a880]/30 border-dashed animate-[spin_40s_linear_infinite]" />
               <div className="absolute inset-2 rounded-full border border-white/10" />
-              <img
-                src="/images/monolith.png"
-                alt="Monolith Symbol"
-                className="w-16 h-16 object-contain drop-shadow-[0_0_20px_rgba(197,168,128,0.4)]"
-              />
+              <div className="relative w-16 h-16">
+                <Image
+                  src="/images/monolith.png"
+                  alt=""
+                  fill
+                  sizes="64px"
+                  className="object-contain drop-shadow-[0_0_20px_rgba(197,168,128,0.4)]"
+                />
+              </div>
             </div>
           </div>
 
@@ -296,7 +304,7 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
                 className="font-mono text-[9px] sm:text-[10px] tracking-[0.2em] uppercase mb-2 font-medium"
                 style={{ color: accent }}
               >
-                Product Designer &amp; Technologist
+                {siteConfig.role}
               </p>
               <h3 className="font-display text-4xl sm:text-5xl uppercase leading-none text-white tracking-[0.02em]">
                 AURELIUS{" "}
@@ -393,45 +401,29 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
                   </span>
                 </div>
 
-                {/* Social Links */}
-                <div className="flex flex-wrap items-center justify-center gap-2">
-                  <a
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-1.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/20 transition-all group"
-                  >
-                    <XIcon className="w-3 h-3 text-white/40 group-hover:text-white/80 transition-colors" />
-                    <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-white/50 group-hover:text-white/90 transition-colors">X</span>
-                  </a>
-                  <a
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-1.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/20 transition-all group"
-                  >
-                    <Linkedin className="w-3 h-3 text-white/40 group-hover:text-white/80 transition-colors" />
-                    <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-white/50 group-hover:text-white/90 transition-colors">LinkedIn</span>
-                  </a>
-                  <a
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-1.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/20 transition-all group"
-                  >
-                    <Github className="w-3 h-3 text-white/40 group-hover:text-white/80 transition-colors" />
-                    <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-white/50 group-hover:text-white/90 transition-colors">GitHub</span>
-                  </a>
-                  <a
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-1.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/20 transition-all group"
-                  >
-                    <Youtube className="w-3 h-3 text-white/40 group-hover:text-white/80 transition-colors" />
-                    <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-white/50 group-hover:text-white/90 transition-colors">YouTube</span>
-                  </a>
-                </div>
+                {/* Social Links — only those configured in site.ts */}
+                {activeSocials.length > 0 && (
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    {activeSocials.map(({ key, label, href }) => {
+                      const Icon = SOCIAL_ICONS[key];
+                      return (
+                        <a
+                          key={key}
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={label}
+                          className="flex items-center gap-2 px-3 py-1.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/20 transition-all group"
+                        >
+                          <Icon className="w-3 h-3 text-white/40 group-hover:text-white/80 transition-colors" />
+                          <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-white/50 group-hover:text-white/90 transition-colors">
+                            {label}
+                          </span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-end shrink-0">
@@ -450,43 +442,5 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
       </motion.div>
     </div>,
     document.body
-  );
-}
-
-/* ── Icon Components ───────────────────────────────────── */
-
-function XIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
-
-function Linkedin(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-      <rect width="4" height="12" x="2" y="9" />
-      <circle cx="4" cy="4" r="2" />
-    </svg>
-  );
-}
-
-function Github(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-      <path d="M9 18c-4.51 2-5-2-7-2" />
-    </svg>
-  );
-}
-
-function Youtube(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2.5 7.1C2.5 7.1 2.3 5 4.3 3c2.3-2.3 5.8-2.3 9.7-2.3S19.4.7 21.7 3c2 2 1.8 4.1 1.8 4.1s.2 1.7.2 3.4v3c0 1.7-.2 3.4-.2 3.4s.2 2.1-1.8 4.1c-2.3 2.3-6.2 2.3-9.7 2.3S6.6 23.3 4.3 21c-2-2-1.8-4.1-1.8-4.1s-.2-1.7-.2-3.4v-3c0-1.7.2-3.4.2-3.4z" />
-      <path d="m9.5 15.5 7-3.5-7-3.5z" />
-    </svg>
   );
 }

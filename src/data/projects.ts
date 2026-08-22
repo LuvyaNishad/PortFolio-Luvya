@@ -11,7 +11,7 @@ export interface ProjectItem {
   aspectRatio?: string;
 }
 
-// These are the 4 main categories as requested
+// The 4 main showcase categories
 export const SHOWCASE_CATEGORIES = [
   { id: "graphic_design", title: "GRAPHIC DESIGN", subtitle: "Posters, branding & print" },
   { id: "video_edits", title: "VIDEO EDITS", subtitle: "Reels, shorts & long-form" },
@@ -19,31 +19,22 @@ export const SHOWCASE_CATEGORIES = [
   { id: "code_projects", title: "CODE PROJECTS", subtitle: "Web apps & experiments" },
 ];
 
-// Placeholders ready for you to insert your png, jpg, mp4 files
-export const PROJECTS_DATA: ProjectItem[] = [
-  {
-    id: "gd-1",
-    title: "Placeholder 1",
-    category: "graphic_design",
-    thumbnailUrl: "/images/placeholder.png", 
-  },
-  {
-    id: "ve-1",
-    title: "Placeholder 1",
-    category: "video_edits",
-    thumbnailUrl: "/images/placeholder.png", 
-    mediaUrl: "/videos/placeholder.mp4",
-  },
-  {
-    id: "ui-1",
-    title: "Placeholder 1",
-    category: "ui_ux",
-    thumbnailUrl: "/images/placeholder.png", 
-  },
-  {
-    id: "cp-1",
-    title: "Placeholder 1",
-    category: "code_projects",
-    thumbnailUrl: "/images/placeholder.png", 
-  }
-];
+/* ─────────────────────────────────────────────────
+   Add projects here as you complete them. Empty until
+   you insert your own work — no placeholder assets ship.
+
+   To add a project:
+   1. Drop the file in  public/images/  (or public/videos/).
+   2. Copy the template into the array and fill it in.
+
+   const example: ProjectItem = {
+     id: "gd-1",
+     title: "Project Name",
+     category: "graphic_design",          // see ProjectCategory
+     thumbnailUrl: "/images/my-thumb.jpg",
+     mediaUrl: "/videos/my-clip.mp4",     // optional
+     description: "Short summary.",        // optional
+     link: "https://…",                   // optional
+   };
+───────────────────────────────────────────────── */
+export const PROJECTS_DATA: ProjectItem[] = [];

@@ -9,6 +9,8 @@ export interface LightBeamButtonProps {
   className?: string;
   onClick?: () => void;
   href?: string;
+  target?: string;
+  rel?: string;
   gradientColors?: [string, string, string];
 }
 
@@ -24,6 +26,8 @@ export function LightBeamButton({
   className,
   onClick,
   href,
+  target,
+  rel,
   gradientColors = ["rgba(255,255,255,0.55)", "#8B6840", "rgba(255,255,255,0.55)"],
 }: LightBeamButtonProps) {
   const gradientString = `conic-gradient(from var(--gradient-angle), transparent 0%, ${gradientColors[0]} 40%, ${gradientColors[1]} 50%, transparent 60%, transparent 100%)`;
@@ -65,6 +69,8 @@ export function LightBeamButton({
     return (
       <motion.a
         href={href}
+        target={target}
+        rel={rel}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         onClick={onClick}

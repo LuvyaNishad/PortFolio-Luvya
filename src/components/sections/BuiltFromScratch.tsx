@@ -2,10 +2,9 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Plus } from "lucide-react";
-import { MetadataText } from "@/components/ui/MetadataText";
 import { ExpandableArtifactCards } from "@/components/ui/ExpandableArtifactCard";
 import { ExpandableMotionCards } from "@/components/ui/ExpandableMotionCard";
+import { ShowcaseSlot } from "@/components/ui/ShowcaseSlot";
 import { VISUAL_ARTIFACTS } from "@/data/visualArtifacts";
 import { MOTION_ARTIFACTS } from "@/data/motionArtifacts";
 
@@ -72,63 +71,6 @@ const categories: ShowcaseCategory[] = [
     cardCount: 4,
   },
 ];
-
-/* ─── Placeholder project card ─── */
-function ProjectSlot({
-  prefix,
-  accent,
-  delay,
-}: {
-  prefix: string;
-  accent: string;
-  delay: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28, x: -8, filter: "blur(4px)" }}
-      whileInView={{ opacity: 1, y: 0, x: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-6%" }}
-      transition={{ delay, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative cursor-pointer"
-    >
-      <div className="relative border border-dashed border-white/12 bg-black/20 aspect-[4/3] flex items-center justify-center overflow-hidden transition-all duration-500 hover:border-white/25 hover:bg-black/35">
-        {/* Corner brackets with viewfinder outward hover expansion */}
-        <div className="absolute top-2.5 left-2.5 h-3.5 w-3.5 border-l border-t border-dashed border-white/20 transition-all duration-300 ease-out group-hover:top-1.5 group-hover:left-1.5 group-hover:border-white/45" />
-        <div className="absolute top-2.5 right-2.5 h-3.5 w-3.5 border-r border-t border-dashed border-white/20 transition-all duration-300 ease-out group-hover:top-1.5 group-hover:right-1.5 group-hover:border-white/45" />
-        <div className="absolute bottom-2.5 left-2.5 h-3.5 w-3.5 border-b border-l border-dashed border-white/20 transition-all duration-300 ease-out group-hover:bottom-1.5 group-hover:left-1.5 group-hover:border-white/45" />
-        <div className="absolute bottom-2.5 right-2.5 h-3.5 w-3.5 border-b border-r border-dashed border-white/20 transition-all duration-300 ease-out group-hover:bottom-1.5 group-hover:right-1.5 group-hover:border-white/45" />
-
-        {/* Center code icon */}
-        <div className="flex flex-col items-center gap-3">
-          <span className="font-mono text-[13px] tracking-[0.15em] text-white/25 group-hover:text-white/40 transition-colors duration-300">
-            {prefix}
-          </span>
-        </div>
-      </div>
-
-      {/* Label below card */}
-      <div className="mt-3 flex items-center justify-between">
-        <div>
-          <span
-            className="block font-mono text-[10px] uppercase tracking-[0.12em] transition-colors duration-500 group-hover:brightness-125"
-            style={{ color: accent }}
-          >
-            ADD PROJECT
-          </span>
-          <span className="block mt-0.5 font-mono text-[9px] tracking-[0.05em] text-white/30">
-            Click for template
-          </span>
-        </div>
-        <Plus
-          size={14}
-          strokeWidth={1.4}
-          className="text-white/25 transition-all duration-500 group-hover:rotate-90"
-          style={{ color: accent }}
-        />
-      </div>
-    </motion.div>
-  );
-}
 
 /* ─── Single category subsection ─── */
 function CategoryBlock({
@@ -226,16 +168,20 @@ function CategoryBlock({
             artifacts={VISUAL_ARTIFACTS}
             accent={category.accent}
             sectionDelay={sectionDelay}
+            prefix={category.cardPrefix}
+            emptyCount={category.cardCount}
           />
         ) : category.id === "video-edits-showcase" ? (
           <ExpandableMotionCards
             artifacts={MOTION_ARTIFACTS}
             accent={category.accent}
             sectionDelay={sectionDelay}
+            prefix={category.cardPrefix}
+            emptyCount={category.cardCount}
           />
         ) : (
           Array.from({ length: category.cardCount }).map((_, i) => (
-            <ProjectSlot
+            <ShowcaseSlot
               key={i}
               prefix={category.cardPrefix}
               accent={category.accent}

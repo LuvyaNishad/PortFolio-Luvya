@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Play } from "lucide-react";
 import type { MotionArtifact } from "@/data/motionArtifacts";
+import { ArtifactMedia } from "@/components/ui/ArtifactMedia";
+import { ShowcaseSlot } from "@/components/ui/ShowcaseSlot";
 
 /* ─── Reusable corner bracket ornament ─── */
 function TacticalBrackets({
@@ -88,10 +90,12 @@ function MotionGridCard({
         <TacticalBrackets accent={artifact.accent} size={6} />
 
         {/* Image with overlay */}
-        <motion.img
+        <ArtifactMedia
           layoutId={`image-${layoutId}`}
           src={artifact.imageSrc}
           alt={`${artifact.title} ${artifact.titleAccent}`}
+          accent={artifact.accent}
+          prefix={artifact.title}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           style={{ filter: "brightness(0.55) contrast(1.05)" }}
         />
@@ -278,11 +282,15 @@ function MotionModal({
           }`}
           style={!isReel ? { height: "clamp(250px, 45vh, 600px)" } : {}}
         >
-          {/* We show image for now since videoSrc is empty in placeholders, but we can structure it like a video player */}
-          <motion.img
+          {/* Poster / thumbnail — falls back to a themed placeholder
+              when no image is set yet. A real player can replace this
+              once videoSrc is wired up. */}
+          <ArtifactMedia
             layoutId={`image-${layoutId}`}
             src={artifact.imageSrc}
             alt={`${artifact.title} ${artifact.titleAccent}`}
+            accent={artifact.accent}
+            prefix={artifact.title}
             className="h-full w-full object-cover"
             style={{ filter: "brightness(0.6) contrast(1.08)" }}
           />
@@ -473,13 +481,33 @@ export function ExpandableMotionCards({
   artifacts,
   accent,
   sectionDelay = 0.05,
+  prefix = "VD",
+  emptyCount = 4,
 }: {
   artifacts: MotionArtifact[];
   accent: string;
   sectionDelay?: number;
+  prefix?: string;
+  emptyCount?: number;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const openArtifact = artifacts.find((a) => a.id === openId) ?? null;
+
+  // No entries yet — show tactical placeholder slots.
+  if (artifacts.length === 0) {
+    return (
+      <>
+        {Array.from({ length: emptyCount }).map((_, i) => (
+          <ShowcaseSlot
+            key={i}
+            prefix={prefix}
+            accent={accent}
+            delay={sectionDelay + 0.08 + i * 0.09}
+          />
+        ))}
+      </>
+    );
+  }
 
   return (
     <>

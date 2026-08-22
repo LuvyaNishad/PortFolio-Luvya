@@ -2,12 +2,13 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
+import { toolCategories, type Tool } from "@/data/tools";
 
 /* ─────────────────────────────────────────────────
    Tool Category Row
    Each row contains:
    - Left panel: number, icon, category name, subtitle, sequential capacity bar
-   - Right panel: grid of tool card placeholders with reticle hover
+   - Right panel: grid of tool cards (filled from data, empty slots as placeholders)
    - Right edge: vertical "TOOLS" label + "+" button + dots
 ───────────────────────────────────────────────── */
 
@@ -15,9 +16,8 @@ interface ToolCategoryProps {
   index: number;
   title: string;
   subtitle: string;
-  capacityValue: number;
-  capacityMax: number;
-  toolCount: number; // how many tool card slots to render
+  slots: number;
+  tools: Tool[];
   delay?: number;
 }
 
@@ -85,12 +85,12 @@ function ToolCategory({
   index,
   title,
   subtitle,
-  capacityValue,
-  capacityMax,
-  toolCount,
+  slots,
+  tools,
   delay = 0,
 }: ToolCategoryProps) {
   const formattedIndex = String(index).padStart(2, "0");
+  const cardCount = Math.max(slots, tools.length);
 
   return (
     <motion.div
@@ -137,8 +137,8 @@ function ToolCategory({
 
         {/* Capacity bar with sequential charge */}
         <CapacityBarInline
-          value={capacityValue}
-          max={capacityMax}
+          value={tools.length}
+          max={slots}
           baseDelay={delay}
         />
       </div>
@@ -146,18 +146,39 @@ function ToolCategory({
       {/* ── TOOL CARDS GRID ───────────────────────── */}
       <div className="tools-grid-area">
         <div className="tools-grid">
-          {Array.from({ length: toolCount }).map((_, i) => (
-            <div
-              key={i}
-              className="tool-card group/card"
-            >
-              {/* Corner bracket overlay for TR + BL */}
-              <div className="tool-card-corners" />
-              {/* Empty placeholder — tools will be added later */}
-              <div className="tool-card-icon" />
-              <div className="tool-card-label" />
-            </div>
-          ))}
+          {Array.from({ length: cardCount }).map((_, i) => {
+            const tool = tools[i];
+            return (
+              <div key={i} className="tool-card group/card">
+                {/* Corner bracket overlay for TR + BL */}
+                <div className="tool-card-corners" />
+                {tool ? (
+                  <>
+                    {tool.icon ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={tool.icon}
+                        alt=""
+                        className="w-9 h-9 object-contain"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="tool-card-icon" />
+                    )}
+                    <span className="font-mono text-[9px] text-white/70 tracking-wide text-center leading-tight px-1 line-clamp-2">
+                      {tool.name}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    {/* Empty slot — a tool will be added here later */}
+                    <div className="tool-card-icon" />
+                    <div className="tool-card-label" />
+                  </>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -200,8 +221,8 @@ function ECGMonitor() {
       preserveAspectRatio="none"
       className="w-full h-full"
     >
-      <polyline
-        points={waveformPath}
+      <path
+        d={waveformPath}
         stroke="rgba(74,156,94,0.6)"
         strokeWidth="1.5"
         fill="none"
@@ -209,8 +230,8 @@ function ECGMonitor() {
         strokeLinecap="round"
       />
       {/* Glow layer */}
-      <polyline
-        points={waveformPath}
+      <path
+        d={waveformPath}
         stroke="rgba(74,156,94,0.2)"
         strokeWidth="4"
         fill="none"
@@ -317,35 +338,17 @@ export function Tools() {
 
         {/* ── CATEGORY ROWS (150ms Calibration Stagger) ──────────────── */}
         <div className="tools-categories">
-          <ToolCategory
-            index={1}
-            title="Design Tools"
-            subtitle="UI/UX Design, Prototyping & Visual Communication"
-            capacityValue={7}
-            capacityMax={10}
-            toolCount={7}
-            delay={0}
-          />
-
-          <ToolCategory
-            index={2}
-            title="Development"
-            subtitle="Frontend Development & Frameworks"
-            capacityValue={8}
-            capacityMax={10}
-            toolCount={8}
-            delay={0.15}
-          />
-
-          <ToolCategory
-            index={3}
-            title="Other Skills"
-            subtitle="Additional Tools & Technologies"
-            capacityValue={7}
-            capacityMax={10}
-            toolCount={7}
-            delay={0.30}
-          />
+          {toolCategories.map((category, i) => (
+            <ToolCategory
+              key={category.id}
+              index={i + 1}
+              title={category.title}
+              subtitle={category.subtitle}
+              slots={category.slots}
+              tools={category.tools}
+              delay={i * 0.15}
+            />
+          ))}
         </div>
 
         {/* ── BOTTOM STATUS BAR ──────────────────────── */}
@@ -357,7 +360,7 @@ export function Tools() {
           className="tools-bottom-bar"
         >
           <span className="font-mono text-[9px] tracking-[0.2em] text-white/20 uppercase">
-            // Equipment Synchronized
+            {"// Equipment Synchronized"}
           </span>
           <div className="flex items-center gap-2">
             <span className="text-white/25 text-[10px]">✧</span>

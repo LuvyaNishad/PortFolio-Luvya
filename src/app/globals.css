@@ -16,14 +16,16 @@
   --accent-red: #c5261a;
   --accent-amber: #d97706;
   --accent-olive: #4d5c4e;
-  
+  --accent-gold: #c5a880;
+
   /* UI Borders */
   --border-soft: rgba(255, 255, 255, 0.06);
   --border-tactical: rgba(255, 255, 255, 0.12);
   --border-bright: rgba(255, 255, 255, 0.22);
-  
+
   /* Glows */
   --glow-red: rgba(197, 38, 26, 0.25);
+  --glow-gold: rgba(197, 168, 128, 0.25);
   --glow-white: rgba(255, 255, 255, 0.07);
 
   /* ------- Scaling Variables ------- */
@@ -42,6 +44,7 @@
   --color-red: var(--accent-red);
   --color-amber: var(--accent-amber);
   --color-olive: var(--accent-olive);
+  --color-gold: var(--accent-gold);
   --color-card: var(--bg-card);
   --color-card-elevated: var(--bg-card-elevated);
   --color-border-soft: var(--border-soft);
@@ -938,6 +941,44 @@ body {
 
 /* ─── Hide on touch devices ─── */
 @media (hover: none) {
+  .cursor-dot-wrapper,
+  .cursor-ring-wrapper,
+  .cursor-trail {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   REDUCED MOTION
+   Respect the OS "reduce motion" setting. We collapse all
+   CSS animations/transitions to near-instant (keeping their
+   end state via fill-mode) and stop the ambient looping
+   effects entirely. Framer Motion animations are gated
+   separately in-component via useReducedMotion().
+   ═══════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Kill continuously-looping ambient effects outright */
+  .ecg-trace,
+  .cursor-orbit,
+  .cursor-dot-glow,
+  .animate-border-spin {
+    animation: none !important;
+  }
+
+  /* Custom cursor adds no value without motion — hide it */
   .cursor-dot-wrapper,
   .cursor-ring-wrapper,
   .cursor-trail {

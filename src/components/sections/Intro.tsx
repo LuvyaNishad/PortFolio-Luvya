@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { LiquidGlassEffect } from "@/components/ui/LiquidGlassEffect";
 import { LightBeamButton } from "@/components/ui/LightBeamButton";
 import { AboutModal } from "@/components/ui/AboutModal";
+import { siteConfig } from "@/config/site";
 
 /* ─────────────────────────────────────────────────
    Stat row with tactical hover micro-interaction
@@ -243,16 +244,16 @@ export function Intro() {
                       color: "#8B6840",
                     }}
                   >
-                    Aurelius
+                    {siteConfig.name}
                   </span>
                 </h2>
-                <p className="font-mono text-[11px] tracking-[0.3em] text-white/35 uppercase mt-2">
-                  UI&nbsp;/&nbsp;UX&nbsp;&nbsp;Designer
+                <p className="font-mono text-[11px] tracking-[0.3em] text-white/45 uppercase mt-2">
+                  {siteConfig.role}
                 </p>
               </div>
 
               {/* Bio */}
-              <p className="font-mono text-[12px] leading-[1.9] text-white/38 max-w-[360px] mt-5 mb-9">
+              <p className="font-mono text-[12px] leading-[1.9] text-white/55 max-w-[360px] mt-5 mb-9">
                 I design digital experiences that are clean, functional, and built to leave
                 a lasting impact. My focus is on blending strategy with aesthetics to create
                 interfaces that not only look good but feel intuitive.

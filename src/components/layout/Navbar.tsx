@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { LightBeamButton } from "@/components/ui/LightBeamButton";
 import { LimelightNav } from "@/components/ui/limelight-nav";
 import { useActiveSection } from "@/hooks/use-active-section";
+import { siteConfig } from "@/config/site";
 
 const NAV_LINKS = [
   { id: 'home', label: 'HOME', href: '#home' },
@@ -85,10 +86,17 @@ export function Navbar() {
           labelClassName="text-[9px] font-mono tracking-[0.1em] sm:text-[10px] sm:tracking-[0.13em] md:text-[11px] md:tracking-[0.15em]"
         />
 
-        {/* Resume button */}
-        <LightBeamButton href="#" className="ml-2 hidden px-5 py-2 text-[11px] tracking-[0.15em] sm:inline-flex">
-          RESUME <span className="text-white/50">→</span>
-        </LightBeamButton>
+        {/* Resume button — shown only when a resume URL is configured */}
+        {siteConfig.resumeUrl && (
+          <LightBeamButton
+            href={siteConfig.resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-2 hidden px-5 py-2 text-[11px] tracking-[0.15em] sm:inline-flex"
+          >
+            RESUME <span className="text-white/50">→</span>
+          </LightBeamButton>
+        )}
       </div>
     </motion.header>
   );

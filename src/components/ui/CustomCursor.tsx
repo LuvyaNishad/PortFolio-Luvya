@@ -36,9 +36,14 @@ export function CustomCursor() {
   const rafId = useRef(0);
 
   useEffect(() => {
-    /* ── Guard: skip on touch devices ── */
+    /* ── Guard: skip on touch devices AND when the user prefers reduced
+       motion. Critical: if we bail we must NOT inject `cursor: none`,
+       otherwise the user is left with no visible cursor at all. ── */
     const isTouch = window.matchMedia("(hover: none)").matches;
-    if (isTouch) return;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (isTouch || prefersReducedMotion) return;
 
     /* ── Inject global cursor: none ── */
     const styleTag = document.createElement("style");

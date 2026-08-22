@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 import { LightBeamButton } from "@/components/ui/LightBeamButton";
 import { TextScramble } from "@/components/ui/text-scramble";
+import { siteConfig } from "@/config/site";
 
 /* ── Debris Particle Data Definition (Scaled for larger monolith) ── */
 interface DebrisParticle {
@@ -51,10 +53,23 @@ export function Hero() {
   const [designingComplete, setDesigningComplete] = useState(false);
   const [subtitleComplete, setSubtitleComplete] = useState(false);
 
+  /* Respect the OS "reduce motion" setting for all JS-driven animation. */
+  const reduce = useReducedMotion();
+
   const monolithRef = useRef<HTMLDivElement>(null);
 
   /* ── Initial Load & Crash Timeline Sequence ── */
   useEffect(() => {
+    // Reduced motion: skip the cinematic crash timeline entirely and reveal
+    // the finished composition at once — no shake, shockwave, or delays.
+    if (reduce) {
+      setTelemetryComplete(true);
+      setImpactHappened(true);
+      setDesigningComplete(true);
+      setSubtitleComplete(true);
+      return;
+    }
+
     // Stage 1: Telemetry ticker / scanning phase (0ms - 700ms)
     const t1 = setTimeout(() => {
       setTelemetryComplete(true);
@@ -83,7 +98,7 @@ export function Hero() {
       clearTimeout(t3);
       clearTimeout(t4);
     };
-  }, []);
+  }, [reduce]);
 
   /* ── Performant cursor tracking via RAF & CSS variables (zero React re-renders) ── */
   useEffect(() => {
@@ -238,7 +253,7 @@ export function Hero() {
         >
           <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#c5a880]/90 shadow-[0_0_8px_rgba(197,168,128,0.6)]" />
           <span className="font-mono text-[8px] sm:text-[9.5px] md:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] text-[#c5a880]/90 uppercase font-medium">
-            Product Designer &amp; Technologist
+            {siteConfig.role}
           </span>
           <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#c5a880]/90 shadow-[0_0_8px_rgba(197,168,128,0.6)]" />
         </motion.div>
@@ -331,7 +346,7 @@ export function Hero() {
             characterSet="abcdefghijklmnopqrstuvwxyz,.- "
             trigger={subtitleComplete}
           >
-            I design and build digital experiences where clarity, technology and visual storytelling meet.
+            {siteConfig.tagline}
           </TextScramble>
         </motion.p>
 
@@ -395,14 +410,20 @@ export function Hero() {
           <motion.div
             initial={{ scale: 0.6, rotateX: 0 }}
             animate={
-              impactHappened
+              reduce
+                ? { scale: 1, rotateX: 76 }
+                : impactHappened
                 ? { scale: 1, rotateX: [0, 40, 76] }
                 : { scale: 0.6, rotateX: 0 }
             }
-            transition={{
-              scale: { duration: 1.1, delay: 0.15, ease: "easeOut" },
-              rotateX: { duration: 1.8, delay: 0.15, ease: "easeOut" },
-            }}
+            transition={
+              reduce
+                ? { duration: 0 }
+                : {
+                    scale: { duration: 1.1, delay: 0.15, ease: "easeOut" },
+                    rotateX: { duration: 1.8, delay: 0.15, ease: "easeOut" },
+                  }
+            }
             className="absolute pointer-events-none flex items-center justify-center"
             style={{
               width: "160%",
@@ -414,24 +435,30 @@ export function Hero() {
             <motion.div
               initial={{ opacity: 0, rotateZ: 0 }}
               animate={
-                impactHappened
+                reduce
+                  ? { opacity: 1, rotateZ: 0 }
+                  : impactHappened
                   ? { opacity: 1, rotateZ: [0, 360, 720] }
                   : { opacity: 0, rotateZ: 0 }
               }
-              transition={{
-                opacity: { duration: 0.6, delay: 0.15 },
-                rotateZ: { duration: 2.2, delay: 0.15, ease: "easeOut" },
-              }}
+              transition={
+                reduce
+                  ? { duration: 0 }
+                  : {
+                      opacity: { duration: 0.6, delay: 0.15 },
+                      rotateZ: { duration: 2.2, delay: 0.15, ease: "easeOut" },
+                    }
+              }
               className="w-full h-full relative flex items-center justify-center"
             >
               <motion.div
-                animate={{ rotateZ: 360 }}
-                transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
+                animate={reduce ? undefined : { rotateZ: 360 }}
+                transition={reduce ? undefined : { duration: 55, repeat: Infinity, ease: "linear" }}
                 className="absolute inset-0 rounded-full border border-white/[0.09] border-dashed"
               />
               <motion.div
-                animate={{ rotateZ: -360 }}
-                transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+                animate={reduce ? undefined : { rotateZ: -360 }}
+                transition={reduce ? undefined : { duration: 35, repeat: Infinity, ease: "linear" }}
                 className="absolute inset-[12%] rounded-full border border-[#c5a880]/20"
                 style={{
                   boxShadow: "0 0 35px rgba(197, 168, 128, 0.12), inset 0 0 20px rgba(197, 168, 128, 0.06)",
@@ -449,14 +476,20 @@ export function Hero() {
           <motion.div
             initial={{ scale: 0.6, rotateX: 0 }}
             animate={
-              impactHappened
+              reduce
+                ? { scale: 1, rotateX: 76 }
+                : impactHappened
                 ? { scale: 1, rotateX: [0, 40, 76] }
                 : { scale: 0.6, rotateX: 0 }
             }
-            transition={{
-              scale: { duration: 1.1, delay: 0.15, ease: "easeOut" },
-              rotateX: { duration: 1.8, delay: 0.15, ease: "easeOut" },
-            }}
+            transition={
+              reduce
+                ? { duration: 0 }
+                : {
+                    scale: { duration: 1.1, delay: 0.15, ease: "easeOut" },
+                    rotateX: { duration: 1.8, delay: 0.15, ease: "easeOut" },
+                  }
+            }
             className="absolute pointer-events-none flex items-center justify-center"
             style={{
               width: "160%",
@@ -468,24 +501,30 @@ export function Hero() {
             <motion.div
               initial={{ opacity: 0, rotateZ: 0 }}
               animate={
-                impactHappened
+                reduce
+                  ? { opacity: 1, rotateZ: 0 }
+                  : impactHappened
                   ? { opacity: 1, rotateZ: [0, 360, 720] }
                   : { opacity: 0, rotateZ: 0 }
               }
-              transition={{
-                opacity: { duration: 0.6, delay: 0.15 },
-                rotateZ: { duration: 2.2, delay: 0.15, ease: "easeOut" },
-              }}
+              transition={
+                reduce
+                  ? { duration: 0 }
+                  : {
+                      opacity: { duration: 0.6, delay: 0.15 },
+                      rotateZ: { duration: 2.2, delay: 0.15, ease: "easeOut" },
+                    }
+              }
               className="w-full h-full relative flex items-center justify-center"
             >
               <motion.div
-                animate={{ rotateZ: 360 }}
-                transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
+                animate={reduce ? undefined : { rotateZ: 360 }}
+                transition={reduce ? undefined : { duration: 55, repeat: Infinity, ease: "linear" }}
                 className="absolute inset-0 rounded-full border border-white/[0.09] border-dashed"
               />
               <motion.div
-                animate={{ rotateZ: -360 }}
-                transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+                animate={reduce ? undefined : { rotateZ: -360 }}
+                transition={reduce ? undefined : { duration: 35, repeat: Infinity, ease: "linear" }}
                 className="absolute inset-[12%] rounded-full border border-[#c5a880]/20"
                 style={{
                   boxShadow: "0 0 35px rgba(197, 168, 128, 0.12), inset 0 0 20px rgba(197, 168, 128, 0.06)",
@@ -511,7 +550,9 @@ export function Hero() {
                 key={p.id}
                 initial={{ x: 0, y: 0, scale: 0, opacity: 0 }}
                 animate={
-                  impactHappened
+                  reduce
+                    ? { x: targetX, y: targetY, scale: 1, opacity: p.opacity }
+                    : impactHappened
                     ? {
                         x: [targetX, targetX + 5, targetX - 4, targetX],
                         y: [
@@ -526,7 +567,9 @@ export function Hero() {
                     : { x: 0, y: 0, scale: 0, opacity: 0 }
                 }
                 transition={
-                  impactHappened
+                  reduce
+                    ? { duration: 0 }
+                    : impactHappened
                     ? {
                         scale: { duration: 0.6, ease: "easeOut" },
                         x: {
@@ -590,12 +633,16 @@ export function Hero() {
           <motion.div
             initial={{ scale: 3.2, y: -180 }}
             animate={
-              impactHappened
+              reduce
+                ? { scale: 1, y: 0 }
+                : impactHappened
                 ? { scale: 1, y: 0 }
                 : { scale: [3.2, 2.9, 3.2], y: -180 }
             }
             transition={
-              impactHappened
+              reduce
+                ? { duration: 0 }
+                : impactHappened
                 ? { duration: 0.65, ease: [0.16, 1, 0.3, 1] }
                 : { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
             }
@@ -610,12 +657,16 @@ export function Hero() {
             <motion.div
               initial={{ opacity: 0, filter: "blur(12px) brightness(1.6)" }}
               animate={
-                impactHappened
+                reduce
+                  ? { opacity: 1, filter: "blur(0px) brightness(1)" }
+                  : impactHappened
                   ? { opacity: 1, filter: "blur(0px) brightness(1)" }
                   : { opacity: [0.7, 0.9, 0.7], filter: "blur(8px) brightness(1.8)" }
               }
               transition={
-                impactHappened
+                reduce
+                  ? { duration: 0 }
+                  : impactHappened
                   ? { duration: 0.65, ease: [0.16, 1, 0.3, 1] }
                   : { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
               }
@@ -623,20 +674,25 @@ export function Hero() {
             >
               {/* Ambient continuous vertical drift after landing */}
               <motion.div
-                animate={impactHappened ? { y: [0, -9, 0] } : {}}
-                transition={{
-                  duration: 5.2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+                animate={impactHappened && !reduce ? { y: [0, -9, 0] } : {}}
+                transition={
+                  reduce
+                    ? { duration: 0 }
+                    : { duration: 5.2, repeat: Infinity, ease: "easeInOut" }
+                }
                 className="w-full h-full relative flex items-center justify-center"
               >
-                <img
-                  src="/images/monolith.png"
-                  alt="Monolith Centerpiece"
-                  className="w-[90%] h-[90%] object-contain drop-shadow-[0_0_55px_rgba(215,165,100,0.22)]"
-                  draggable={false}
-                />
+                <div className="relative w-[90%] h-[90%]">
+                  <Image
+                    src="/images/monolith.png"
+                    alt=""
+                    fill
+                    priority
+                    sizes="(max-width: 640px) 220px, (max-width: 1024px) 340px, 380px"
+                    className="object-contain drop-shadow-[0_0_55px_rgba(215,165,100,0.22)]"
+                    draggable={false}
+                  />
+                </div>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -657,7 +713,7 @@ export function Hero() {
         >
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/80 animate-pulse" />
           <span className="font-mono text-[8.5px] sm:text-[9.5px] md:text-[10px] tracking-[0.2em] sm:tracking-[0.25em] text-white/45 uppercase">
-            Available for exciting projects
+            {siteConfig.availability}
           </span>
         </motion.div>
 
@@ -688,8 +744,8 @@ export function Hero() {
       {/* Bottom-left: Rotating scroll indicator (Desktop only) */}
       <div className="absolute bottom-6 left-6 sm:left-10 hidden md:flex items-center justify-center w-20 h-20 select-none pointer-events-none">
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+          animate={reduce ? undefined : { rotate: 360 }}
+          transition={reduce ? undefined : { duration: 14, repeat: Infinity, ease: "linear" }}
           className="w-full h-full"
         >
           <svg viewBox="0 0 100 100" className="w-full h-full text-white/20">

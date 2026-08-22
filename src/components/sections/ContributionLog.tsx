@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock, Biohazard } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 interface ContributionDay {
   date: string;
@@ -247,7 +248,7 @@ export function ContributionLog() {
   useEffect(() => {
     async function fetchContributions() {
       try {
-        const res = await fetch(`https://github-contributions-api.jogruber.de/v4/LuvyaNishad?_=${Date.now()}`, { cache: "no-store" });
+        const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${siteConfig.githubUsername}?_=${Date.now()}`, { cache: "no-store" });
         if (!res.ok) throw new Error("fetch failed");
         const data = await res.json();
         const total = Object.values(data.total).reduce((s: number, c: any) => s + Number(c), 0);
@@ -357,7 +358,7 @@ export function ContributionLog() {
               <Biohazard size={20} className="text-[#c5261a] animate-pulse" />
               <span className="font-mono text-[12px] uppercase tracking-[0.28em] text-[#c5261a]">Developer Activity</span>
             </div>
-            <h2 className="font-serif text-[clamp(3rem,8vw,6.5rem)] uppercase leading-[0.9] tracking-[0.02em] text-white">
+            <h2 className="font-display text-[clamp(3rem,8vw,6.5rem)] uppercase leading-[0.9] tracking-[0.02em] text-white">
               Contribution Log
             </h2>
             <div className="mt-4 h-[2px] w-16 bg-[#c5261a]" />
