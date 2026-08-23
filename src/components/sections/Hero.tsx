@@ -37,6 +37,17 @@ const DEBRIS_CONFIG: DebrisParticle[] = [
 ];
 
 /**
+ * Reduced-motion policy for the hero.
+ *
+ * When `true`, the OS "reduce motion" setting suppresses the crash-landing
+ * timeline, the ambient monolith drift and the orbiting debris float. Kept
+ * `false` because that sequence IS the hero, not decoration — every gate below
+ * is left in place, so flipping this to `true` hands the whole cinematic
+ * sequence back to the OS setting in one edit.
+ */
+const HONOR_REDUCED_MOTION: boolean = false;
+
+/**
  * Hero — Centered cinematic layout with:
  *  - High-impact Monolith centerpiece scaled up prominently
  *  - 3D perspective orbital rings lying flat on horizontal axis behind the monolith
@@ -53,8 +64,11 @@ export function Hero() {
   const [designingComplete, setDesigningComplete] = useState(false);
   const [subtitleComplete, setSubtitleComplete] = useState(false);
 
-  /* Respect the OS "reduce motion" setting for all JS-driven animation. */
-  const reduce = useReducedMotion();
+  /* Reduced-motion gate — see HONOR_REDUCED_MOTION above. Resolves to `false`
+     by default so the crash, drift and debris play on every machine (and it
+     matches SSR, which keeps hydration stable). */
+  const prefersReducedMotion = useReducedMotion();
+  const reduce = HONOR_REDUCED_MOTION && !!prefersReducedMotion;
 
   const monolithRef = useRef<HTMLDivElement>(null);
 

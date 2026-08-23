@@ -950,11 +950,22 @@ body {
 
 /* ═══════════════════════════════════════════════════════
    REDUCED MOTION
-   Respect the OS "reduce motion" setting. We collapse all
-   CSS animations/transitions to near-instant (keeping their
-   end state via fill-mode) and stop the ambient looping
-   effects entirely. Framer Motion animations are gated
-   separately in-component via useReducedMotion().
+   The atmospheric layer (fog drift, grain, glow ramps, the
+   monolith crash) is the product here, so we deliberately do
+   NOT flatten it when the OS asks for reduced motion. The
+   JS-side twin of this decision is HONOR_REDUCED_MOTION in
+   src/components/sections/Hero.tsx.
+
+   What we still honour: instant scroll jumps, no relentless
+   high-frequency loops, and no custom cursor (it self-disables
+   in CustomCursor.tsx too — this is belt and braces).
+
+   To go back to full compliance, restore the blanket rule:
+     *, *::before, *::after {
+       animation-duration: 0.001ms !important;
+       animation-iteration-count: 1 !important;
+       transition-duration: 0.001ms !important;
+     }
    ═══════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -964,13 +975,10 @@ body {
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
 
-  /* Kill continuously-looping ambient effects outright */
+  /* Kill the tightest looping ambient effects — high frequency, low payoff */
   .ecg-trace,
   .cursor-orbit,
   .cursor-dot-glow,
