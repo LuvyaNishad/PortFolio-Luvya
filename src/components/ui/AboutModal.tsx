@@ -90,43 +90,17 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
     };
   }, [handleKeyDown]);
 
+  /* Role & location always come from site.ts so they can't drift; the rest
+     of the spec rows are editable in src/data/about.ts. */
   const specs = [
     { label: "ROLE", value: siteConfig.role },
-    { label: "EXPERIENCE", value: "5+ Years Crafting Digital Systems" },
-    { label: "LOCATION", value: "Remote / Global Mobility" },
-    { label: "METHODOLOGY", value: "Intentional, Tactile & Systems-First" },
-    { label: "CORE TOOLS", value: "Figma, React, Next.js, Framer, Tailwind" },
-    { label: "STATUS", value: "Available for Q1/Q2 Projects" },
+    { label: "LOCATION", value: siteConfig.location },
+    ...aboutSpecs,
   ];
 
-  const tags = [
-    "PRODUCT DESIGN",
-    "DESIGN SYSTEMS",
-    "UI/UX ARCHITECTURE",
-    "CREATIVE TECH",
-    "MOTION & 3D",
-  ];
+  const tags = aboutTags;
 
-  const timelineData = [
-    {
-      year: "2023 - Present",
-      title: "Senior UI/UX Designer",
-      company: "Freelance / Global",
-      description: "Designing end-to-end digital experiences, scaling design systems, and building interactive web apps using React and Next.js."
-    },
-    {
-      year: "2021 - 2023",
-      title: "Product Designer",
-      company: "Tech Solutions Inc.",
-      description: "Led the redesign of core enterprise applications, improving user retention and streamlining complex workflows."
-    },
-    {
-      year: "2018 - 2021",
-      title: "B.Des in Visual Communication",
-      company: "Design Institute",
-      description: "Graduated with honors. Specialized in human-computer interaction, typography, and creative technology."
-    }
-  ];
+  const timelineData = aboutTimeline;
 
   /* Portals need a real DOM node to attach to. There isn't one while the
      page is being rendered on the server, so render nothing there — the
@@ -270,7 +244,7 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
             >
               <div className="h-1.5 w-1.5 rounded-full bg-[#c5a880] animate-pulse" />
               <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/60">
-                OPERATOR // AURELIUS_01
+                OPERATOR {"//"} {siteConfig.name.toUpperCase()}_01
               </span>
             </div>
           </div>
@@ -311,7 +285,7 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
                 {siteConfig.role}
               </p>
               <h3 className="font-display text-4xl sm:text-5xl uppercase leading-none text-white tracking-[0.02em]">
-                AURELIUS{" "}
+                {siteConfig.name.toUpperCase()}{" "}
                 <span className="font-serif italic font-normal normal-case text-3xl sm:text-4xl text-[#e5be8a] ml-1">
                   Behind the Craft
                 </span>
@@ -326,74 +300,80 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
                     <span className="text-[#c5a880]">{"//"}</span> 01. WHO I AM
                   </h4>
                   <p className="font-sans text-[14px] leading-[1.8] text-white/70">
-                    I am a multidisciplinary product designer and creative engineer with a passion for building intentional, high-fidelity digital systems. I operate at the intersection of strategic user experience, evocative visual aesthetics, and resilient frontend code. Rather than treating design and development as separate silos, I unify them into a single holistic craft.
+                    {aboutBio}
                   </p>
                 </div>
-                
-                {/* Tags row */}
-                <div>
-                  <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40 mb-3 flex items-center gap-2">
-                    <span className="text-[#c5a880]">{"//"}</span> DISCIPLINE
-                  </h4>
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                    {tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2.5 py-1 font-mono text-[9px] tracking-[0.15em] uppercase border border-white/10 bg-white/[0.03] text-white/50"
+
+                {/* Tags row — hidden if aboutTags is emptied */}
+                {tags.length > 0 && (
+                  <div>
+                    <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40 mb-3 flex items-center gap-2">
+                      <span className="text-[#c5a880]">{"//"}</span> DISCIPLINE
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                      {tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2.5 py-1 font-mono text-[9px] tracking-[0.15em] uppercase border border-white/10 bg-white/[0.03] text-white/50"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Specs grid — hidden if aboutSpecs is emptied */}
+              {specs.length > 0 && (
+                <div className="xl:w-[40%]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                    {specs.map((spec) => (
+                      <div
+                        key={spec.label}
+                        className="p-3 border border-white/6 bg-white/[0.02] rounded-none"
                       >
-                        {tag}
-                      </span>
+                        <span className="block font-mono text-[8px] tracking-[0.18em] uppercase text-white/35 mb-1">
+                          {spec.label}
+                        </span>
+                        <span className="block font-mono text-[11px] tracking-[0.02em] text-white/75">
+                          {spec.value}
+                        </span>
+                      </div>
                     ))}
                   </div>
                 </div>
-              </div>
+              )}
+            </div>
 
-              {/* Specs grid */}
-              <div className="xl:w-[40%]">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                  {specs.map((spec) => (
-                    <div
-                      key={spec.label}
-                      className="p-3 border border-white/6 bg-white/[0.02] rounded-none"
-                    >
-                      <span className="block font-mono text-[8px] tracking-[0.18em] uppercase text-white/35 mb-1">
-                        {spec.label}
+            {/* Journey Timeline — hidden entirely if aboutTimeline is emptied */}
+            {timelineData.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40 mb-6 flex items-center gap-2">
+                  <span className="text-[#c5a880]">{"//"}</span> 02. JOURNEY &amp; EDUCATION
+                </h4>
+
+                <div className="relative border-l border-white/10 pl-6 sm:pl-8 ml-3 space-y-8">
+                  {timelineData.map((item, i) => (
+                    <div key={i} className="relative">
+                      <div className="absolute -left-[31px] sm:-left-[39px] top-1.5 h-3 w-3 rounded-full border-[3px] border-[#0c0c0f] bg-[#c5a880]" />
+                      <span className="font-mono text-[9px] tracking-[0.2em] text-[#c5a880] uppercase">
+                        {item.year}
                       </span>
-                      <span className="block font-mono text-[11px] tracking-[0.02em] text-white/75">
-                        {spec.value}
+                      <h4 className="font-display text-xl sm:text-2xl text-white mt-1 uppercase tracking-wide">
+                        {item.title}
+                      </h4>
+                      <span className="font-mono text-[10px] text-white/50 uppercase block mb-3 tracking-[0.1em]">
+                        {item.company}
                       </span>
+                      <p className="font-sans text-[13px] sm:text-[14px] text-white/60 leading-relaxed max-w-2xl">
+                        {item.description}
+                      </p>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
-
-            {/* Journey Timeline */}
-            <div className="mt-4">
-              <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40 mb-6 flex items-center gap-2">
-                <span className="text-[#c5a880]">{"//"}</span> 02. JOURNEY &amp; EDUCATION
-              </h4>
-              
-              <div className="relative border-l border-white/10 pl-6 sm:pl-8 ml-3 space-y-8">
-                {timelineData.map((item, i) => (
-                  <div key={i} className="relative">
-                    <div className="absolute -left-[31px] sm:-left-[39px] top-1.5 h-3 w-3 rounded-full border-[3px] border-[#0c0c0f] bg-[#c5a880]" />
-                    <span className="font-mono text-[9px] tracking-[0.2em] text-[#c5a880] uppercase">
-                      {item.year}
-                    </span>
-                    <h4 className="font-display text-xl sm:text-2xl text-white mt-1 uppercase tracking-wide">
-                      {item.title}
-                    </h4>
-                    <span className="font-mono text-[10px] text-white/50 uppercase block mb-3 tracking-[0.1em]">
-                      {item.company}
-                    </span>
-                    <p className="font-sans text-[13px] sm:text-[14px] text-white/60 leading-relaxed max-w-2xl">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
 
             {/* Bottom action bar */}
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-6 border-t border-white/8 pt-6">
