@@ -85,7 +85,7 @@ export const siteConfig = {
   url: SITE_URL,
 
   /** Primary contact email — powers the mailto fallback + contact card. */
-  email: "luvyanishad@gmail.com",
+  email: "workwithluvya@gmail.com",
 
   /**
    * Resume link. Leave "" to hide the Resume button entirely.
