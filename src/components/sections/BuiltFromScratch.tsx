@@ -143,7 +143,7 @@ function CategoryBlock({
           className="font-mono text-[10px] uppercase tracking-[0.2em]"
           style={{ color: category.accent }}
         >
-          // {category.label}
+          {"// "}{category.label}
         </span>
 
         <h3 className="mt-3 font-display text-[clamp(2rem,5vw,4rem)] uppercase leading-[0.95] text-white">
@@ -201,11 +201,11 @@ export function BuiltFromScratch() {
       id="built-from-scratch"
       className="relative overflow-hidden bg-[#0a0a0c] border-t border-white/5 scroll-mt-24 md:scroll-mt-32"
     >
-      {/* Background Image — section_bg.png spanning all 4 showcase categories */}
+      {/* Background Image — section_bg.webp spanning all 4 showcase categories */}
       <div
         className="absolute inset-0 showcase-bg-mask"
         style={{
-          backgroundImage: "url('/images/section_bg.png')",
+          backgroundImage: "url('/images/section_bg.webp')",
           backgroundSize: "100% auto",
           backgroundPosition: "center top",
           backgroundRepeat: "no-repeat",

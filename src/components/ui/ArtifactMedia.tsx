@@ -34,7 +34,6 @@ export function ArtifactMedia({
 }) {
   if (src) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
       <motion.img
         layoutId={layoutId}
         src={src}

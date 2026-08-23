@@ -49,14 +49,21 @@ function formatContributionDate(dateStr: string): string {
   return result;
 }
 
-/* ─── Fallback data generator — cached at module level, runs once ─── */
-let _fallbackCache: { weeks: ContributionDay[][]; monthLabels: MonthLabel[] } | null = null;
-function generateFallbackData() {
-  if (_fallbackCache) return _fallbackCache;
+/* ─────────────────────────────────────────────────────────────
+   Empty grid scaffold — real dates, zero activity.
+   ─────────────────────────────────────────────────────────────
+   This is what renders while the GitHub API is loading and if it
+   ever fails. It deliberately contains NO invented contributions:
+   the calendar shape and month labels are real, every cell is 0.
+   A "sync unavailable" note is shown instead, so the section is
+   never claiming activity that didn't happen.
+   Cached at module level — the date maths runs once.
+*/
+let _emptyGridCache: { weeks: ContributionDay[][]; monthLabels: MonthLabel[] } | null = null;
+function buildEmptyGrid() {
+  if (_emptyGridCache) return _emptyGridCache;
   const weeks: ContributionDay[][] = [];
   const monthLabels: MonthLabel[] = [];
-  let seed = 42;
-  const rand = () => { seed = (seed * 16807) % 2147483647; return (seed & 0xffff) / 0xffff; };
   const today = new Date();
   const endDate = new Date(today);
   endDate.setDate(today.getDate() + (6 - today.getDay()));
@@ -66,17 +73,8 @@ function generateFallbackData() {
   const cursor = new Date(startDate);
   for (let w = 0; w < 53; w++) {
     const days: ContributionDay[] = [];
-    const base = (w >= 12 && w <= 28) || (w >= 36 && w <= 46) ? 0.6 : 0.3;
     for (let d = 0; d < 7; d++) {
-      const dateStr = cursor.toISOString().slice(0, 10);
-      if (cursor > today) {
-        days.push({ date: dateStr, count: 0, level: 0 });
-      } else {
-        const r = rand();
-        const level = r > base ? 0 : r > base * 0.4 ? 1 : r > base * 0.18 ? 2 : r > base * 0.06 ? 3 : 4;
-        const count = level === 0 ? 0 : level === 1 ? 1 : level === 2 ? Math.floor(2 + rand() * 3) : level === 3 ? Math.floor(5 + rand() * 4) : Math.floor(9 + rand() * 8);
-        days.push({ date: dateStr, count, level });
-      }
+      days.push({ date: cursor.toISOString().slice(0, 10), count: 0, level: 0 });
       if (d === 0) {
         const m = cursor.getMonth();
         if (m !== lastMonth) { monthLabels.push({ index: w, label: MONTHS[m] }); lastMonth = m; }
@@ -85,8 +83,8 @@ function generateFallbackData() {
     }
     weeks.push(days);
   }
-  _fallbackCache = { weeks, monthLabels };
-  return _fallbackCache;
+  _emptyGridCache = { weeks, monthLabels };
+  return _emptyGridCache;
 }
 
 /* ─── Activity Legend ─── */
@@ -106,9 +104,11 @@ function ActivityLegend() {
 /* ─── Hover Scramble — interval cleaned up on unmount ─── */
 function HoverScrambleText({ text, className = "", characterSet = "0123456789ABCDEF!@#$%&*<>[]{}",
 }: { text: string; className?: string; characterSet?: string }) {
-  const [displayText, setDisplayText] = useState(text);
+  /* null → show the real text. A string → mid-scramble override. Keeping
+     the override separate means a new `text` prop shows through on its
+     own, with no extra state-sync effect. */
+  const [scrambled, setScrambled] = useState<string | null>(null);
   const ivRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  useEffect(() => { setDisplayText(text); }, [text]);
   useEffect(() => () => { if (ivRef.current) clearInterval(ivRef.current); }, []);
 
   const handleHover = useCallback(() => {
@@ -116,41 +116,53 @@ function HoverScrambleText({ text, className = "", characterSet = "0123456789ABC
     let step = 0; const steps = 14;
     ivRef.current = setInterval(() => {
       const prog = step / steps;
-      setDisplayText(Array.from(text).map((ch, i) =>
+      setScrambled(Array.from(text).map((ch, i) =>
         " °,/:.".includes(ch) ? ch : prog * text.length > i ? ch : characterSet[Math.floor(Math.random() * characterSet.length)]
       ).join(""));
       step++;
-      if (step > steps) { clearInterval(ivRef.current!); ivRef.current = null; setDisplayText(text); }
+      if (step > steps) { clearInterval(ivRef.current!); ivRef.current = null; setScrambled(null); }
     }, 25);
   }, [text, characterSet]);
 
-  return <span onMouseEnter={handleHover} className={`cursor-crosshair transition-colors duration-200 hover:text-white/70 ${className}`}>{displayText}</span>;
+  return <span onMouseEnter={handleHover} className={`cursor-crosshair transition-colors duration-200 hover:text-white/70 ${className}`}>{scrambled ?? text}</span>;
 }
 
-/* ─── Mechanical Counter with RAF cleanup ─── */
-function TotalCounterTicker({ target }: { target: number | string }) {
+/* ─── Mechanical Counter ───────────────────────────────────────
+   Counts up to the REAL total once the section scrolls into view.
+   `target` is null until the GitHub API answers — while it's null
+   the readout shows dashes rather than a made-up number.
+*/
+function TotalCounterTicker({ target }: { target: number | null }) {
+  const [inView, setInView] = useState(false);
   const [count, setCount] = useState(0);
-  const [triggered, setTriggered] = useState(false);
-  const rafRef = useRef<number | null>(null);
-  const targetNum = typeof target === "number" ? target : parseInt(String(target), 10) || 147;
-  useEffect(() => { if (triggered) setCount(targetNum); }, [targetNum, triggered]);
-  useEffect(() => () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); }, []);
 
-  const triggerCount = useCallback(() => {
-    if (triggered) return;
-    setTriggered(true);
+  /* Animate whenever we're visible AND a real total has arrived.
+     Re-runs if the total lands after the section was already seen. */
+  useEffect(() => {
+    if (!inView || target === null) return;
+    let raf = 0;
     const t0 = performance.now();
     const tick = (now: number) => {
       const ease = 1 - Math.pow(1 - Math.min((now - t0) / 950, 1), 3);
-      setCount(Math.floor(ease * targetNum));
-      if (ease < 1) rafRef.current = requestAnimationFrame(tick); else setCount(targetNum);
+      if (ease < 1) {
+        setCount(Math.floor(ease * target));
+        raf = requestAnimationFrame(tick);
+      } else {
+        setCount(target);
+      }
     };
-    rafRef.current = requestAnimationFrame(tick);
-  }, [triggered, targetNum]);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, target]);
+
+  const handleViewportEnter = useCallback(() => setInView(true), []);
 
   return (
-    <motion.span onViewportEnter={triggerCount} className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#c5261a] font-bold tabular-nums">
-      {String(count).padStart(3, "0")}
+    <motion.span
+      onViewportEnter={handleViewportEnter}
+      className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#c5261a] font-bold tabular-nums"
+    >
+      {target === null ? "———" : String(count).padStart(3, "0")}
     </motion.span>
   );
 }
@@ -234,16 +246,64 @@ function HeatmapRow({ dayIndex, currentGrid, onCellHover, onCellLeave }:
   );
 }
 
+/* ─── Live sync status line ────────────────────────────────────
+   Tells the visitor exactly what they're looking at. On failure it
+   says the feed is unreachable and points at the real profile,
+   instead of quietly showing a fabricated calendar.
+*/
+const GITHUB_PROFILE_URL =
+  siteConfig.socials.find((s) => s.key === "github")?.href ||
+  `https://github.com/${siteConfig.githubUsername}`;
+
+function SyncStatusLine({ state }: { state: "loading" | "live" | "offline" }) {
+  if (state === "loading") {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-[11px] text-white/40">&gt; LINK:</span>
+        <span className="font-mono text-[11px] tracking-[0.06em] text-white/40">SYNCING…</span>
+      </div>
+    );
+  }
+
+  if (state === "offline") {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-[11px] text-white/40">&gt; LINK:</span>
+        <span className="font-mono text-[11px] tracking-[0.06em] text-white/45">FEED UNREACHABLE —</span>
+        <a
+          href={GITHUB_PROFILE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-[11px] tracking-[0.06em] text-[#c5261a] underline decoration-[#c5261a]/30 underline-offset-[3px] transition-colors hover:text-[#eb2d20] hover:decoration-[#eb2d20]/60"
+        >
+          VIEW ON GITHUB
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="font-mono text-[11px] text-white/40">&gt; LINK:</span>
+      <span className="h-1.5 w-1.5 rounded-full bg-[#78936f]" style={{ boxShadow: "0 0 6px rgba(120,147,111,0.9)" }} />
+      <span className="font-mono text-[11px] tracking-[0.06em] text-[#78936f]">LIVE // LAST 12 MONTHS</span>
+    </div>
+  );
+}
+
 /* ─── Main Export ─── */
 export function ContributionLog() {
   const [gridData, setGridData] = useState<ContributionDay[][]>([]);
   const [monthLabels, setMonthLabels] = useState<MonthLabel[]>([]);
-  const [totalCount, setTotalCount] = useState<number | string>(147);
+  /** Real total from GitHub. Stays null until it loads — never a stand-in number. */
+  const [totalCount, setTotalCount] = useState<number | null>(null);
+  /** Sync state drives the honest status line in the panel header. */
+  const [syncState, setSyncState] = useState<"loading" | "live" | "offline">("loading");
   const [hoveredDay, setHoveredDay] = useState<{ day: ContributionDay; x: number; y: number } | null>(null);
 
-  const fallback = useMemo(() => generateFallbackData(), []);
-  const currentGrid = gridData.length > 0 ? gridData : fallback.weeks;
-  const currentLabels = monthLabels.length > 0 ? monthLabels : fallback.monthLabels;
+  const empty = useMemo(() => buildEmptyGrid(), []);
+  const currentGrid = gridData.length > 0 ? gridData : empty.weeks;
+  const currentLabels = monthLabels.length > 0 ? monthLabels : empty.monthLabels;
 
   useEffect(() => {
     async function fetchContributions() {
@@ -251,8 +311,7 @@ export function ContributionLog() {
         const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${siteConfig.githubUsername}?_=${Date.now()}`, { cache: "no-store" });
         if (!res.ok) throw new Error("fetch failed");
         const data = await res.json();
-        const total = Object.values(data.total).reduce((s: number, c: any) => s + Number(c), 0);
-        setTotalCount(total);
+        const total = Object.values(data.total as Record<string, number>).reduce((s: number, c) => s + Number(c), 0);
         const raw: ContributionDay[] = data.contributions;
         if (!raw?.length) throw new Error("empty");
         raw.sort((a, b) => a.date.localeCompare(b.date));
@@ -281,11 +340,11 @@ export function ContributionLog() {
         });
         setGridData(Array.from({ length: 53 }, (_, w) => gridCells.slice(w * 7, (w + 1) * 7)));
         setMonthLabels(detectedMonths);
+        setTotalCount(total);
+        setSyncState("live");
       } catch {
-        const fb = generateFallbackData();
-        setGridData(fb.weeks);
-        setMonthLabels(fb.monthLabels);
-        setTotalCount(147);
+        /* No invented data. Keep the empty calendar and say so. */
+        setSyncState("offline");
       }
     }
     fetchContributions();
@@ -343,7 +402,7 @@ export function ContributionLog() {
             <div className="flex items-center gap-3">
               <span className="font-mono text-[8px] uppercase tracking-[0.22em] text-[#c5261a]">Archive Footer Logs</span>
               <span className="h-3 w-px bg-white/15" />
-              <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-white/25">// Umbrella Corp: Dev Activity Report</span>
+              <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-white/25">{"// "}Umbrella Corp: Dev Activity Report</span>
             </div>
             <HoverScrambleText text="33.9889° N, 118.4695° W" className="font-mono text-[8px] tracking-[0.12em] text-white/25" />
           </motion.div>
@@ -389,8 +448,11 @@ export function ContributionLog() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-[11px] text-white/40">&gt; USER:</span>
-                      <span className="font-mono text-[11px] tracking-[0.06em] text-[#c5261a]">LUVYANISHAD</span>
+                      <span className="font-mono text-[11px] tracking-[0.06em] text-[#c5261a]">
+                        {siteConfig.githubUsername.toUpperCase()}
+                      </span>
                     </div>
+                    <SyncStatusLine state={syncState} />
                   </div>
                   <ActivityLegend />
                 </div>

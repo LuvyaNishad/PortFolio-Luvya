@@ -56,33 +56,37 @@ const HONOR_REDUCED_MOTION: boolean = false;
  *  - Cleaned layout (no client logos) with balanced vertical rhythm
  */
 export function Hero() {
-  /* ── Animation & Crash State ── */
-  const [impactHappened, setImpactHappened] = useState(false);
-  const [shake, setShake] = useState(false);
-  const [shockwave, setShockwave] = useState(false);
-  const [telemetryComplete, setTelemetryComplete] = useState(false);
-  const [designingComplete, setDesigningComplete] = useState(false);
-  const [subtitleComplete, setSubtitleComplete] = useState(false);
-
   /* Reduced-motion gate — see HONOR_REDUCED_MOTION above. Resolves to `false`
      by default so the crash, drift and debris play on every machine (and it
      matches SSR, which keeps hydration stable). */
   const prefersReducedMotion = useReducedMotion();
   const reduce = HONOR_REDUCED_MOTION && !!prefersReducedMotion;
 
+  /* ── Animation & Crash State ──
+     The `*Raw` values are advanced by the crash timeline below. The derived
+     flags after them treat "reduced motion" as "timeline already finished",
+     so the composed hero appears at once — derived instead of pushed out of
+     an effect, which keeps rendering to a single pass. */
+  const [impactRaw, setImpactHappened] = useState(false);
+  const [shake, setShake] = useState(false);
+  const [shockwave, setShockwave] = useState(false);
+  const [telemetryRaw, setTelemetryComplete] = useState(false);
+  const [designingRaw, setDesigningComplete] = useState(false);
+  const [subtitleRaw, setSubtitleComplete] = useState(false);
+
+  const impactHappened = reduce || impactRaw;
+  const telemetryComplete = reduce || telemetryRaw;
+  const designingComplete = reduce || designingRaw;
+  const subtitleComplete = reduce || subtitleRaw;
+
   const monolithRef = useRef<HTMLDivElement>(null);
 
   /* ── Initial Load & Crash Timeline Sequence ── */
   useEffect(() => {
-    // Reduced motion: skip the cinematic crash timeline entirely and reveal
-    // the finished composition at once — no shake, shockwave, or delays.
-    if (reduce) {
-      setTelemetryComplete(true);
-      setImpactHappened(true);
-      setDesigningComplete(true);
-      setSubtitleComplete(true);
-      return;
-    }
+    // Reduced motion: nothing to schedule — the derived flags above already
+    // report the sequence as complete, so the finished composition shows
+    // immediately with no shake, shockwave or delays.
+    if (reduce) return;
 
     // Stage 1: Telemetry ticker / scanning phase (0ms - 700ms)
     const t1 = setTimeout(() => {

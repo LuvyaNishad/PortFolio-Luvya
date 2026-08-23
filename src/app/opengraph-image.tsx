@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { siteConfig, SITE_URL } from "@/config/site";
 
 /* Route segment config for the generated OG/social card. */
-export const alt = `${siteConfig.name} — ${siteConfig.role}`;
+export const alt = `${siteConfig.seoName} — ${siteConfig.role}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -59,7 +59,7 @@ export default function OpengraphImage() {
                 color: "rgba(255,255,255,0.55)",
               }}
             >
-              Portfolio
+              {`${siteConfig.name} // Portfolio`}
             </div>
           </div>
           <div
@@ -81,7 +81,7 @@ export default function OpengraphImage() {
                 backgroundColor: "#c5261a",
               }}
             />
-            Available for work
+            {siteConfig.availability}
           </div>
         </div>
 
@@ -89,14 +89,14 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
-              fontSize: 150,
+              fontSize: 118,
               fontWeight: 700,
               lineHeight: 1,
               letterSpacing: -2,
               color: "#ffffff",
             }}
           >
-            {siteConfig.name}
+            {siteConfig.seoName}
           </div>
           <div
             style={{

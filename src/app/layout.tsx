@@ -27,13 +27,16 @@ const fontIbmPlex = IBM_Plex_Mono({
   subsets: ["latin"],
 });
 
-const titleDefault = `${siteConfig.name} — ${siteConfig.role}`;
+/* Tab title & OG headline. Leads with the real name (siteConfig.seoName)
+   so search results read "Luvya Nishad — Designer & Developer"; the
+   "Aurelius" brand stays in the UI and in the JSON-LD alternateName. */
+const titleDefault = `${siteConfig.seoName} — ${siteConfig.role}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: titleDefault,
-    template: `%s · ${siteConfig.name}`,
+    template: `%s · ${siteConfig.seoName}`,
   },
   description: siteConfig.description,
   keywords: [...siteConfig.keywords],
@@ -46,7 +49,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    siteName: siteConfig.name,
+    siteName: siteConfig.seoName,
     title: titleDefault,
     description: siteConfig.description,
   },
@@ -66,7 +69,11 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  icons: { icon: "/favicon.ico" },
+  /* Icons are intentionally NOT listed here. Next.js picks up
+     app/favicon.ico, app/icon.png and app/apple-icon.png automatically and
+     emits the right <link> tags; an explicit `icons` key would override
+     that and drop the apple-touch icon. Regenerate all three with
+     `node scripts/generate-icons.mjs`. */
 };
 
 export const viewport: Viewport = {

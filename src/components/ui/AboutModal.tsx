@@ -1,12 +1,18 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { X, ShieldCheck, Mail } from "lucide-react";
 import { siteConfig, activeSocials } from "@/config/site";
 import { SOCIAL_ICONS } from "@/components/ui/SocialIcons";
+import {
+  aboutBio,
+  aboutTags,
+  aboutSpecs,
+  aboutTimeline,
+} from "@/data/about";
 
 /* ─── Reusable corner bracket ornament ─── */
 function TacticalBrackets({
@@ -66,11 +72,6 @@ function TacticalBrackets({
 
 export function AboutModal({ onClose }: { onClose: () => void }) {
   const accent = "#c5a880";
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // ESC key listener
   const handleKeyDown = useCallback(
@@ -127,7 +128,10 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
     }
   ];
 
-  if (!mounted) return null;
+  /* Portals need a real DOM node to attach to. There isn't one while the
+     page is being rendered on the server, so render nothing there — the
+     modal only ever opens from a click, which is client-side anyway. */
+  if (typeof document === "undefined") return null;
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
@@ -289,7 +293,7 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
               <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/35">
                 DOSSIER // PERSONNEL
               </span>
-              <span className="text-white/15 font-mono text-[8px]">//</span>
+              <span className="text-white/15 font-mono text-[8px]">{"//"}</span>
               <span
                 className="font-mono text-[8px] tracking-[0.2em] uppercase"
                 style={{ color: accent }}
@@ -319,7 +323,7 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
               <div className="flex-1 space-y-6">
                 <div>
                   <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40 mb-3 flex items-center gap-2">
-                    <span className="text-[#c5a880]">//</span> 01. WHO I AM
+                    <span className="text-[#c5a880]">{"//"}</span> 01. WHO I AM
                   </h4>
                   <p className="font-sans text-[14px] leading-[1.8] text-white/70">
                     I am a multidisciplinary product designer and creative engineer with a passion for building intentional, high-fidelity digital systems. I operate at the intersection of strategic user experience, evocative visual aesthetics, and resilient frontend code. Rather than treating design and development as separate silos, I unify them into a single holistic craft.
@@ -329,7 +333,7 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
                 {/* Tags row */}
                 <div>
                   <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40 mb-3 flex items-center gap-2">
-                    <span className="text-[#c5a880]">//</span> DISCIPLINE
+                    <span className="text-[#c5a880]">{"//"}</span> DISCIPLINE
                   </h4>
                   <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {tags.map((tag) => (
@@ -367,7 +371,7 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
             {/* Journey Timeline */}
             <div className="mt-4">
               <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40 mb-6 flex items-center gap-2">
-                <span className="text-[#c5a880]">//</span> 02. JOURNEY &amp; EDUCATION
+                <span className="text-[#c5a880]">{"//"}</span> 02. JOURNEY &amp; EDUCATION
               </h4>
               
               <div className="relative border-l border-white/10 pl-6 sm:pl-8 ml-3 space-y-8">

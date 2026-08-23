@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight, Code2, Layers3, Palette, Play, Plus } from "lucide-react";
-import { LiquidGlassEffect } from "@/components/ui/LiquidGlassEffect";
 import HighlightCard from "@/components/ui/highlight-card";
 import { MetadataText } from "@/components/ui/MetadataText";
 import { cn } from "@/utils/cn";
@@ -224,7 +223,7 @@ export function WorkLibrary() {
       <div
         className="absolute inset-0 opacity-35 work-library-bg-mask"
         style={{
-          backgroundImage: "url('/images/work_library_bg1.png')",
+          backgroundImage: "url('/images/work_library_bg1.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           transform : "scale(1)",
@@ -285,7 +284,7 @@ export function WorkLibrary() {
           className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/8 pt-5 sm:flex-row"
         >
           <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/20">
-            // Archive index synchronized
+            {"// "}Archive index synchronized
           </span>
           <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/20">
             Interaction layer: hover only

@@ -34,11 +34,29 @@ export const SITE_URL: string =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "") ||
   "https://your-domain.com";
 
+/* ─────────────────────────────────────────────────────────────
+   The two names. Edit these two lines and every heading, tab
+   title, footer credit and search-engine record follows.
+   ───────────────────────────────────────────────────────────── */
+
+/** Real name. Leads the browser tab title and search results. */
+const LEGAL_NAME = "Luvya Nishad";
+/** Brand / alias shown inside the site's own UI. */
+const BRAND_NAME = "Aurelius";
+
 export const siteConfig = {
-  /** Brand / display name shown in headings and metadata. */
-  name: "Aurelius",
+  /** Brand / display name shown in headings and in-site UI. */
+  name: BRAND_NAME,
   /** Full legal/real name — used for copyright & structured data. */
-  legalName: "Luvya Nishad",
+  legalName: LEGAL_NAME,
+  /**
+   * Name that leads the browser tab title, Open Graph card and search
+   * results. Set to the real name so anyone googling "Luvya Nishad"
+   * finds this site; "Aurelius" still shows throughout the UI and is
+   * registered as an `alternateName` in the structured data.
+   * Swap to BRAND_NAME if you'd rather lead with the brand.
+   */
+  seoName: LEGAL_NAME,
   /** Logo initials mark (footer, etc.). */
   initials: "LN",
 
@@ -57,7 +75,7 @@ export const siteConfig = {
 
   /** SEO meta description (~150–160 chars ideal). */
   description:
-    "Aurelius is a designer and developer crafting cinematic, user-centered digital experiences — from interface design to production-ready frontend engineering.",
+    "Luvya Nishad (Aurelius) — designer and developer crafting cinematic, user-centered digital experiences, from interface design to production frontend engineering.",
 
   /** Availability line shown in the hero. */
   availability: "Available for exciting projects",
@@ -92,6 +110,9 @@ export const siteConfig = {
 
   /** Default SEO keywords. */
   keywords: [
+    LEGAL_NAME,
+    `${LEGAL_NAME} portfolio`,
+    BRAND_NAME,
     "designer",
     "developer",
     "UI/UX designer",

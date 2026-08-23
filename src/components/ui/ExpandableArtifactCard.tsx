@@ -327,7 +327,7 @@ function ArtifactModal({
               <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/30">
                 GRAPHIC DESIGN
               </span>
-              <span className="text-white/15 font-mono text-[8px]">//</span>
+              <span className="text-white/15 font-mono text-[8px]">{"//"}</span>
               <span
                 className="font-mono text-[8px] tracking-[0.2em] uppercase"
                 style={{ color: artifact.accent }}
@@ -405,7 +405,7 @@ function ArtifactModal({
               transition={{ delay: 0.25, duration: 0.5 }}
             >
               <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/35 mb-2.5">
-                // OVERVIEW
+                {"// "}OVERVIEW
               </h4>
               <p className="font-sans text-[13px] leading-[1.75] text-white/55">
                 {artifact.overview}
@@ -419,7 +419,7 @@ function ArtifactModal({
               transition={{ delay: 0.3, duration: 0.5 }}
             >
               <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/35 mb-2.5">
-                // ART DIRECTION
+                {"// "}ART DIRECTION
               </h4>
               <p className="font-sans text-[13px] leading-[1.75] text-white/55">
                 {artifact.artDirection}

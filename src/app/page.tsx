@@ -145,7 +145,7 @@ export default function Home() {
       <div 
         className="portfolio-band portfolio-band--contact relative w-full"
         style={{
-          background: "#0a0a0c url('/images/mergebg.png') no-repeat 50% 20% / cover",
+          background: "#0a0a0c url('/images/mergebg.webp') no-repeat 50% 20% / cover",
           position: "relative",
           zIndex: 1
         }}
