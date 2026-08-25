@@ -176,6 +176,123 @@ function ArtifactGridCard({
   );
 }
 
+/* ─── Shared dossier info block ─── */
+function DossierContent({ artifact }: { artifact: VisualArtifact }) {
+  return (
+    <>
+      {/* Category breadcrumb */}
+      <div className="flex items-center gap-3">
+        <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/30">
+          GRAPHIC DESIGN
+        </span>
+        <span className="text-white/15 font-mono text-[8px]">{"//"}</span>
+        <span
+          className="font-mono text-[8px] tracking-[0.2em] uppercase"
+          style={{ color: artifact.accent }}
+        >
+          {artifact.subtitle}
+        </span>
+      </div>
+
+      {/* Title block */}
+      <div className="border-b border-white/8 pb-4">
+        <p
+          className="font-mono text-[10px] tracking-[0.18em] uppercase mb-2"
+          style={{ color: artifact.accent }}
+        >
+          {artifact.tags[0]}
+        </p>
+        <h3 className="font-display text-2xl sm:text-3xl md:text-4xl uppercase leading-none text-white">
+          {artifact.title}{" "}
+          <span
+            className="font-serif italic font-normal normal-case"
+            style={{ color: artifact.accent, opacity: 0.8 }}
+          >
+            {artifact.titleAccent}
+          </span>
+        </h3>
+      </div>
+
+      {/* Technical Specifications Grid */}
+      <div>
+        <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-3">
+          // SPECIFICATIONS
+        </p>
+        <div className="grid grid-cols-2 gap-2.5">
+          {artifact.specs.map((spec, i) => (
+            <div
+              key={i}
+              className="p-2.5 border border-white/6 bg-white/[0.015] flex flex-col gap-0.5"
+            >
+              <span className="font-mono text-[8px] tracking-[0.15em] uppercase text-white/35">
+                {spec.label}
+              </span>
+              <span className="font-mono text-[10.5px] text-white/85">
+                {spec.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Overview / Brief */}
+      <div>
+        <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
+          // OVERVIEW
+        </p>
+        <p className="font-sans text-[13px] leading-[1.7] text-white/70">
+          {artifact.overview}
+        </p>
+      </div>
+
+      {/* Art Direction / Notes */}
+      <div>
+        <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
+          // ART DIRECTION & CRAFT
+        </p>
+        <p className="font-sans text-[13px] leading-[1.7] text-white/60">
+          {artifact.artDirection}
+        </p>
+      </div>
+
+      {/* Tags footer */}
+      <div className="pt-2 border-t border-white/6 flex flex-wrap gap-1.5">
+        {artifact.tags.map((tag, i) => (
+          <span
+            key={i}
+            className="font-mono text-[8px] uppercase tracking-[0.15em] px-2 py-1 border border-white/8 bg-white/[0.02] text-white/45"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Tactical dossier stamp */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="pt-2 flex items-center justify-between border-t border-dashed border-white/8"
+      >
+        <span className="font-mono text-[8px] tracking-[0.2em] text-white/20 uppercase">
+          RECORD VERIFIED // AURELIUS ARCHIVE
+        </span>
+        <div className="relative h-4 w-4 flex items-center justify-center">
+          <div className="absolute h-full w-px bg-white/15" />
+          <div className="absolute w-full h-px bg-white/15" />
+          <div className="h-1.5 w-1.5 rounded-full border border-white/20" />
+        </div>
+        <span
+          className="font-mono text-[8px] tracking-[0.18em] uppercase"
+          style={{ color: artifact.accent, opacity: 0.5 }}
+        >
+          {artifact.id.toUpperCase()}
+        </span>
+      </motion.div>
+    </>
+  );
+}
+
 /* ─── Expanded modal dossier ─── */
 function ArtifactModal({
   artifact,
@@ -184,6 +301,11 @@ function ArtifactModal({
   artifact: VisualArtifact;
   onClose: () => void;
 }) {
+  const isLandscape =
+    artifact.type === "thumbnail" ||
+    artifact.aspectRatio === "16/9" ||
+    artifact.imageSrc.toLowerCase().includes("thumbnail");
+
   // ESC key listener
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -201,8 +323,9 @@ function ArtifactModal({
     };
   }, [handleKeyDown]);
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+  /* ── Shared modal chrome (backdrop, specular edge, brackets, close btn) ── */
+  const modalChrome = (
+    <>
       {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -217,7 +340,6 @@ function ArtifactModal({
           WebkitBackdropFilter: "blur(16px) saturate(0.8)",
         }}
       >
-        {/* Tactical grid scanlines on backdrop */}
         <div
           className="absolute inset-0 opacity-[0.015] pointer-events-none"
           style={{
@@ -227,8 +349,222 @@ function ArtifactModal({
           aria-hidden="true"
         />
       </motion.div>
+    </>
+  );
 
-      {/* Modal container */}
+  const modalDecorations = (
+    <>
+      {/* Top specular edge */}
+      <div
+        className="absolute top-0 left-0 right-0 h-px z-30 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 30%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.18) 70%, transparent 100%)",
+        }}
+      />
+      <TacticalBrackets accent={artifact.accent} size={8} />
+      <button
+        onClick={onClose}
+        className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 flex items-center gap-2 px-2.5 py-1.5 bg-black/50 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300 group/close"
+        style={{ backdropFilter: "blur(8px)" }}
+      >
+        <X
+          size={12}
+          strokeWidth={2}
+          className="text-white/50 group-hover/close:text-white/80 transition-colors group-hover/close:rotate-90 transition-transform duration-300"
+        />
+        <span className="font-mono text-[8px] tracking-[0.18em] uppercase text-white/40 group-hover/close:text-white/60 hidden sm:inline">
+          ESC / CLOSE
+        </span>
+      </button>
+    </>
+  );
+
+  /* ── LANDSCAPE / THUMBNAIL layout: vertical stacked ── */
+  if (isLandscape) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6">
+        {modalChrome}
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.92, y: 20 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-[900px] max-h-[90vh] bg-[#0c0c0f]/95 overflow-y-auto overflow-x-hidden border border-white/10 z-10 flex flex-col expandable-card-scrollbar"
+          style={{
+            boxShadow: `
+              0 32px 80px -20px rgba(0,0,0,0.85),
+              0 0 1px 0 rgba(255,255,255,0.12),
+              inset 0 1px 0 0 rgba(255,255,255,0.08),
+              0 0 60px -10px ${artifact.accent}15
+            `,
+          }}
+        >
+          {modalDecorations}
+
+          {/* ── TOP: Title heading ── */}
+          <div className="p-4 sm:p-6 pb-0 flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/30">
+                GRAPHIC DESIGN
+              </span>
+              <span className="text-white/15 font-mono text-[8px]">{"//"}</span>
+              <span
+                className="font-mono text-[8px] tracking-[0.2em] uppercase"
+                style={{ color: artifact.accent }}
+              >
+                {artifact.subtitle}
+              </span>
+            </div>
+            <div className="pb-3 border-b border-white/8">
+              <p
+                className="font-mono text-[10px] tracking-[0.18em] uppercase mb-1.5"
+                style={{ color: artifact.accent }}
+              >
+                {artifact.tags[0]}
+              </p>
+              <h3 className="font-display text-2xl sm:text-3xl uppercase leading-none text-white">
+                {artifact.title}{" "}
+                <span
+                  className="font-serif italic font-normal normal-case"
+                  style={{ color: artifact.accent, opacity: 0.8 }}
+                >
+                  {artifact.titleAccent}
+                </span>
+              </h3>
+            </div>
+          </div>
+
+          {/* ── MIDDLE: Full-width landscape image ── */}
+          <div className="relative w-full bg-black/40 flex items-center justify-center p-3 sm:p-5">
+            <ArtifactMedia
+              src={artifact.imageSrc}
+              alt={`${artifact.title} ${artifact.titleAccent}`}
+              accent={artifact.accent}
+              prefix={artifact.title}
+              className="w-full h-auto max-h-[50vh] object-contain rounded-sm drop-shadow-2xl"
+            />
+
+            {/* Scanlines */}
+            <div
+              className="absolute inset-0 opacity-[0.02] pointer-events-none"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,1) 3px)",
+              }}
+              aria-hidden="true"
+            />
+
+            {/* Asset ID badge */}
+            <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20">
+              <div
+                className="flex items-center gap-2 px-2 py-1 sm:px-2.5 sm:py-1.5 border border-white/10"
+                style={{
+                  background: "rgba(0,0,0,0.75)",
+                  backdropFilter: "blur(8px)",
+                }}
+              >
+                <div
+                  className="h-1.5 w-1.5 rounded-full"
+                  style={{ background: artifact.accent }}
+                />
+                <span className="font-mono text-[7px] sm:text-[8px] tracking-[0.2em] uppercase text-white/60">
+                  ASSET // {artifact.id.toUpperCase()}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── BOTTOM: Info & specs ── */}
+          <div className="p-4 sm:p-6 pt-4 flex flex-col gap-5">
+            {/* Specs */}
+            <div>
+              <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-3">
+                // SPECIFICATIONS
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {artifact.specs.map((spec, i) => (
+                  <div
+                    key={i}
+                    className="p-2.5 border border-white/6 bg-white/[0.015] flex flex-col gap-0.5"
+                  >
+                    <span className="font-mono text-[8px] tracking-[0.15em] uppercase text-white/35">
+                      {spec.label}
+                    </span>
+                    <span className="font-mono text-[10.5px] text-white/85">
+                      {spec.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Overview & Art Direction side by side on desktop, stacked on mobile */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
+                  // OVERVIEW
+                </p>
+                <p className="font-sans text-[13px] leading-[1.7] text-white/70">
+                  {artifact.overview}
+                </p>
+              </div>
+              <div>
+                <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
+                  // ART DIRECTION & CRAFT
+                </p>
+                <p className="font-sans text-[13px] leading-[1.7] text-white/60">
+                  {artifact.artDirection}
+                </p>
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div className="pt-2 border-t border-white/6 flex flex-wrap gap-1.5">
+              {artifact.tags.map((tag, i) => (
+                <span
+                  key={i}
+                  className="font-mono text-[8px] uppercase tracking-[0.15em] px-2 py-1 border border-white/8 bg-white/[0.02] text-white/45"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* Dossier stamp */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="pt-2 flex items-center justify-between border-t border-dashed border-white/8"
+            >
+              <span className="font-mono text-[8px] tracking-[0.2em] text-white/20 uppercase">
+                RECORD VERIFIED // AURELIUS ARCHIVE
+              </span>
+              <div className="relative h-4 w-4 flex items-center justify-center">
+                <div className="absolute h-full w-px bg-white/15" />
+                <div className="absolute w-full h-px bg-white/15" />
+                <div className="h-1.5 w-1.5 rounded-full border border-white/20" />
+              </div>
+              <span
+                className="font-mono text-[8px] tracking-[0.18em] uppercase"
+                style={{ color: artifact.accent, opacity: 0.5 }}
+              >
+                {artifact.id.toUpperCase()}
+              </span>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  /* ── PORTRAIT / POSTER layout: side-by-side (image | info) ── */
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6">
+      {modalChrome}
+
       <motion.div
         initial={{ opacity: 0, scale: 0.92, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -244,36 +580,10 @@ function ArtifactModal({
           `,
         }}
       >
-        {/* Top specular edge */}
-        <div
-          className="absolute top-0 left-0 right-0 h-px z-30 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 30%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.18) 70%, transparent 100%)",
-          }}
-        />
-
-        {/* Corner brackets */}
-        <TacticalBrackets accent={artifact.accent} size={8} />
-
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-30 flex items-center gap-2 px-2.5 py-1.5 bg-black/50 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300 group/close"
-          style={{ backdropFilter: "blur(8px)" }}
-        >
-          <X
-            size={12}
-            strokeWidth={2}
-            className="text-white/50 group-hover/close:text-white/80 transition-colors group-hover/close:rotate-90 transition-transform duration-300"
-          />
-          <span className="font-mono text-[8px] tracking-[0.18em] uppercase text-white/40 group-hover/close:text-white/60 hidden sm:inline">
-            ESC / CLOSE
-          </span>
-        </button>
+        {modalDecorations}
 
         {/* ─── LEFT: Image viewport ─── */}
-        <div className="relative h-64 sm:h-80 md:h-auto w-full shrink-0 overflow-hidden md:w-[48%] bg-black/60 flex items-center justify-center p-3 sm:p-5">
+        <div className="relative h-56 sm:h-72 md:h-auto w-full shrink-0 overflow-hidden md:w-[48%] bg-black/60 flex items-center justify-center p-3 sm:p-5">
           <ArtifactMedia
             src={artifact.imageSrc}
             alt={`${artifact.title} ${artifact.titleAccent}`}
@@ -296,9 +606,9 @@ function ArtifactModal({
           />
 
           {/* Asset ID badge */}
-          <div className="absolute bottom-4 left-4 z-20">
+          <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20">
             <div
-              className="flex items-center gap-2 px-2.5 py-1.5 border border-white/10"
+              className="flex items-center gap-2 px-2 py-1 sm:px-2.5 sm:py-1.5 border border-white/10"
               style={{
                 background: "rgba(0,0,0,0.75)",
                 backdropFilter: "blur(8px)",
@@ -308,7 +618,7 @@ function ArtifactModal({
                 className="h-1.5 w-1.5 rounded-full"
                 style={{ background: artifact.accent }}
               />
-              <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/60">
+              <span className="font-mono text-[7px] sm:text-[8px] tracking-[0.2em] uppercase text-white/60">
                 ASSET // {artifact.id.toUpperCase()}
               </span>
             </div>
@@ -317,121 +627,8 @@ function ArtifactModal({
 
         {/* ─── RIGHT: Dossier content ─── */}
         <div className="flex-1 flex flex-col min-w-0 overflow-y-auto expandable-card-scrollbar">
-          <div className="p-5 sm:p-7 md:p-8 flex flex-col gap-6">
-            {/* Category breadcrumb */}
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/30">
-                GRAPHIC DESIGN
-              </span>
-              <span className="text-white/15 font-mono text-[8px]">{"//"}</span>
-              <span
-                className="font-mono text-[8px] tracking-[0.2em] uppercase"
-                style={{ color: artifact.accent }}
-              >
-                {artifact.subtitle}
-              </span>
-            </div>
-
-            {/* Title block */}
-            <div className="border-b border-white/8 pb-5">
-              <motion.p
-                className="font-mono text-[10px] tracking-[0.18em] uppercase mb-2"
-                style={{ color: artifact.accent }}
-              >
-                {artifact.tags[0]}
-              </motion.p>
-              <motion.h3
-                className="font-display text-3xl sm:text-4xl uppercase leading-none text-white"
-              >
-                {artifact.title}{" "}
-                <span
-                  className="font-serif italic font-normal normal-case"
-                  style={{ color: artifact.accent, opacity: 0.8 }}
-                >
-                  {artifact.titleAccent}
-                </span>
-              </motion.h3>
-            </div>
-
-            {/* Technical Specifications Grid */}
-            <div>
-              <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-3">
-                // SPECIFICATIONS
-              </p>
-              <div className="grid grid-cols-2 gap-2.5">
-                {artifact.specs.map((spec, i) => (
-                  <div
-                    key={i}
-                    className="p-2.5 border border-white/6 bg-white/[0.015] flex flex-col gap-0.5"
-                  >
-                    <span className="font-mono text-[8px] tracking-[0.15em] uppercase text-white/35">
-                      {spec.label}
-                    </span>
-                    <span className="font-mono text-[10.5px] text-white/85">
-                      {spec.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Overview / Brief */}
-            <div>
-              <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
-                // OVERVIEW
-              </p>
-              <p className="font-sans text-[13px] leading-[1.7] text-white/70">
-                {artifact.overview}
-              </p>
-            </div>
-
-            {/* Art Direction / Notes */}
-            <div>
-              <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
-                // ART DIRECTION & CRAFT
-              </p>
-              <p className="font-sans text-[13px] leading-[1.7] text-white/60">
-                {artifact.artDirection}
-              </p>
-            </div>
-
-            {/* Tags footer */}
-            <div className="pt-2 border-t border-white/6 flex flex-wrap gap-1.5">
-              {artifact.tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className="font-mono text-[8px] uppercase tracking-[0.15em] px-2 py-1 border border-white/8 bg-white/[0.02] text-white/45"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            {/* Tactical dossier stamp */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="pt-2 flex items-center justify-between border-t border-dashed border-white/8"
-            >
-              <span className="font-mono text-[8px] tracking-[0.2em] text-white/20 uppercase">
-                RECORD VERIFIED // AURELIUS ARCHIVE
-              </span>
-
-              {/* Crosshair icon */}
-              <div className="relative h-4 w-4 flex items-center justify-center">
-                <div className="absolute h-full w-px bg-white/15" />
-                <div className="absolute w-full h-px bg-white/15" />
-                <div className="h-1.5 w-1.5 rounded-full border border-white/20" />
-              </div>
-
-              <span
-                className="font-mono text-[8px] tracking-[0.18em] uppercase"
-                style={{ color: artifact.accent, opacity: 0.5 }}
-              >
-                {artifact.id.toUpperCase()}
-              </span>
-            </motion.div>
+          <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-5 sm:gap-6">
+            <DossierContent artifact={artifact} />
           </div>
         </div>
       </motion.div>
