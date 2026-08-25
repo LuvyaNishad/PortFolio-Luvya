@@ -115,27 +115,15 @@ export function Footer() {
 
           {/* ── SUB-FOOTER BAR ──────────────────────────────── */}
           <div className="border-t border-white/10 pt-6">
-            {/* Top row: Logo + Time | Nav links | Back to top */}
-            <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-8">
+            {/* Top row: Logo (Left) | Nav links (Center) | Back to top (Right) */}
+            <div className="flex flex-col gap-6 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4">
+              <div className="flex items-center justify-center md:justify-start">
                 <span className="font-display text-2xl tracking-wide text-white">
                   {siteConfig.initials}<span className="text-red">.</span>
                 </span>
-
-                <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/42">
-                  <span className="mr-2 text-white/24">Local Time</span>
-                  {time ? (
-                    <>
-                      <span className="tabular-nums text-white/80">{time.formatted}</span>
-                      <span className="ml-2 text-white/38">{time.date}</span>
-                    </>
-                  ) : (
-                    <span className="text-white/50">Syncing</span>
-                  )}
-                </div>
               </div>
 
-              <nav className="flex flex-wrap gap-x-6 gap-y-3">
+              <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
                 {NAV_LINKS.map((link) => (
                   <a
                     key={link.label}
@@ -147,7 +135,7 @@ export function Footer() {
                 ))}
               </nav>
 
-              <div className="flex items-center gap-5">
+              <div className="flex items-center justify-center md:justify-end">
                 <button
                   onClick={scrollToTop}
                   className="group flex w-fit items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] text-white/55 transition-colors duration-300 hover:text-white"
@@ -161,8 +149,20 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Bottom line: copyright */}
-            <div className="mt-4 flex items-center justify-between border-t border-white/[0.05] pt-4 xl:justify-end">
+            {/* Bottom row: Local Time (Left) | Copyright & Crafted with care (Right) */}
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-white/[0.08] pt-4">
+              <div className="flex items-center font-mono text-[10px] uppercase tracking-[0.16em] text-white/42">
+                <span className="mr-2 text-white/24">Local Time</span>
+                {time ? (
+                  <>
+                    <span className="tabular-nums text-white/80">{time.formatted}</span>
+                    <span className="ml-2 text-white/38">{time.date}</span>
+                  </>
+                ) : (
+                  <span className="text-white/50">Syncing</span>
+                )}
+              </div>
+
               <span className="font-mono text-[9px] text-white/25 uppercase tracking-wide">
                 © {year} {siteConfig.legalName} · Crafted with care
               </span>
