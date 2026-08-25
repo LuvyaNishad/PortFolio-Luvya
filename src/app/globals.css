@@ -175,30 +175,24 @@ body {
 }
 
 /* ─── Heartbeat ECG Monitor Animation ─────────── */
-@keyframes ecg-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
 .ecg-monitor {
   position: relative;
   width: 180px;
   height: 32px;
   overflow: hidden;
-  mask-image: linear-gradient(to right, transparent 0%, white 15%, white 85%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, white 15%, white 85%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, white 10%, white 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, white 10%, white 90%, transparent 100%);
 }
 
-.ecg-trace {
-  display: flex;
-  width: 200%;
-  animation: ecg-scroll 3s linear infinite;
+/* ─── Social Link Brand Hover ─────────────── */
+.social-pill-btn {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.ecg-trace svg {
-  flex-shrink: 0;
-  width: 50%;
-  height: 32px;
+.social-pill-btn:hover {
+  border-color: var(--brand-border) !important;
+  background-color: var(--brand-bg) !important;
+  box-shadow: var(--brand-glow) !important;
 }
 
 /* ═══════════════════════════════════════════════════

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, Plus } from "lucide-react";
 import { siteConfig, activeSocials } from "@/config/site";
-import { SOCIAL_ICONS } from "@/components/ui/SocialIcons";
+import { SOCIAL_ICONS, SOCIAL_BRAND_COLORS } from "@/components/ui/SocialIcons";
 
 const SERVICES = [
   "Thumbnails & Social Graphics",
@@ -209,6 +209,7 @@ export function Contact() {
               >
                 {activeSocials.map(({ key, label, href }) => {
                   const Icon = SOCIAL_ICONS[key];
+                  const brand = SOCIAL_BRAND_COLORS[key];
                   return (
                     <a
                       key={key}
@@ -216,10 +217,16 @@ export function Contact() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={label}
-                      className="group flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-red/20 bg-black/30 backdrop-blur-sm hover:border-red/50 hover:bg-red/[0.06] transition-all duration-300"
+                      className="social-pill-btn group flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-red/20 bg-black/30 backdrop-blur-sm hover:scale-[1.03]"
+                      style={{
+                        ["--brand-color" as string]: brand?.color || "#ffffff",
+                        ["--brand-border" as string]: brand?.hoverBorder || "rgba(197, 38, 26, 0.5)",
+                        ["--brand-bg" as string]: brand?.hoverBg || "rgba(197, 38, 26, 0.08)",
+                        ["--brand-glow" as string]: brand?.hoverGlow || "none",
+                      }}
                     >
-                      <Icon className="w-3.5 h-3.5 text-white/45 group-hover:text-white/80 transition-colors duration-300" />
-                      <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/60 group-hover:text-white/90 transition-colors duration-300">
+                      <Icon className="w-3.5 h-3.5 text-white/45 transition-colors duration-300 group-hover:text-[var(--brand-color)]" />
+                      <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/60 group-hover:text-white transition-colors duration-300">
                         {label}
                       </span>
                     </a>

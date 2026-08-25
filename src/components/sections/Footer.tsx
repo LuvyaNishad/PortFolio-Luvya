@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import Image from "next/image";
-import { siteConfig } from "@/config/site";
+import { siteConfig, activeSocials } from "@/config/site";
+import { SOCIAL_ICONS, SOCIAL_BRAND_COLORS } from "@/components/ui/SocialIcons";
 
 const NAV_LINKS = [
   { label: "HOME", href: "#home" },
@@ -149,8 +150,8 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Bottom row: Local Time (Left) | Copyright & Crafted with care (Right) */}
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-white/[0.08] pt-4">
+            {/* Bottom row: Local Time (Left) | Social Links (Center) | Copyright (Right) */}
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-t border-white/[0.08] pt-5">
               <div className="flex items-center font-mono text-[10px] uppercase tracking-[0.16em] text-white/42">
                 <span className="mr-2 text-white/24">Local Time</span>
                 {time ? (
@@ -162,6 +163,37 @@ export function Footer() {
                   <span className="text-white/50">Syncing</span>
                 )}
               </div>
+
+              {/* Social Links Pills */}
+              {activeSocials.length > 0 && (
+                <div className="flex items-center gap-2">
+                  {activeSocials.map(({ key, label, href }) => {
+                    const Icon = SOCIAL_ICONS[key];
+                    const brand = SOCIAL_BRAND_COLORS[key];
+                    return (
+                      <a
+                        key={key}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={label}
+                        className="social-pill-btn group flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/10 bg-white/[0.02] hover:scale-[1.03]"
+                        style={{
+                          ["--brand-color" as string]: brand?.color || "#ffffff",
+                          ["--brand-border" as string]: brand?.hoverBorder || "rgba(255, 255, 255, 0.3)",
+                          ["--brand-bg" as string]: brand?.hoverBg || "rgba(255, 255, 255, 0.08)",
+                          ["--brand-glow" as string]: brand?.hoverGlow || "none",
+                        }}
+                      >
+                        <Icon className="w-3 h-3 text-white/40 transition-colors duration-300 group-hover:text-[var(--brand-color)]" />
+                        <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/50 group-hover:text-white transition-colors duration-300">
+                          {label}
+                        </span>
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
 
               <span className="font-mono text-[9px] text-white/25 uppercase tracking-wide">
                 © {year} {siteConfig.legalName} · Crafted with care
