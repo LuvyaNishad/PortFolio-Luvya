@@ -17,13 +17,47 @@ import { useEffect, useRef } from "react";
  *  │    ╌╌╌╌╌╌╌╌╌╌╌     │
  *  └─                  ─┘
  *
- * Performance: All position tracking via refs + RAF. Zero re-renders.
- * States: Default → Hover (expand + accent) → Click (snap inward)
+ * Every visual is defined in globals.css (search "AURELIUS GLASS RETICLE").
+ * This file only moves things and toggles two class names, so restyling the
+ * cursor never means touching JavaScript.
+ *
+ * ── How it stays cheap ──────────────────────────────────────────
+ *  • Zero React re-renders. Positions live in refs; the DOM is written
+ *    directly.
+ *  • ALL style writes happen inside one requestAnimationFrame callback.
+ *    A high-polling-rate mouse fires `mousemove` 8–16× per displayed
+ *    frame; batching in RAF collapses that into a single write per frame
+ *    with no added latency, because the browser can't paint in between
+ *    regardless.
+ *  • The RAF loop shuts itself off once everything has settled, so an
+ *    idle page costs nothing.
+ *  • Hover detection memoises the last element it looked at, so
+ *    `closest()` (which walks up the whole ancestor chain) runs once per
+ *    element entered rather than once per `mouseover` event.
+ *  • `cursor: none` is a static rule in globals.css toggled by a class on
+ *    <html>, not a stylesheet injected at runtime — one less full style
+ *    recalculation at mount.
  */
+
+/**
+ * The cursor is part of the atmosphere here, so — exactly like the monolith
+ * crash timeline in Hero.tsx — we deliberately keep it on when the OS asks
+ * for reduced motion. Flip this to `true` for full compliance: the reticle
+ * then disappears and the normal system cursor comes back.
+ *
+ * The CSS twin of this decision lives in the REDUCED MOTION block of
+ * globals.css. Change both together.
+ */
+const HONOR_REDUCED_MOTION: boolean = false;
+
+/** Elements that should make the reticle expand and turn red. */
+const INTERACTIVE_SELECTOR =
+  "a, button, [role='button'], [role='tab'], [role='link'], label, input, textarea, select, summary, .cursor-pointer, [data-cursor-hover]";
+
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const trailRefs = useRef<HTMLDivElement[]>([]);
+  const trailRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
 
   /* Position refs — no state, no re-renders */
   const mouse = useRef({ x: -200, y: -200 });
@@ -36,53 +70,124 @@ export function CustomCursor() {
   const rafId = useRef(0);
 
   useEffect(() => {
-    /* ── Guard: skip on touch devices AND when the user prefers reduced
-       motion. Critical: if we bail we must NOT inject `cursor: none`,
-       otherwise the user is left with no visible cursor at all. ── */
-    const isTouch = window.matchMedia("(hover: none)").matches;
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (isTouch || prefersReducedMotion) return;
+    /* ── Guards ──────────────────────────────────────────────────
+       Touch devices get nothing: there's no pointer to replace, and
+       hiding the cursor there would be actively harmful.
 
-    /* ── Inject global cursor: none ── */
-    const styleTag = document.createElement("style");
-    styleTag.id = "aurelius-cursor-hide";
-    styleTag.textContent = `
-      *, *::before, *::after { cursor: none !important; }
-      html { cursor: none !important; }
-    `;
-    document.head.appendChild(styleTag);
+       If we bail for ANY reason we must not add the `cursor-hidden`
+       class, or the visitor is left with no visible pointer at all. */
+    if (window.matchMedia("(hover: none)").matches) return;
+    if (
+      HONOR_REDUCED_MOTION &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
 
     const dot = dotRef.current;
     const ring = ringRef.current;
-    const ringInner = ring?.querySelector<HTMLElement>(".cursor-ring-inner");
-    const dotInner = dot?.querySelector<HTMLElement>(".cursor-dot-inner");
+    if (!dot || !ring) return;
 
-    let isLooping = false;
+    const ringInner = ring.querySelector<HTMLElement>(".cursor-ring-inner");
+    const dotInner = dot.querySelector<HTMLElement>(".cursor-dot-inner");
+
+    /* Take over the pointer. Paired with the .cursor-hidden rule in
+       globals.css; removed again in cleanup below. */
+    const root = document.documentElement;
+    root.classList.add("cursor-hidden");
+
+    /* Every layer that fades in together, collected once so the reveal
+       doesn't re-walk refs on each event. */
+    const layers: HTMLElement[] = [dot, ring];
+    for (const t of trailRefs.current) if (t) layers.push(t);
+
+    let looping = false;
+    /* The dot needs a write on the next frame. Also used to force one
+       extra frame after the final mousemove so the ring can catch up. */
+    let dotDirty = false;
+    let revealed = false;
+
+    /* Hover memoisation — `mouseover` fires on every element boundary
+       crossed, but the answer only changes when the element does. */
+    let lastTarget: EventTarget | null = null;
+    let isHovering = false;
+
+    const setOpacity = (value: string) => {
+      for (const el of layers) el.style.opacity = value;
+    };
 
     const startLoop = () => {
-      if (!isLooping) {
-        isLooping = true;
+      if (looping) return;
+      looping = true;
+      rafId.current = requestAnimationFrame(animate);
+    };
+
+    /* ── Animation loop — the ONLY place that writes transforms ── */
+    const animate = () => {
+      let settled = true;
+
+      /* Dot — pins to the pointer exactly, no easing. */
+      if (dotDirty) {
+        dot.style.transform = `translate3d(${mouse.current.x}px, ${mouse.current.y}px, 0)`;
+        dotDirty = false;
+        /* Keep the loop alive one more frame so the ring and trails,
+           which ease toward the pointer, can follow. */
+        settled = false;
+      }
+
+      /* Ring — smooth spring-like lerp follow */
+      const ringDx = mouse.current.x - ringPos.current.x;
+      const ringDy = mouse.current.y - ringPos.current.y;
+      ringPos.current.x += ringDx * 0.13;
+      ringPos.current.y += ringDy * 0.13;
+
+      if (Math.abs(ringDx) > 0.15 || Math.abs(ringDy) > 0.15) settled = false;
+
+      ring.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
+
+      /* Trails — each dot chases the one ahead of it, giving the
+         cascading organic lag. Read the target inline rather than
+         building an array, so the loop allocates nothing per frame. */
+      const lerps = [0.09, 0.06, 0.035];
+      for (let i = 0; i < 3; i++) {
+        const pos = trailPos.current[i];
+        const target = i === 0 ? mouse.current : trailPos.current[i - 1];
+
+        const dx = target.x - pos.x;
+        const dy = target.y - pos.y;
+        pos.x += dx * lerps[i];
+        pos.y += dy * lerps[i];
+
+        if (Math.abs(dx) > 0.15 || Math.abs(dy) > 0.15) settled = false;
+
+        const el = trailRefs.current[i];
+        if (el) {
+          el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
+        }
+      }
+
+      if (settled) {
+        looping = false;
+      } else {
         rafId.current = requestAnimationFrame(animate);
       }
     };
 
-    /* ── Mouse move — dot tracks instantly ── */
+    /* ── Pointer movement — records only, never writes ── */
     const onMove = (e: MouseEvent) => {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
+      dotDirty = true;
 
-      // Reveal on first move
-      if (dot) dot.style.opacity = "1";
-      if (ring) ring.style.opacity = "1";
-      trailRefs.current.forEach((t) => {
-        if (t) t.style.opacity = "1";
-      });
-
-      // Dot follows exactly — no lag
-      if (dot) {
-        dot.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      if (!revealed) {
+        revealed = true;
+        ringPos.current.x = e.clientX;
+        ringPos.current.y = e.clientY;
+        for (let i = 0; i < 3; i++) {
+          trailPos.current[i].x = e.clientX;
+          trailPos.current[i].y = e.clientY;
+        }
+        setOpacity("1");
       }
 
       startLoop();
@@ -92,7 +197,6 @@ export function CustomCursor() {
     const onDown = () => {
       ringInner?.classList.add("cursor-clicking");
       dotInner?.classList.add("cursor-clicking");
-      startLoop();
     };
 
     const onUp = () => {
@@ -102,103 +206,45 @@ export function CustomCursor() {
 
     /* ── Hover detection for interactive elements ── */
     const onOver = (e: MouseEvent) => {
+      if (e.target === lastTarget) return;
+      lastTarget = e.target;
+
       const target = e.target as HTMLElement | null;
-      if (!target) return;
-      const isInteractive =
-        target.tagName === "A" ||
-        target.tagName === "BUTTON" ||
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.tagName === "SELECT" ||
-        !!target.closest?.(
-          "a, button, [role='button'], label, [data-cursor-hover]"
-        );
+      const hovering = !!target?.closest?.(INTERACTIVE_SELECTOR);
 
-      if (isInteractive) {
-        ringInner?.classList.add("cursor-hovering");
-      } else {
-        ringInner?.classList.remove("cursor-hovering");
-      }
+      /* Only touch the DOM when the answer actually flips. */
+      if (hovering === isHovering) return;
+      isHovering = hovering;
+      ringInner?.classList.toggle("cursor-hovering", hovering);
     };
 
-    /* ── Visibility ── */
+    /* ── Visibility when the pointer leaves the window ── */
     const onLeave = () => {
-      if (dot) dot.style.opacity = "0";
-      if (ring) ring.style.opacity = "0";
-      trailRefs.current.forEach((t) => {
-        if (t) t.style.opacity = "0";
-      });
+      revealed = false;
+      setOpacity("0");
+      onUp();
     };
 
-    const onEnter = () => {
-      if (dot) dot.style.opacity = "1";
-      if (ring) ring.style.opacity = "1";
-      trailRefs.current.forEach((t) => {
-        if (t) t.style.opacity = "1";
-      });
+    const onEnter = (e: MouseEvent) => {
+      if (e.clientX !== undefined && e.clientY !== undefined) {
+        mouse.current.x = e.clientX;
+        mouse.current.y = e.clientY;
+        dotDirty = true;
+      }
       startLoop();
     };
 
-    /* ── Animation loop (RAF) — idles when settled ── */
-    const animate = () => {
-      let isSettled = true;
-
-      // Ring — smooth spring-like lerp follow
-      const ringDx = mouse.current.x - ringPos.current.x;
-      const ringDy = mouse.current.y - ringPos.current.y;
-      ringPos.current.x += ringDx * 0.13;
-      ringPos.current.y += ringDy * 0.13;
-
-      if (Math.abs(ringDx) > 0.15 || Math.abs(ringDy) > 0.15) {
-        isSettled = false;
-      }
-
-      if (ring) {
-        ring.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
-      }
-
-      // Trails — cascading lerp for organic motion
-      const lerps = [0.09, 0.06, 0.035];
-      const targets = [
-        mouse.current,
-        trailPos.current[0],
-        trailPos.current[1],
-      ];
-
-      trailPos.current.forEach((pos, i) => {
-        const tDx = targets[i].x - pos.x;
-        const tDy = targets[i].y - pos.y;
-        pos.x += tDx * lerps[i];
-        pos.y += tDy * lerps[i];
-
-        if (Math.abs(tDx) > 0.15 || Math.abs(tDy) > 0.15) {
-          isSettled = false;
-        }
-
-        const el = trailRefs.current[i];
-        if (el) {
-          el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
-        }
-      });
-
-      if (!isSettled) {
-        rafId.current = requestAnimationFrame(animate);
-      } else {
-        isLooping = false;
-      }
-    };
-
-    /* ── Attach listeners ── */
     document.addEventListener("mousemove", onMove, { passive: true });
     document.addEventListener("mousedown", onDown, { passive: true });
     document.addEventListener("mouseup", onUp, { passive: true });
     document.addEventListener("mouseover", onOver, { passive: true });
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("mouseenter", onEnter);
+    window.addEventListener("blur", onLeave);
+    window.addEventListener("contextmenu", onUp);
 
     startLoop();
 
-    /* ── Cleanup ── */
     return () => {
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mousedown", onDown);
@@ -206,9 +252,10 @@ export function CustomCursor() {
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("mouseenter", onEnter);
+      window.removeEventListener("blur", onLeave);
+      window.removeEventListener("contextmenu", onUp);
       if (rafId.current) cancelAnimationFrame(rafId.current);
-      const tag = document.getElementById("aurelius-cursor-hide");
-      if (tag) tag.remove();
+      root.classList.remove("cursor-hidden");
     };
   }, []);
 
@@ -219,7 +266,10 @@ export function CustomCursor() {
         <div
           key={i}
           ref={(el) => {
-            if (el) trailRefs.current[i] = el;
+            trailRefs.current[i] = el;
+            return () => {
+              trailRefs.current[i] = null;
+            };
           }}
           className="cursor-trail"
           aria-hidden="true"

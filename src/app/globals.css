@@ -696,10 +696,24 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  pointer-events: none;
+  pointer-events: none !important;
+  user-select: none !important;
   opacity: 0;
   transition: opacity 0.3s ease;
   will-change: transform;
+}
+
+.cursor-dot-wrapper *,
+.cursor-ring-wrapper *,
+.cursor-trail *,
+.cursor-dot-wrapper *::before,
+.cursor-dot-wrapper *::after,
+.cursor-ring-wrapper *::before,
+.cursor-ring-wrapper *::after,
+.cursor-trail *::before,
+.cursor-trail *::after {
+  pointer-events: none !important;
+  user-select: none !important;
 }
 
 .cursor-dot-wrapper  { z-index: 999999; }
@@ -921,6 +935,21 @@ body {
   background: white;
 }
 
+/* ─── Hide the system pointer ───
+   CustomCursor.tsx adds .cursor-hidden to <html> once it has successfully
+   taken over, and removes it on unmount. Declared here rather than injected
+   as a runtime <style> so the browser resolves it during the initial style
+   pass instead of paying a second full recalculation at mount.
+
+   The universal selector is deliberate: plain inheritance isn't enough,
+   because elements that set their own `cursor: pointer` would override it. */
+html.cursor-hidden,
+html.cursor-hidden *,
+html.cursor-hidden *::before,
+html.cursor-hidden *::after {
+  cursor: none !important;
+}
+
 /* ─── Expandable Card Modal Scrollbar ─── */
 .expandable-card-scrollbar::-webkit-scrollbar {
   width: 3px;
@@ -951,16 +980,19 @@ body {
 /* ═══════════════════════════════════════════════════════
    REDUCED MOTION
    The atmospheric layer (fog drift, grain, glow ramps, the
-   monolith crash) is the product here, so we deliberately do
-   NOT flatten it when the OS asks for reduced motion. The
-   JS-side twin of this decision is HONOR_REDUCED_MOTION in
-   src/components/sections/Hero.tsx.
+   monolith crash, the glass-reticle cursor) is the product
+   here, so we deliberately do NOT flatten it when the OS
+   asks for reduced motion. The JS-side twins of this
+   decision are HONOR_REDUCED_MOTION in
+   src/components/sections/Hero.tsx and in
+   src/components/ui/CustomCursor.tsx.
 
-   What we still honour: instant scroll jumps, no relentless
-   high-frequency loops, and no custom cursor (it self-disables
-   in CustomCursor.tsx too — this is belt and braces).
+   What we still honour: instant scroll jumps, and no
+   relentless high-frequency ambient loops.
 
-   To go back to full compliance, restore the blanket rule:
+   To go back to full compliance: set both
+   HONOR_REDUCED_MOTION flags to true and restore the
+   blanket rule below.
      *, *::before, *::after {
        animation-duration: 0.001ms !important;
        animation-iteration-count: 1 !important;
@@ -978,18 +1010,11 @@ body {
     scroll-behavior: auto !important;
   }
 
-  /* Kill the tightest looping ambient effects — high frequency, low payoff */
+  /* Kill the tightest looping ambient effects — high frequency, low payoff.
+     The cursor's own orbit/glow loops are exempt: they only run while a
+     mouse is present and are central to how the reticle reads. */
   .ecg-trace,
-  .cursor-orbit,
-  .cursor-dot-glow,
   .animate-border-spin {
     animation: none !important;
-  }
-
-  /* Custom cursor adds no value without motion — hide it */
-  .cursor-dot-wrapper,
-  .cursor-ring-wrapper,
-  .cursor-trail {
-    display: none !important;
   }
 }

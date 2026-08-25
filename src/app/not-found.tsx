@@ -1,15 +1,17 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 
 /**
  * 404 — "Signal Lost"
  *
- * Server-rendered on purpose: no client JS, no animation library, so a
- * mistyped URL costs a visitor almost nothing to load. The atmosphere
- * comes from static layers (grain, vignette, scanlines) that already
- * exist in globals.css, keeping this page in the same visual language as
- * the rest of the site without duplicating any of its systems.
+ * Server-rendered on purpose: apart from the shared cursor there's no client
+ * JS and no animation library, so a mistyped URL costs a visitor almost
+ * nothing to load. The atmosphere comes from static layers (grain, vignette,
+ * scanlines) that already exist in globals.css, keeping this page in the same
+ * visual language as the rest of the site without duplicating any of its
+ * systems.
  */
 export const metadata: Metadata = {
   title: "Signal Lost — 404",
@@ -28,6 +30,10 @@ const RECOVERY_LINKS = [
 export default function NotFound() {
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#0a0a0c] px-6 py-24">
+      {/* Same glass reticle as the rest of the site, so the pointer doesn't
+          change identity just because a URL was mistyped */}
+      <CustomCursor />
+
       {/* Grain film overlay — same layer the home page uses */}
       <div className="grain-overlay" />
 
