@@ -67,13 +67,24 @@ function TacticalBrackets({
 function ArtifactGridCard({
   artifact,
   delay,
+  aspectRatioClass,
   onOpen,
 }: {
   artifact: VisualArtifact;
   delay: number;
+  aspectRatioClass?: string;
   onOpen: () => void;
 }) {
   const layoutId = `artifact-${artifact.id}`;
+  const isPortrait =
+    aspectRatioClass === "aspect-[4/5]" ||
+    artifact.type === "poster" ||
+    artifact.aspectRatio === "4/5" ||
+    artifact.imageSrc.toLowerCase().includes("poster");
+
+  const finalAspectClass =
+    aspectRatioClass ||
+    (isPortrait ? "aspect-[4/5]" : "aspect-[16/9]");
 
   return (
     <motion.div
@@ -85,7 +96,9 @@ function ArtifactGridCard({
       onClick={onOpen}
       className="group relative cursor-pointer"
     >
-      <div className="relative border border-white/10 bg-black/30 aspect-[4/3] overflow-hidden transition-all duration-500 hover:border-white/20 hover:bg-black/40">
+      <div
+        className={`relative border border-white/10 bg-black/30 ${finalAspectClass} overflow-hidden transition-all duration-500 hover:border-white/20 hover:bg-black/40`}
+      >
         {/* Corner brackets with viewfinder snap */}
         <TacticalBrackets accent={artifact.accent} size={6} />
 
@@ -97,16 +110,16 @@ function ArtifactGridCard({
           accent={artifact.accent}
           prefix={artifact.title}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          style={{ filter: "brightness(0.55) contrast(1.05)" }}
+          style={{ filter: "brightness(0.68) contrast(1.04)" }}
         />
 
-        {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+        {/* Gradient overlays — refined so the full artwork remains clearly visible */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent pointer-events-none" />
 
         {/* Scanline texture */}
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          className="absolute inset-0 opacity-[0.025] pointer-events-none"
           style={{
             backgroundImage:
               "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,1) 4px)",
@@ -115,9 +128,9 @@ function ArtifactGridCard({
         />
 
         {/* Top-right index badge */}
-        <div className="absolute top-3 right-3 z-10">
+        <div className="absolute top-2.5 right-2.5 z-10">
           <span
-            className="font-mono text-[9px] tracking-[0.2em] opacity-40"
+            className="font-mono text-[8.5px] tracking-[0.18em] opacity-60 bg-black/70 px-1.5 py-0.5 rounded-[2px] border border-white/10"
             style={{ color: artifact.accent }}
           >
             {artifact.subtitle}
@@ -132,22 +145,22 @@ function ArtifactGridCard({
         />
 
         {/* Bottom content that reveals on hover */}
-        <div className="absolute bottom-0 left-0 w-full p-4 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+        <div className="absolute bottom-0 left-0 w-full p-3.5 sm:p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-500 z-10">
           <motion.p
             layoutId={`subtitle-${layoutId}`}
-            className="font-mono text-[9px] tracking-[0.18em] uppercase mb-1.5"
+            className="font-mono text-[8.5px] sm:text-[9px] tracking-[0.18em] uppercase mb-1"
             style={{ color: artifact.accent }}
           >
             {artifact.tags[0]}
           </motion.p>
           <motion.h4
             layoutId={`title-${layoutId}`}
-            className="font-display text-xl uppercase leading-none text-white"
+            className="font-display text-lg sm:text-xl uppercase leading-none text-white drop-shadow-sm"
           >
             {artifact.title}{" "}
             <span
-              className="font-serif italic font-normal normal-case text-sm"
-              style={{ color: artifact.accent, opacity: 0.7 }}
+              className="font-serif italic font-normal normal-case text-xs sm:text-sm"
+              style={{ color: artifact.accent, opacity: 0.8 }}
             >
               {artifact.titleAccent}
             </span>
@@ -156,10 +169,10 @@ function ArtifactGridCard({
 
         {/* Expand hint */}
         <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-          <span className="font-mono text-[8px] tracking-[0.15em] uppercase text-white/40">
+          <span className="font-mono text-[7.5px] tracking-[0.15em] uppercase text-white/60 bg-black/60 px-1 py-0.5 border border-white/10">
             Expand
           </span>
-          <div className="relative h-4 w-4 flex items-center justify-center">
+          <div className="relative h-3.5 w-3.5 flex items-center justify-center">
             <div className="absolute h-full w-px bg-white/30" />
             <div className="absolute w-full h-px bg-white/30" />
           </div>
@@ -265,24 +278,23 @@ function ArtifactModal({
         </button>
 
         {/* ─── LEFT: Image viewport ─── */}
-        <div className="relative h-56 w-full shrink-0 overflow-hidden md:h-auto md:w-[48%]">
+        <div className="relative h-64 sm:h-80 md:h-auto w-full shrink-0 overflow-hidden md:w-[48%] bg-black/60 flex items-center justify-center p-3 sm:p-5">
           <ArtifactMedia
             layoutId={`image-${layoutId}`}
             src={artifact.imageSrc}
             alt={`${artifact.title} ${artifact.titleAccent}`}
             accent={artifact.accent}
             prefix={artifact.title}
-            className="h-full w-full object-cover"
-            style={{ filter: "brightness(0.6) contrast(1.08)" }}
+            className="h-full w-full max-h-[70vh] object-contain rounded-sm drop-shadow-2xl"
+            style={{ filter: "brightness(0.95) contrast(1.04)" }}
           />
 
           {/* Image overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0f] via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#0c0c0f]/30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0f]/60 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#0c0c0f]/20 pointer-events-none" />
 
           {/* Scanlines */}
           <div
-            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            className="absolute inset-0 opacity-[0.025] pointer-events-none"
             style={{
               backgroundImage:
                 "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,1) 3px)",
@@ -295,7 +307,7 @@ function ArtifactModal({
             <div
               className="flex items-center gap-2 px-2.5 py-1.5 border border-white/10"
               style={{
-                background: "rgba(0,0,0,0.6)",
+                background: "rgba(0,0,0,0.75)",
                 backdropFilter: "blur(8px)",
               }}
             >
@@ -303,18 +315,9 @@ function ArtifactModal({
                 className="h-1.5 w-1.5 rounded-full"
                 style={{ background: artifact.accent }}
               />
-              <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/50">
+              <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/60">
                 ASSET // {artifact.id.toUpperCase()}
               </span>
-            </div>
-          </div>
-
-          {/* Top corner reticle */}
-          <div className="absolute top-5 right-5 z-20 hidden md:flex">
-            <div className="relative h-6 w-6 flex items-center justify-center">
-              <div className="absolute h-full w-px bg-white/15" />
-              <div className="absolute w-full h-px bg-white/15" />
-              <div className="h-2.5 w-2.5 rounded-full border border-white/20" />
             </div>
           </div>
         </div>
@@ -352,89 +355,76 @@ function ArtifactModal({
                 {artifact.title}{" "}
                 <span
                   className="font-serif italic font-normal normal-case"
-                  style={{ color: artifact.accent, opacity: 0.7 }}
+                  style={{ color: artifact.accent, opacity: 0.8 }}
                 >
                   {artifact.titleAccent}
                 </span>
               </motion.h3>
             </div>
 
-            {/* Tags row */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.5 }}
-              className="flex flex-wrap gap-2"
-            >
-              {artifact.tags.map((tag) => (
+            {/* Technical Specifications Grid */}
+            <div>
+              <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-3">
+                // SPECIFICATIONS
+              </p>
+              <div className="grid grid-cols-2 gap-2.5">
+                {artifact.specs.map((spec, i) => (
+                  <div
+                    key={i}
+                    className="p-2.5 border border-white/6 bg-white/[0.015] flex flex-col gap-0.5"
+                  >
+                    <span className="font-mono text-[8px] tracking-[0.15em] uppercase text-white/35">
+                      {spec.label}
+                    </span>
+                    <span className="font-mono text-[10.5px] text-white/85">
+                      {spec.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Overview / Brief */}
+            <div>
+              <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
+                // OVERVIEW
+              </p>
+              <p className="font-sans text-[13px] leading-[1.7] text-white/70">
+                {artifact.overview}
+              </p>
+            </div>
+
+            {/* Art Direction / Notes */}
+            <div>
+              <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
+                // ART DIRECTION & CRAFT
+              </p>
+              <p className="font-sans text-[13px] leading-[1.7] text-white/60">
+                {artifact.artDirection}
+              </p>
+            </div>
+
+            {/* Tags footer */}
+            <div className="pt-2 border-t border-white/6 flex flex-wrap gap-1.5">
+              {artifact.tags.map((tag, i) => (
                 <span
-                  key={tag}
-                  className="px-2.5 py-1 font-mono text-[8px] tracking-[0.15em] uppercase border border-white/10 bg-white/[0.03] text-white/45"
+                  key={i}
+                  className="font-mono text-[8px] uppercase tracking-[0.15em] px-2 py-1 border border-white/8 bg-white/[0.02] text-white/45"
                 >
                   {tag}
                 </span>
               ))}
-            </motion.div>
+            </div>
 
-            {/* Specs grid */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="grid grid-cols-2 gap-3"
-            >
-              {artifact.specs.map((spec) => (
-                <div
-                  key={spec.label}
-                  className="p-3 border border-white/6 bg-white/[0.02]"
-                >
-                  <span className="block font-mono text-[8px] tracking-[0.18em] uppercase text-white/30 mb-1">
-                    {spec.label}
-                  </span>
-                  <span className="block font-mono text-[11px] tracking-[0.02em] text-white/70">
-                    {spec.value}
-                  </span>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Overview section */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.5 }}
-            >
-              <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/35 mb-2.5">
-                {"// "}OVERVIEW
-              </h4>
-              <p className="font-sans text-[13px] leading-[1.75] text-white/55">
-                {artifact.overview}
-              </p>
-            </motion.div>
-
-            {/* Art direction section */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              <h4 className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/35 mb-2.5">
-                {"// "}ART DIRECTION
-              </h4>
-              <p className="font-sans text-[13px] leading-[1.75] text-white/55">
-                {artifact.artDirection}
-              </p>
-            </motion.div>
-
-            {/* Bottom action bar */}
+            {/* Tactical dossier stamp */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.35, duration: 0.5 }}
-              className="mt-2 flex items-center justify-between border-t border-white/8 pt-5"
+              transition={{ delay: 0.2 }}
+              className="pt-2 flex items-center justify-between border-t border-dashed border-white/8"
             >
-              <span className="font-mono text-[8px] tracking-[0.18em] uppercase text-white/25">
-                STATUS: ARCHIVED
+              <span className="font-mono text-[8px] tracking-[0.2em] text-white/20 uppercase">
+                RECORD VERIFIED // AURELIUS ARCHIVE
               </span>
 
               {/* Crosshair icon */}
@@ -478,7 +468,7 @@ export function ExpandableArtifactCards({
   // No entries yet — show tactical placeholder slots.
   if (artifacts.length === 0) {
     return (
-      <>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
         {Array.from({ length: emptyCount }).map((_, i) => (
           <ShowcaseSlot
             key={i}
@@ -487,21 +477,97 @@ export function ExpandableArtifactCards({
             delay={sectionDelay + 0.08 + i * 0.09}
           />
         ))}
-      </>
+      </div>
     );
   }
 
+  // Separate Posters (1080x1350 / 4:5) and Thumbnails (1280x720 / 16:9)
+  const posters = artifacts.filter(
+    (a) =>
+      a.type === "poster" ||
+      a.aspectRatio === "4/5" ||
+      a.imageSrc.toLowerCase().includes("poster")
+  );
+
+  const thumbnails = artifacts.filter(
+    (a) =>
+      a.type === "thumbnail" ||
+      a.aspectRatio === "16/9" ||
+      a.imageSrc.toLowerCase().includes("thumbnail")
+  );
+
+  const hasBothGroups = posters.length > 0 && thumbnails.length > 0;
+
   return (
     <>
-      {/* Grid of cards */}
-      {artifacts.map((artifact, i) => (
-        <ArtifactGridCard
-          key={artifact.id}
-          artifact={artifact}
-          delay={sectionDelay + 0.08 + i * 0.09}
-          onOpen={() => setOpenId(artifact.id)}
-        />
-      ))}
+      {hasBothGroups ? (
+        <div className="flex flex-col gap-8 lg:gap-10 w-full">
+          {/* ── Layer 1: Posters (1080x1350 / 4:5 Portrait — 4 in a horizontal row) ── */}
+          <div className="w-full">
+            <div className="flex items-center justify-between mb-3.5 px-0.5">
+              <div className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+                <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/50">
+                  POSTER ARCHIVE // 4:5 PORTRAIT (1080×1350)
+                </span>
+              </div>
+              <span className="font-mono text-[9px] tracking-[0.2em] text-white/25">
+                [{posters.length} ASSETS]
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+              {posters.map((artifact, i) => (
+                <ArtifactGridCard
+                  key={artifact.id}
+                  artifact={artifact}
+                  aspectRatioClass="aspect-[4/5]"
+                  delay={sectionDelay + 0.08 + i * 0.08}
+                  onOpen={() => setOpenId(artifact.id)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Layer 2: Thumbnails (1280x720 / 16:9 Landscape — 2x2 grid) ── */}
+          <div className="w-full pt-2">
+            <div className="flex items-center justify-between mb-3.5 px-0.5">
+              <div className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#c59b4a]" />
+                <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/50">
+                  THUMBNAIL SUITE // 16:9 LANDSCAPE (1280×720)
+                </span>
+              </div>
+              <span className="font-mono text-[9px] tracking-[0.2em] text-white/25">
+                [{thumbnails.length} ASSETS]
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
+              {thumbnails.map((artifact, i) => (
+                <ArtifactGridCard
+                  key={artifact.id}
+                  artifact={artifact}
+                  aspectRatioClass="aspect-[16/9]"
+                  delay={sectionDelay + 0.18 + i * 0.08}
+                  onOpen={() => setOpenId(artifact.id)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+          {artifacts.map((artifact, i) => (
+            <ArtifactGridCard
+              key={artifact.id}
+              artifact={artifact}
+              delay={sectionDelay + 0.08 + i * 0.09}
+              onOpen={() => setOpenId(artifact.id)}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Expanded modal */}
       <AnimatePresence>

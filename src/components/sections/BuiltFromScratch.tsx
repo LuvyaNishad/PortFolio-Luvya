@@ -161,8 +161,8 @@ function CategoryBlock({
         </p>
       </motion.div>
 
-      {/* Cards grid — 4 columns on desktop with diagonal curtain cascade */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5 lg:px-8">
+      {/* Cards container */}
+      <div className="lg:px-8">
         {category.id === "graphic-design-showcase" ? (
           <ExpandableArtifactCards
             artifacts={VISUAL_ARTIFACTS}
@@ -172,22 +172,26 @@ function CategoryBlock({
             emptyCount={category.cardCount}
           />
         ) : category.id === "video-edits-showcase" ? (
-          <ExpandableMotionCards
-            artifacts={MOTION_ARTIFACTS}
-            accent={category.accent}
-            sectionDelay={sectionDelay}
-            prefix={category.cardPrefix}
-            emptyCount={category.cardCount}
-          />
-        ) : (
-          Array.from({ length: category.cardCount }).map((_, i) => (
-            <ShowcaseSlot
-              key={i}
-              prefix={category.cardPrefix}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+            <ExpandableMotionCards
+              artifacts={MOTION_ARTIFACTS}
               accent={category.accent}
-              delay={sectionDelay + 0.08 + i * 0.09}
+              sectionDelay={sectionDelay}
+              prefix={category.cardPrefix}
+              emptyCount={category.cardCount}
             />
-          ))
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+            {Array.from({ length: category.cardCount }).map((_, i) => (
+              <ShowcaseSlot
+                key={i}
+                prefix={category.cardPrefix}
+                accent={category.accent}
+                delay={sectionDelay + 0.08 + i * 0.09}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>

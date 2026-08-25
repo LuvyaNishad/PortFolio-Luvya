@@ -1,6 +1,8 @@
 export interface VisualArtifact {
   id: string;
   index: string;
+  type?: "poster" | "thumbnail";
+  aspectRatio?: "4/5" | "16/9";
   title: string;
   titleAccent: string;
   subtitle: string;
@@ -15,11 +17,13 @@ export interface VisualArtifact {
 /* ─────────────────────────────────────────────────
    GRAPHIC DESIGN — Visual Artifacts Data
    ─────────────────────────────────────────────────
-   Here are your 8 Graphic Design pieces (4 Posters + 4 Thumbnails).
+   Layout:
+   • Layer 1: 4 Posters (1080x1350 px, 4:5 Portrait) in a horizontal row
+   • Layer 2: 4 Thumbnails (1280x720 px, 16:9 Landscape) in a 2x2 grid
    
    HOW TO CUSTOMIZE DESCRIPTIONS & DETAILS:
-   - title        : Main uppercase title (e.g., "AURELIUS", "TACTICAL")
-   - titleAccent  : Secondary styled italic accent word (e.g., "Poster", "Edition")
+   - title        : Main uppercase title (e.g., "POSTER", "CYBERPUNK")
+   - titleAccent  : Secondary styled italic accent word (e.g., "01", "Edition")
    - subtitle     : Mono classification badge (e.g., "VA-01 // POSTER DESIGN")
    - accent       : Hex color for glow & highlights (e.g., "#78936f" for sage, "#c59b4a" for gold)
    - imageSrc     : Image path relative to public folder (e.g., "/images/Poster1.jpg")
@@ -30,10 +34,12 @@ export interface VisualArtifact {
    ───────────────────────────────────────────────── */
 
 export const VISUAL_ARTIFACTS: VisualArtifact[] = [
-  // ── 4 POSTERS ───────────────────────────────────
+  // ── LAYER 1: 4 POSTERS (1080x1350 / 4:5 PORTRAIT) ────────
   {
     id: "va-01",
     index: "01",
+    type: "poster",
+    aspectRatio: "4/5",
     title: "POSTER",
     titleAccent: "01",
     subtitle: "VA-01 // POSTER DESIGN",
@@ -41,10 +47,10 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
     imageSrc: "/images/Poster1.jpg",
     tags: ["POSTER DESIGN", "EDITORIAL", "2025"],
     specs: [
-      { label: "FORMAT", value: "Print & Digital Poster" },
+      { label: "DIMENSIONS", value: "1080 × 1350 px" },
+      { label: "ASPECT RATIO", value: "4:5 Portrait" },
       { label: "RESOLUTION", value: "300 DPI High-Res" },
       { label: "TOOLS", value: "Photoshop / Illustrator" },
-      { label: "YEAR", value: "2025" },
     ],
     overview:
       "A high-impact conceptual poster exploring dark atmospheric composition, brutalist typography, and modern visual hierarchy.",
@@ -54,6 +60,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
   {
     id: "va-02",
     index: "02",
+    type: "poster",
+    aspectRatio: "4/5",
     title: "POSTER",
     titleAccent: "02",
     subtitle: "VA-02 // POSTER DESIGN",
@@ -61,10 +69,10 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
     imageSrc: "/images/Poster2.jpg",
     tags: ["POSTER DESIGN", "TYPOGRAPHY", "2025"],
     specs: [
-      { label: "FORMAT", value: "Editorial Poster" },
+      { label: "DIMENSIONS", value: "1080 × 1350 px" },
+      { label: "ASPECT RATIO", value: "4:5 Portrait" },
       { label: "GRID", value: "Custom Modular Grid" },
       { label: "TOOLS", value: "Photoshop / Figma" },
-      { label: "YEAR", value: "2025" },
     ],
     overview:
       "Minimalist yet expressive visual study balancing negative space with bold typographic anchors and textured gradients.",
@@ -74,6 +82,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
   {
     id: "va-03",
     index: "03",
+    type: "poster",
+    aspectRatio: "4/5",
     title: "POSTER",
     titleAccent: "03",
     subtitle: "VA-03 // POSTER DESIGN",
@@ -81,10 +91,10 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
     imageSrc: "/images/Poster3.jpg",
     tags: ["POSTER DESIGN", "BRANDING", "2025"],
     specs: [
-      { label: "FORMAT", value: "Print / Display" },
+      { label: "DIMENSIONS", value: "1080 × 1350 px" },
+      { label: "ASPECT RATIO", value: "4:5 Portrait" },
       { label: "COLORSPACE", value: "RGB / CMYK Ready" },
       { label: "TOOLS", value: "Photoshop / Illustrator" },
-      { label: "YEAR", value: "2025" },
     ],
     overview:
       "Tactical visual layout designed with technical annotations, atmospheric haze, and layered typographic elements.",
@@ -94,6 +104,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
   {
     id: "va-04",
     index: "04",
+    type: "poster",
+    aspectRatio: "4/5",
     title: "POSTER",
     titleAccent: "04",
     subtitle: "VA-04 // POSTER DESIGN",
@@ -101,10 +113,10 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
     imageSrc: "/images/Poster4.jpg",
     tags: ["POSTER DESIGN", "COMPOSITION", "2025"],
     specs: [
-      { label: "FORMAT", value: "Large Format Print" },
+      { label: "DIMENSIONS", value: "1080 × 1350 px" },
+      { label: "ASPECT RATIO", value: "4:5 Portrait" },
       { label: "TEXTURE", value: "Custom Film Grain" },
       { label: "TOOLS", value: "Photoshop / After Effects" },
-      { label: "YEAR", value: "2025" },
     ],
     overview:
       "Cinematic poster exploration featuring multi-layered visual depth, precise alignment, and expressive tonal curves.",
@@ -112,10 +124,12 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
       "Deep shadowy vignettes, sharp edge contrast, and curated typographic pairing.",
   },
 
-  // ── 4 THUMBNAILS ────────────────────────────────
+  // ── LAYER 2: 4 THUMBNAILS (1280x720 / 16:9 LANDSCAPE) ────
   {
     id: "va-05",
     index: "05",
+    type: "thumbnail",
+    aspectRatio: "16/9",
     title: "THUMBNAIL",
     titleAccent: "01",
     subtitle: "VA-05 // YOUTUBE THUMBNAIL",
@@ -123,8 +137,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
     imageSrc: "/images/Thumbnail1.jpg",
     tags: ["THUMBNAIL", "YOUTUBE", "CTR DESIGN"],
     specs: [
+      { label: "DIMENSIONS", value: "1280 × 720 px" },
       { label: "ASPECT RATIO", value: "16:9 Landscape" },
-      { label: "RESOLUTION", value: "1920x1080 Full HD" },
       { label: "PURPOSE", value: "High-CTR Engagement" },
       { label: "TOOLS", value: "Photoshop / Lightroom" },
     ],
@@ -136,6 +150,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
   {
     id: "va-06",
     index: "06",
+    type: "thumbnail",
+    aspectRatio: "16/9",
     title: "THUMBNAIL",
     titleAccent: "02",
     subtitle: "VA-06 // YOUTUBE THUMBNAIL",
@@ -143,8 +159,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
     imageSrc: "/images/Thumbnail2.jpg",
     tags: ["THUMBNAIL", "YOUTUBE", "CREATIVE"],
     specs: [
+      { label: "DIMENSIONS", value: "1280 × 720 px" },
       { label: "ASPECT RATIO", value: "16:9 Landscape" },
-      { label: "RESOLUTION", value: "1920x1080 Full HD" },
       { label: "PURPOSE", value: "Content Branding" },
       { label: "TOOLS", value: "Photoshop / Blender" },
     ],
@@ -156,6 +172,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
   {
     id: "va-07",
     index: "07",
+    type: "thumbnail",
+    aspectRatio: "16/9",
     title: "THUMBNAIL",
     titleAccent: "03",
     subtitle: "VA-07 // YOUTUBE THUMBNAIL",
@@ -163,8 +181,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
     imageSrc: "/images/Thumbnail3.jpg",
     tags: ["THUMBNAIL", "YOUTUBE", "STORYTELLING"],
     specs: [
+      { label: "DIMENSIONS", value: "1280 × 720 px" },
       { label: "ASPECT RATIO", value: "16:9 Landscape" },
-      { label: "RESOLUTION", value: "1920x1080 Full HD" },
       { label: "PURPOSE", value: "Audience Retention" },
       { label: "TOOLS", value: "Photoshop / Illustrator" },
     ],
@@ -176,6 +194,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
   {
     id: "va-08",
     index: "08",
+    type: "thumbnail",
+    aspectRatio: "16/9",
     title: "THUMBNAIL",
     titleAccent: "04",
     subtitle: "VA-08 // YOUTUBE THUMBNAIL",
@@ -183,8 +203,8 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
     imageSrc: "/images/Thumbnail4.jpg",
     tags: ["THUMBNAIL", "YOUTUBE", "TACTICAL"],
     specs: [
+      { label: "DIMENSIONS", value: "1280 × 720 px" },
       { label: "ASPECT RATIO", value: "16:9 Landscape" },
-      { label: "RESOLUTION", value: "1920x1080 Full HD" },
       { label: "PURPOSE", value: "High-CTR Engagement" },
       { label: "TOOLS", value: "Photoshop / After Effects" },
     ],
