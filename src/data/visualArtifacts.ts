@@ -53,9 +53,9 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
       { label: "TOOLS", value: "Photoshop / Illustrator" },
     ],
     overview:
-      "A high-impact conceptual poster exploring dark atmospheric composition, brutalist typography, and modern visual hierarchy.",
+      "A cinematic Jin Sakai poster exploring atmospheric tension through dramatic character framing, environmental depth, and restrained typography.",
     artDirection:
-      "Structured with tactile grain overlays, high-contrast monochrome values, and subtle chromatic treatment.",
+      "Layered imagery, distressed textures, high-contrast grading, and controlled red accents create a weathered cinematic aesthetic.",
   },
   {
     id: "va-02",
@@ -75,9 +75,9 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
       { label: "TOOLS", value: "Photoshop / Figma" },
     ],
     overview:
-      "Minimalist yet expressive visual study balancing negative space with bold typographic anchors and textured gradients.",
+      "A conceptual character study exploring the psychological complexity of House M.D. through distorted portraiture, negative space, and an intentionally restrained visual palette.",
     artDirection:
-      "Emphasis on asymmetrical tension, sharp type contrast, and controlled lighting falloff.",
+      "Organic framing, asymmetric typography, textured gradients, and controlled lighting create a surreal editorial composition.",
   },
   {
     id: "va-03",
@@ -97,9 +97,9 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
       { label: "TOOLS", value: "Photoshop / Illustrator" },
     ],
     overview:
-      "Tactical visual layout designed with technical annotations, atmospheric haze, and layered typographic elements.",
+      "A graphic character study translating The Boys into a confrontational editorial composition built around bold imagery, propaganda-inspired layouts, and stark visual contrast.",
     artDirection:
-      "Cinematic lighting combined with HUD motifs and delicate geometric accents.",
+      "Monochrome imagery, halftone grain, selective red accents, and oversized typography create a raw, abrasive visual language.",
   },
   {
     id: "va-04",
@@ -119,9 +119,9 @@ export const VISUAL_ARTIFACTS: VisualArtifact[] = [
       { label: "TOOLS", value: "Photoshop / After Effects" },
     ],
     overview:
-      "Cinematic poster exploration featuring multi-layered visual depth, precise alignment, and expressive tonal curves.",
+      "A cinematic poster study exploring isolation and tension through atmospheric depth, environmental storytelling, and a muted visual palette.",
     artDirection:
-      "Deep shadowy vignettes, sharp edge contrast, and curated typographic pairing.",
+      "Film-grain textures, layered haze, warm highlights, and vertical typography establish depth while reinforcing the cinematic mood.",
   },
 
   // ── LAYER 2: 4 THUMBNAILS (1280x720 / 16:9 LANDSCAPE) ────
