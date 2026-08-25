@@ -22,12 +22,14 @@ export function ShowcaseSlot({
   delay = 0,
   label = "SLOT AVAILABLE",
   sublabel = "Awaiting deployment",
+  aspectRatioClass = "aspect-[4/3]",
 }: {
   prefix: string;
   accent: string;
   delay?: number;
   label?: string;
   sublabel?: string;
+  aspectRatioClass?: string;
 }) {
   return (
     <motion.div
@@ -37,7 +39,9 @@ export function ShowcaseSlot({
       transition={{ delay, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
       className="group relative"
     >
-      <div className="relative border border-dashed border-white/12 bg-black/20 aspect-[4/3] flex items-center justify-center overflow-hidden transition-all duration-500 hover:border-white/25 hover:bg-black/35">
+      <div
+        className={`relative border border-dashed border-white/12 bg-black/20 ${aspectRatioClass} flex items-center justify-center overflow-hidden transition-all duration-500 hover:border-white/25 hover:bg-black/35`}
+      >
         {/* Corner brackets with viewfinder outward hover expansion */}
         <div className="absolute top-2.5 left-2.5 h-3.5 w-3.5 border-l border-t border-dashed border-white/20 transition-all duration-300 ease-out group-hover:top-1.5 group-hover:left-1.5 group-hover:border-white/45" />
         <div className="absolute top-2.5 right-2.5 h-3.5 w-3.5 border-r border-t border-dashed border-white/20 transition-all duration-300 ease-out group-hover:top-1.5 group-hover:right-1.5 group-hover:border-white/45" />

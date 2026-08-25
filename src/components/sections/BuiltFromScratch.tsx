@@ -7,6 +7,7 @@ import { ExpandableMotionCards } from "@/components/ui/ExpandableMotionCard";
 import { ShowcaseSlot } from "@/components/ui/ShowcaseSlot";
 import { VISUAL_ARTIFACTS } from "@/data/visualArtifacts";
 import { MOTION_ARTIFACTS } from "@/data/motionArtifacts";
+import { CODE_PROJECTS } from "@/data/codeProjects";
 
 /* ─── Category data matching Work Library chronology ─── */
 type ShowcaseCategory = {
@@ -181,13 +182,51 @@ function CategoryBlock({
               emptyCount={category.cardCount}
             />
           </div>
+        ) : category.id === "code-projects-showcase" ? (
+          <div className="w-full">
+            {CODE_PROJECTS.length > 0 ? (
+              <ExpandableArtifactCards
+                artifacts={CODE_PROJECTS}
+                accent={category.accent}
+                sectionDelay={sectionDelay}
+                prefix={category.cardPrefix}
+                emptyCount={category.cardCount}
+              />
+            ) : (
+              <div>
+                <div className="flex items-center justify-between mb-3.5 px-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: category.accent }} />
+                    <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/50">
+                      CODE SUITE // 16:9 LANDSCAPE (1280×720)
+                    </span>
+                  </div>
+                  <span className="font-mono text-[9px] tracking-[0.2em] text-white/25">
+                    [4 SLOTS AVAILABLE]
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
+                  {Array.from({ length: category.cardCount }).map((_, i) => (
+                    <ShowcaseSlot
+                      key={i}
+                      prefix={category.cardPrefix}
+                      accent={category.accent}
+                      aspectRatioClass="aspect-[16/9]"
+                      delay={sectionDelay + 0.08 + i * 0.09}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
             {Array.from({ length: category.cardCount }).map((_, i) => (
               <ShowcaseSlot
                 key={i}
                 prefix={category.cardPrefix}
                 accent={category.accent}
+                aspectRatioClass="aspect-[16/9]"
                 delay={sectionDelay + 0.08 + i * 0.09}
               />
             ))}
