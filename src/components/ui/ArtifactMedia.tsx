@@ -11,9 +11,8 @@ import { motion } from "framer-motion";
      ready), a themed placeholder renders instead — never a
      broken image icon or a 404.
 
-   The `layoutId` is preserved in both cases so the shared
-   grid → modal expand animation keeps working regardless of
-   whether an image exists yet.
+   The `layoutId`, when provided, enables shared
+   grid → modal expand animation.
 ───────────────────────────────────────────────── */
 export function ArtifactMedia({
   layoutId,
@@ -24,7 +23,7 @@ export function ArtifactMedia({
   className = "",
   style,
 }: {
-  layoutId: string;
+  layoutId?: string;
   src?: string;
   alt: string;
   accent: string;
@@ -35,7 +34,7 @@ export function ArtifactMedia({
   if (src) {
     return (
       <motion.img
-        layoutId={layoutId}
+        {...(layoutId ? { layoutId } : {})}
         src={src}
         alt={alt}
         loading="lazy"
@@ -47,7 +46,7 @@ export function ArtifactMedia({
 
   return (
     <motion.div
-      layoutId={layoutId}
+      {...(layoutId ? { layoutId } : {})}
       className="absolute inset-0 flex items-center justify-center bg-black/40"
       aria-label={alt}
     >

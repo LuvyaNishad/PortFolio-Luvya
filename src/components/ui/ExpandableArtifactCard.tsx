@@ -75,7 +75,6 @@ function ArtifactGridCard({
   aspectRatioClass?: string;
   onOpen: () => void;
 }) {
-  const layoutId = `artifact-${artifact.id}`;
   const isPortrait =
     aspectRatioClass === "aspect-[4/5]" ||
     artifact.type === "poster" ||
@@ -88,7 +87,6 @@ function ArtifactGridCard({
 
   return (
     <motion.div
-      layoutId={layoutId}
       initial={{ opacity: 0, y: 28, x: -8, filter: "blur(4px)" }}
       whileInView={{ opacity: 1, y: 0, x: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-6%" }}
@@ -104,18 +102,16 @@ function ArtifactGridCard({
 
         {/* Image with overlay */}
         <ArtifactMedia
-          layoutId={`image-${layoutId}`}
           src={artifact.imageSrc}
           alt={`${artifact.title} ${artifact.titleAccent}`}
           accent={artifact.accent}
           prefix={artifact.title}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          style={{ filter: "brightness(0.68) contrast(1.04)" }}
         />
 
         {/* Gradient overlays — refined so the full artwork remains clearly visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/15 to-transparent pointer-events-none" />
 
         {/* Scanline texture */}
         <div
@@ -147,14 +143,12 @@ function ArtifactGridCard({
         {/* Bottom content that reveals on hover */}
         <div className="absolute bottom-0 left-0 w-full p-3.5 sm:p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-500 z-10">
           <motion.p
-            layoutId={`subtitle-${layoutId}`}
             className="font-mono text-[8.5px] sm:text-[9px] tracking-[0.18em] uppercase mb-1"
             style={{ color: artifact.accent }}
           >
             {artifact.tags[0]}
           </motion.p>
           <motion.h4
-            layoutId={`title-${layoutId}`}
             className="font-display text-lg sm:text-xl uppercase leading-none text-white drop-shadow-sm"
           >
             {artifact.title}{" "}
@@ -190,8 +184,6 @@ function ArtifactModal({
   artifact: VisualArtifact;
   onClose: () => void;
 }) {
-  const layoutId = `artifact-${artifact.id}`;
-
   // ESC key listener
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -238,7 +230,10 @@ function ArtifactModal({
 
       {/* Modal container */}
       <motion.div
-        layoutId={layoutId}
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.92, y: 20 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         className="relative w-full max-w-[1100px] h-auto max-h-[85vh] bg-[#0c0c0f]/95 overflow-hidden border border-white/10 z-10 flex flex-col md:flex-row"
         style={{
           boxShadow: `
@@ -280,13 +275,11 @@ function ArtifactModal({
         {/* ─── LEFT: Image viewport ─── */}
         <div className="relative h-64 sm:h-80 md:h-auto w-full shrink-0 overflow-hidden md:w-[48%] bg-black/60 flex items-center justify-center p-3 sm:p-5">
           <ArtifactMedia
-            layoutId={`image-${layoutId}`}
             src={artifact.imageSrc}
             alt={`${artifact.title} ${artifact.titleAccent}`}
             accent={artifact.accent}
             prefix={artifact.title}
             className="h-full w-full max-h-[70vh] object-contain rounded-sm drop-shadow-2xl"
-            style={{ filter: "brightness(0.95) contrast(1.04)" }}
           />
 
           {/* Image overlays */}
@@ -342,14 +335,12 @@ function ArtifactModal({
             {/* Title block */}
             <div className="border-b border-white/8 pb-5">
               <motion.p
-                layoutId={`subtitle-${layoutId}`}
                 className="font-mono text-[10px] tracking-[0.18em] uppercase mb-2"
                 style={{ color: artifact.accent }}
               >
                 {artifact.tags[0]}
               </motion.p>
               <motion.h3
-                layoutId={`title-${layoutId}`}
                 className="font-display text-3xl sm:text-4xl uppercase leading-none text-white"
               >
                 {artifact.title}{" "}
