@@ -39,10 +39,62 @@ export function YoutubeIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function InstagramIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
+
 /** Map a social link key to its icon component. */
 export const SOCIAL_ICONS: Record<SocialLink["key"], ComponentType<SVGProps<SVGSVGElement>>> = {
   github: GithubIcon,
   linkedin: LinkedinIcon,
   x: XIcon,
   youtube: YoutubeIcon,
+  instagram: InstagramIcon,
+};
+
+export interface BrandColorConfig {
+  color: string;
+  hoverBorder: string;
+  hoverBg: string;
+  hoverGlow: string;
+}
+
+/** Authentic brand colors for each platform on hover. */
+export const SOCIAL_BRAND_COLORS: Record<SocialLink["key"], BrandColorConfig> = {
+  github: {
+    color: "#f0f6fc",
+    hoverBorder: "rgba(240, 246, 252, 0.45)",
+    hoverBg: "rgba(255, 255, 255, 0.08)",
+    hoverGlow: "0 0 16px rgba(255, 255, 255, 0.18)",
+  },
+  linkedin: {
+    color: "#0a66c2",
+    hoverBorder: "rgba(10, 102, 194, 0.65)",
+    hoverBg: "rgba(10, 102, 194, 0.16)",
+    hoverGlow: "0 0 16px rgba(10, 102, 194, 0.35)",
+  },
+  x: {
+    color: "#1d9bf0",
+    hoverBorder: "rgba(29, 155, 240, 0.65)",
+    hoverBg: "rgba(29, 155, 240, 0.16)",
+    hoverGlow: "0 0 16px rgba(29, 155, 240, 0.35)",
+  },
+  instagram: {
+    color: "#e4405f",
+    hoverBorder: "rgba(228, 64, 95, 0.65)",
+    hoverBg: "rgba(228, 64, 95, 0.16)",
+    hoverGlow: "0 0 16px rgba(228, 64, 95, 0.35)",
+  },
+  youtube: {
+    color: "#ff0000",
+    hoverBorder: "rgba(255, 0, 0, 0.65)",
+    hoverBg: "rgba(255, 0, 0, 0.16)",
+    hoverGlow: "0 0 16px rgba(255, 0, 0, 0.35)",
+  },
 };
