@@ -18,7 +18,7 @@
 
 export interface SocialLink {
   /** Stable key used to pick the matching icon. */
-  key: "github" | "linkedin" | "x" | "youtube";
+  key: "github" | "linkedin" | "x" | "youtube" | "instagram";
   label: string;
   /** Leave empty ("") to hide this link everywhere until you add a URL. */
   href: string;
@@ -100,9 +100,9 @@ export const siteConfig = {
    */
   socials: [
     { key: "github", label: "GitHub", href: "https://github.com/LuvyaNishad" },
-    { key: "linkedin", label: "LinkedIn", href: "" },
-    { key: "x", label: "X", href: "" },
-    { key: "youtube", label: "YouTube", href: "" },
+    { key: "x", label: "Twitter", href: "https://x.com" },
+    { key: "instagram", label: "Instagram", href: "https://instagram.com" },
+    { key: "linkedin", label: "LinkedIn", href: "https://linkedin.com" },
   ] as SocialLink[],
 
   /** GitHub username used by the live contribution heatmap. */
