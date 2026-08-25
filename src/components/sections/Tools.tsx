@@ -211,42 +211,239 @@ function ToolCategory({
    ECG Heart-Rate Monitor — continuously scrolling
 ───────────────────────────────────────────────── */
 function ECGMonitor() {
-  const waveformPath =
-    "M0,16 L12,16 L18,16 L24,16 L30,16 L36,16 L42,16 L46,16 L50,12 L54,16 L58,16 L62,16 L68,6 L72,26 L76,4 L80,22 L84,10 L88,18 L92,16 L98,16 L104,16 L108,16 L112,14 L116,16 L120,16 L126,16 L132,16 L136,16 L140,16 L146,16 L150,12 L154,16 L158,16 L162,16 L168,5 L172,27 L176,3 L180,23 L184,9 L188,19 L192,16 L198,16 L204,16 L210,16 L216,16 L220,16 L226,16 L232,16 L238,16 L244,16 L250,16 L256,16 L262,16 L268,16 L274,16 L280,16";
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const svgContent = (
-    <svg
-      viewBox="0 0 280 32"
-      fill="none"
-      preserveAspectRatio="none"
-      className="w-full h-full"
-    >
-      <path
-        d={waveformPath}
-        stroke="rgba(74,156,94,0.6)"
-        strokeWidth="1.5"
-        fill="none"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      {/* Glow layer */}
-      <path
-        d={waveformPath}
-        stroke="rgba(74,156,94,0.2)"
-        strokeWidth="4"
-        fill="none"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const maybeCtx = canvas.getContext("2d");
+    if (!maybeCtx) return;
+    const ctx = maybeCtx;
+
+    const W = 360; // internal resolution width
+    const H = 64;  // internal resolution height
+    canvas.width = W;
+    canvas.height = H;
+
+    const mid = H / 2;
+    const speed = 1.25; // scroll speed (px per tick)
+
+    // Buffer to hold waveform y-offsets for the entire canvas
+    const buffer = new Float32Array(W).fill(0);
+    let writePos = 0;
+    let subPixel = 0;
+    let frameId: number;
+
+    // Organic beat state generator variables
+    let state: "REST" | "BEAT" = "REST";
+    let restRemaining = 25; // initial baseline gap
+    let beatProgress = 0;
+
+    // Current beat's dynamic parameters (randomized per beat for realistic variation)
+    let currentScale = 1.0;     // height multiplier (0.65 to 1.35)
+    let currentDuration = 26;   // samples for the beat pulse itself
+
+    // Respiratory baseline wander (sine wave phase)
+    let wanderPhase = 0;
+
+    // Artifact burst state
+    let interferenceTimer = 0;
+    let interferenceActive = false;
+
+    // Generate the baseline offset for one step in a beat (progress: 0.0 to 1.0)
+    function calculateBeatSample(p: number, scale: number): number {
+      // P-wave (0.0 to 0.2): small rounded bump
+      if (p < 0.2) {
+        const pNorm = p / 0.2;
+        return Math.sin(pNorm * Math.PI) * 2.2 * scale;
+      }
+      // PR segment (0.2 to 0.3): flat baseline
+      if (p < 0.3) {
+        return 0;
+      }
+      // QRS Complex (0.3 to 0.55): sharp dramatic spike
+      if (p < 0.55) {
+        const qrsNorm = (p - 0.3) / 0.25;
+        // Q-dip (-Q) → R-peak (+R) → S-dip (-S)
+        if (qrsNorm < 0.2) {
+          // Q dip
+          return -((qrsNorm / 0.2) * 5) * scale;
+        } else if (qrsNorm < 0.6) {
+          // R spike up
+          const rNorm = (qrsNorm - 0.2) / 0.4;
+          const val = -5 + rNorm * 31; // from -5 to +26
+          return val * scale;
+        } else if (qrsNorm < 0.85) {
+          // S dip down
+          const sNorm = (qrsNorm - 0.6) / 0.25;
+          const val = 26 - sNorm * 36; // from +26 down to -10
+          return val * scale;
+        } else {
+          // Recovery from S dip back to baseline
+          const recNorm = (qrsNorm - 0.85) / 0.15;
+          return (-10 + recNorm * 10) * scale;
+        }
+      }
+      // ST Segment (0.55 to 0.65)
+      if (p < 0.65) {
+        return 0;
+      }
+      // T-wave (0.65 to 0.95): broader rounded bump
+      if (p < 0.95) {
+        const tNorm = (p - 0.65) / 0.3;
+        return Math.sin(tNorm * Math.PI) * 5.5 * scale;
+      }
+      // Trail to baseline
+      return 0;
+    }
+
+    // Helper: generate new randomized beat parameters for natural variation
+    function startNewBeat() {
+      state = "BEAT";
+      beatProgress = 0;
+      // Height variation: vary peak height between 0.68x and 1.32x randomly
+      // Every 3-5 beats, occasionally introduce a bigger emphatic beat (1.35x) or softer beat (0.7x)
+      const rand = Math.random();
+      if (rand < 0.15) {
+        currentScale = 1.30 + Math.random() * 0.15; // strong beat
+      } else if (rand < 0.35) {
+        currentScale = 0.68 + Math.random() * 0.15; // soft beat
+      } else {
+        currentScale = 0.88 + Math.random() * 0.28; // normal dynamic beat
+      }
+      // Beat duration micro-variation (slightly faster/slower pulses)
+      currentDuration = 24 + Math.floor(Math.random() * 6);
+    }
+
+    function draw() {
+      subPixel += speed;
+      while (subPixel >= 1) {
+        subPixel -= 1;
+
+        let sample = 0;
+
+        if (state === "REST") {
+          sample = 0;
+          restRemaining--;
+          if (restRemaining <= 0) {
+            startNewBeat();
+          }
+        } else if (state === "BEAT") {
+          beatProgress++;
+          const p = beatProgress / currentDuration;
+          if (p >= 1.0) {
+            state = "REST";
+            // Randomize rest gap between beats for realistic Heart Rate Variability (HRV)
+            // 20 to 52 samples gap (varied beat timing)
+            restRemaining = 18 + Math.floor(Math.random() * 34);
+            sample = 0;
+          } else {
+            sample = calculateBeatSample(p, currentScale);
+          }
+        }
+
+        // Add respiratory baseline wander (slow subtle sine oscillation)
+        wanderPhase += 0.012;
+        const wander = Math.sin(wanderPhase) * 1.4;
+
+        // Baseline micro-jitter noise
+        const microNoise = (Math.random() - 0.5) * 0.9;
+
+        // Occasional electrical static artifact
+        interferenceTimer--;
+        if (interferenceTimer <= 0 && !interferenceActive && Math.random() < 0.002) {
+          interferenceActive = true;
+          interferenceTimer = 2 + Math.floor(Math.random() * 5);
+        }
+        let staticArtifact = 0;
+        if (interferenceActive) {
+          staticArtifact = (Math.random() - 0.5) * 12;
+          if (interferenceTimer <= 0) interferenceActive = false;
+        }
+
+        const finalVal = sample + wander + microNoise + staticArtifact;
+        buffer[writePos] = finalVal;
+        writePos = (writePos + 1) % W;
+      }
+
+      // Render Canvas Frame
+      ctx.clearRect(0, 0, W, H);
+
+      const startIdx = writePos; // oldest sample at 0, newest at W-1
+
+      // 1. Afterglow glow layer (dim thick stroke)
+      ctx.beginPath();
+      ctx.strokeStyle = "rgba(74,156,94,0.14)";
+      ctx.lineWidth = 4.5;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      for (let i = 0; i < W; i++) {
+        const idx = (startIdx + i) % W;
+        const y = mid - buffer[idx];
+        if (i === 0) ctx.moveTo(i, y);
+        else ctx.lineTo(i, y);
+      }
+      ctx.stroke();
+
+      // 2. Main ECG trace line
+      ctx.beginPath();
+      ctx.strokeStyle = "rgba(74,156,94,0.75)";
+      ctx.lineWidth = 1.5;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      for (let i = 0; i < W; i++) {
+        const idx = (startIdx + i) % W;
+        const y = mid - buffer[idx];
+        if (i === 0) ctx.moveTo(i, y);
+        else ctx.lineTo(i, y);
+      }
+      ctx.stroke();
+
+      // 3. Bright phosphor sweep near the write head (rightmost 35px)
+      const sweepWidth = 35;
+      const sweepStart = W - sweepWidth;
+      ctx.beginPath();
+      ctx.strokeStyle = "rgba(110,210,130,0.95)";
+      ctx.lineWidth = 1.8;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      for (let i = sweepStart; i < W; i++) {
+        const idx = (startIdx + i) % W;
+        const y = mid - buffer[idx];
+        if (i === sweepStart) ctx.moveTo(i, y);
+        else ctx.lineTo(i, y);
+      }
+      ctx.stroke();
+
+      // 4. Phosphor lead dot at write position
+      const headIdx = (startIdx + W - 1) % W;
+      const headY = mid - buffer[headIdx];
+      ctx.beginPath();
+      ctx.arc(W - 1, headY, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(150,240,170,1)";
+      ctx.fill();
+
+      // Dot ambient glow
+      ctx.beginPath();
+      ctx.arc(W - 1, headY, 6, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(74,156,94,0.25)";
+      ctx.fill();
+
+      frameId = requestAnimationFrame(draw);
+    }
+
+    frameId = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(frameId);
+  }, []);
 
   return (
     <div className="ecg-monitor">
-      <div className="ecg-trace">
-        {svgContent}
-        {svgContent}
-      </div>
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full"
+        style={{ imageRendering: "auto" }}
+      />
     </div>
   );
 }

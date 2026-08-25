@@ -6,7 +6,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { X, ShieldCheck, Mail } from "lucide-react";
 import { siteConfig, activeSocials } from "@/config/site";
-import { SOCIAL_ICONS } from "@/components/ui/SocialIcons";
+import { SOCIAL_ICONS, SOCIAL_BRAND_COLORS } from "@/components/ui/SocialIcons";
 import {
   aboutBio,
   aboutTags,
@@ -390,6 +390,7 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
                   <div className="flex flex-wrap items-center justify-center gap-2">
                     {activeSocials.map(({ key, label, href }) => {
                       const Icon = SOCIAL_ICONS[key];
+                      const brand = SOCIAL_BRAND_COLORS[key];
                       return (
                         <a
                           key={key}
@@ -397,10 +398,16 @@ export function AboutModal({ onClose }: { onClose: () => void }) {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={label}
-                          className="flex items-center gap-2 px-3 py-1.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/20 transition-all group"
+                          className="social-pill-btn flex items-center gap-2 px-3 py-1.5 border border-white/10 bg-white/[0.03] group hover:scale-[1.03]"
+                          style={{
+                            ["--brand-color" as string]: brand?.color || "#ffffff",
+                            ["--brand-border" as string]: brand?.hoverBorder || "rgba(255, 255, 255, 0.3)",
+                            ["--brand-bg" as string]: brand?.hoverBg || "rgba(255, 255, 255, 0.08)",
+                            ["--brand-glow" as string]: brand?.hoverGlow || "none",
+                          }}
                         >
-                          <Icon className="w-3 h-3 text-white/40 group-hover:text-white/80 transition-colors" />
-                          <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-white/50 group-hover:text-white/90 transition-colors">
+                          <Icon className="w-3 h-3 text-white/40 transition-colors duration-300 group-hover:text-[var(--brand-color)]" />
+                          <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-white/50 group-hover:text-white transition-colors duration-300">
                             {label}
                           </span>
                         </a>
