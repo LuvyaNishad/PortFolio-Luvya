@@ -88,7 +88,7 @@ function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) 
       viewport={{ once: true, margin: "-8%" }}
       transition={{ delay, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
       whileTap={{ scale: 0.985 }}
-      className="group relative block w-full min-h-[300px] text-left cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+      className="group relative block w-full text-left cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
       style={
         {
           "--archive-accent": item.accent,
@@ -97,7 +97,7 @@ function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) 
       }
     >
       <HighlightCard accent={item.glow} className="h-full">
-        <div className="relative flex min-h-[300px] h-full flex-col justify-between p-6 sm:p-7">
+        <div className="relative flex h-full flex-col justify-between p-[clamp(1rem,2.5vh,1.75rem)] sm:p-[clamp(1.25rem,3vh,1.75rem)]">
 
 
           <div
@@ -142,10 +142,10 @@ function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) 
             </div>
           </div>
 
-          <div className="relative z-10 my-9 flex justify-center">
+          <div className="relative z-10 my-[clamp(0.5rem,1vh,1.5rem)] flex justify-center">
             <div
               className={cn(
-                "relative flex h-24 w-32 items-center justify-center rounded-[4px]",
+                "relative flex h-[clamp(4rem,8vh,6rem)] w-[clamp(5.5rem,10vw,8rem)] items-center justify-center rounded-[4px]",
                 "border border-white/10 bg-black/45 shadow-[0_18px_42px_-20px_rgba(0,0,0,0.95)]",
                 "transition duration-700 group-hover:-translate-y-1 group-hover:border-[color:var(--archive-accent)]/45"
               )}
@@ -193,7 +193,7 @@ function ArchiveCard({ item, delay }: { item: WorkArchiveItem; delay: number }) 
               />
             </div>
 
-            <div className="mt-6 flex items-center justify-between border-t border-white/8 pt-4">
+            <div className="flex items-center justify-between border-t border-white/8" style={{ marginTop: "clamp(0.75rem, 1.5vh, 1.5rem)", paddingTop: "clamp(0.5rem, 1vh, 1rem)" }}>
               <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/26">
                 {item.signal}
               </span>
@@ -217,7 +217,11 @@ export function WorkLibrary() {
   return (
     <section
       id="library"
-      className="relative overflow-hidden bg-[#0a0a0c] px-6 py-28 sm:px-8 lg:px-14 lg:py-36 scroll-mt-24 md:scroll-mt-32"
+      className="relative overflow-hidden bg-[#0a0a0c] px-6 sm:px-8 lg:px-14 scroll-mt-24 md:scroll-mt-32"
+      style={{
+        paddingTop: "clamp(1.5rem, 4vh, 7rem)",
+        paddingBottom: "clamp(1.5rem, 4vh, 7rem)",
+      }}
     >
       {/* Background Image exactly as requested */}
       <div
@@ -246,7 +250,7 @@ export function WorkLibrary() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-12 text-center sm:mb-14"
+          className="mb-[clamp(1.5rem,3vh,3.5rem)] text-center"
         >
           <div className="mb-5 flex items-center justify-center gap-3">
             <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/32">
