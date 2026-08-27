@@ -191,7 +191,7 @@ export function Hero() {
       }}
       transition={{ duration: 0.35, ease: "easeOut" }}
       className="relative w-full flex flex-col items-center justify-between overflow-hidden"
-      style={{ minHeight: "100vh" }}
+      style={{ minHeight: "100vh", height: "100vh" }}
     >
       {/* ── INTRO INITIALIZATION TELEMETRY OVERLAY ── */}
       <AnimatePresence>
@@ -222,8 +222,8 @@ export function Hero() {
         className="relative flex flex-col items-center text-center w-full px-4 sm:px-6 flex-1 justify-center"
         style={{
           zIndex: 1,
-          paddingTop: "clamp(4.5rem, 8.5vh, 6.5rem)",
-          paddingBottom: "clamp(1.5rem, 3.5vh, 2.5rem)",
+          paddingTop: "clamp(3rem, 6vh, 5.5rem)",
+          paddingBottom: "clamp(0.5rem, 1.5vh, 1.5rem)",
         }}
       >
         {/* ── VOLUMETRIC UPWARD GLOW SYSTEM (Behind Headline & Subtitle) ── */}
@@ -267,7 +267,7 @@ export function Hero() {
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : -12 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2.5"
+          className="flex items-center gap-2 sm:gap-3 mb-[clamp(0.15rem,0.5vh,0.6rem)] sm:mb-[clamp(0.25rem,0.8vh,1rem)]"
         >
           <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#c5a880]/90 shadow-[0_0_8px_rgba(197,168,128,0.6)]" />
           <span className="font-mono text-[8px] sm:text-[9.5px] md:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] text-[#c5a880]/90 uppercase font-medium">
@@ -281,13 +281,13 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 20 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-center justify-center text-center select-none mb-2 sm:mb-4 relative z-20"
+          className="flex flex-col items-center justify-center text-center select-none mb-[clamp(0.15rem,0.5vh,0.5rem)] sm:mb-[clamp(0.25rem,1vh,1rem)] relative z-20"
         >
           {/* Level 1 (Top Line): Primary Headline */}
           <span
             className="font-display uppercase text-white tracking-[0.03em] leading-[0.88] drop-shadow-[0_4px_28px_rgba(0,0,0,0.9)]"
             style={{
-              fontSize: "clamp(3rem, 8.5vw, 8.2rem)",
+              fontSize: "clamp(2.5rem, min(8.5vw, 9vh), 8.2rem)",
               fontWeight: 400,
               textShadow: "0 0 45px rgba(220,165,85,0.22)",
             }}
@@ -308,7 +308,7 @@ export function Hero() {
           <span
             className="font-serif italic font-normal tracking-[0.01em] text-[#e5be8a] my-[-0.15em] sm:my-[-0.18em] z-10 select-none drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)]"
             style={{
-              fontSize: "clamp(1.8rem, 4.2vw, 4.2rem)",
+              fontSize: "clamp(1.4rem, min(4.2vw, 4.5vh), 4.2rem)",
               lineHeight: 1.1,
               textShadow: "0 0 35px rgba(229,190,138,0.35)",
             }}
@@ -329,7 +329,7 @@ export function Hero() {
           <span
             className="font-display uppercase text-white tracking-[0.03em] leading-[0.88] drop-shadow-[0_4px_28px_rgba(0,0,0,0.9)]"
             style={{
-              fontSize: "clamp(3rem, 8.5vw, 8.2rem)",
+              fontSize: "clamp(2.5rem, min(8.5vw, 9vh), 8.2rem)",
               fontWeight: 400,
               textShadow: "0 0 45px rgba(220,165,85,0.22)",
             }}
@@ -352,7 +352,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 12 }}
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          className="font-sans text-[13px] sm:text-[15px] md:text-[18px] leading-[1.55] sm:leading-[1.6] text-white/80 font-normal mb-3 sm:mb-5 max-w-[92vw] sm:max-w-[650px] px-2 relative z-20"
+          className="font-sans text-[13px] sm:text-[15px] md:text-[18px] leading-[1.55] sm:leading-[1.6] text-white/80 font-normal mb-[clamp(0.25rem,0.8vh,0.75rem)] sm:mb-[clamp(0.5rem,1.2vh,1.25rem)] max-w-[92vw] sm:max-w-[650px] px-2 relative z-20"
           style={{
             textShadow: "0 2px 14px rgba(0,0,0,0.9)",
           }}
@@ -371,7 +371,7 @@ export function Hero() {
         {/* ── FLOATING MONOLITH + 3D ORBIT RINGS + DEBRIS (HEROIC SCALE, RESPONSIVE) ── */}
         <div
           ref={monolithRef}
-          className="relative w-[20vh] h-[20vh] min-w-[150px] min-h-[150px] max-w-[220px] max-h-[220px] sm:w-[25vh] sm:h-[25vh] sm:min-w-[190px] sm:min-h-[190px] sm:max-w-[280px] sm:max-h-[280px] md:w-[28vh] md:h-[28vh] md:max-w-[340px] md:max-h-[340px] lg:w-[32vh] lg:h-[32vh] lg:max-w-[380px] lg:max-h-[380px] my-0 sm:my-0.5 select-none flex items-center justify-center"
+          className="relative w-[16vh] h-[16vh] min-w-[120px] min-h-[120px] max-w-[200px] max-h-[200px] sm:w-[20vh] sm:h-[20vh] sm:min-w-[150px] sm:min-h-[150px] sm:max-w-[250px] sm:max-h-[250px] md:w-[22vh] md:h-[22vh] md:max-w-[280px] md:max-h-[280px] lg:w-[26vh] lg:h-[26vh] lg:max-w-[340px] lg:max-h-[340px] my-0 sm:my-0.5 select-none flex items-center justify-center"
           style={{
             perspective: "1100px",
             transformStyle: "preserve-3d",
@@ -727,7 +727,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: impactHappened ? 1 : 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="flex items-center gap-2 mb-3 sm:mb-4"
+          className="flex items-center gap-2 mb-[clamp(0.25rem,0.6vh,0.5rem)] sm:mb-[clamp(0.35rem,0.8vh,0.75rem)]"
         >
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/80 animate-pulse" />
           <span className="font-mono text-[8.5px] sm:text-[9.5px] md:text-[10px] tracking-[0.2em] sm:tracking-[0.25em] text-white/45 uppercase">
@@ -740,7 +740,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 14 }}
           transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
-          className="flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full px-2"
+          className="flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full px-2 pb-[clamp(0.5rem,1.5vh,1rem)]"
         >
           <LightBeamButton href="#built-from-scratch" className="text-[9.5px] sm:text-[11px] px-5 sm:px-7 py-2.5 sm:py-3 tracking-[0.16em] sm:tracking-[0.2em]">
             VIEW MY WORK <span className="text-white/40 ml-1">→</span>
