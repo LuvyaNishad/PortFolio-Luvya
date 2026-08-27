@@ -1,17 +1,24 @@
 export interface VisualArtifact {
   id: string;
   index: string;
-  type?: "poster" | "thumbnail";
-  aspectRatio?: "4/5" | "16/9";
+  type?: "poster" | "thumbnail" | "code_project";
+  aspectRatio?: "4/5" | "16/9" | "4/3";
   title: string;
   titleAccent: string;
   subtitle: string;
+  categoryLabel?: string;
   accent: string;
   imageSrc: string;
+  modalImageSrc?: string;
   tags: string[];
   specs: { label: string; value: string }[];
   overview: string;
   artDirection: string;
+  collaborators?: string;
+  liveUrl?: string;
+  liveButtonLabel?: string;
+  githubUrl?: string;
+  inDevelopment?: boolean;
 }
 
 /* ─────────────────────────────────────────────────
