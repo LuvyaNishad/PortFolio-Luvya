@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import type { VisualArtifact } from "@/data/visualArtifacts";
 import { ArtifactMedia } from "@/components/ui/ArtifactMedia";
 import { ShowcaseSlot } from "@/components/ui/ShowcaseSlot";
+import { TechStackGrid } from "@/components/ui/TechIcons";
 
 /* ─── Reusable corner bracket ornament ─── */
 function TacticalBrackets({
@@ -81,9 +82,13 @@ function ArtifactGridCard({
     artifact.aspectRatio === "4/5" ||
     artifact.imageSrc.toLowerCase().includes("poster");
 
+  const isFourThree =
+    aspectRatioClass === "aspect-[4/3]" ||
+    artifact.aspectRatio === "4/3";
+
   const finalAspectClass =
     aspectRatioClass ||
-    (isPortrait ? "aspect-[4/5]" : "aspect-[16/9]");
+    (isPortrait ? "aspect-[4/5]" : isFourThree ? "aspect-[4/3]" : "aspect-[16/9]");
 
   return (
     <motion.div
@@ -110,8 +115,8 @@ function ArtifactGridCard({
         />
 
         {/* Gradient overlays — refined so the full artwork remains clearly visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/15 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent pointer-events-none" />
 
         {/* Scanline texture */}
         <div
@@ -126,7 +131,7 @@ function ArtifactGridCard({
         {/* Top-right index badge */}
         <div className="absolute top-2.5 right-2.5 z-10">
           <span
-            className="font-mono text-[8.5px] tracking-[0.18em] opacity-60 bg-black/70 px-1.5 py-0.5 rounded-[2px] border border-white/10"
+            className="font-mono text-[8.5px] tracking-[0.18em] opacity-70 bg-black/80 px-2 py-0.5 rounded-[2px] border border-white/10"
             style={{ color: artifact.accent }}
           >
             {artifact.subtitle}
@@ -143,7 +148,7 @@ function ArtifactGridCard({
         {/* Bottom content that reveals on hover */}
         <div className="absolute bottom-0 left-0 w-full p-3.5 sm:p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-500 z-10">
           <motion.p
-            className="font-mono text-[8.5px] sm:text-[9px] tracking-[0.18em] uppercase mb-1"
+            className="font-mono text-[8.5px] sm:text-[9px] tracking-[0.18em] uppercase mb-1 font-medium"
             style={{ color: artifact.accent }}
           >
             {artifact.tags[0]}
@@ -154,7 +159,7 @@ function ArtifactGridCard({
             {artifact.title}{" "}
             <span
               className="font-serif italic font-normal normal-case text-xs sm:text-sm"
-              style={{ color: artifact.accent, opacity: 0.8 }}
+              style={{ color: artifact.accent, opacity: 0.85 }}
             >
               {artifact.titleAccent}
             </span>
@@ -178,12 +183,18 @@ function ArtifactGridCard({
 
 /* ─── Shared dossier info block ─── */
 function DossierContent({ artifact }: { artifact: VisualArtifact }) {
+  const categoryTitle =
+    artifact.categoryLabel ||
+    (artifact.subtitle.includes("CD-") || artifact.subtitle.includes("CODE")
+      ? "CODE PROJECTS"
+      : "GRAPHIC DESIGN");
+
   return (
     <>
       {/* Category breadcrumb */}
       <div className="flex items-center gap-3">
         <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/30">
-          GRAPHIC DESIGN
+          {categoryTitle}
         </span>
         <span className="text-white/15 font-mono text-[8px]">{"//"}</span>
         <span
@@ -197,7 +208,7 @@ function DossierContent({ artifact }: { artifact: VisualArtifact }) {
       {/* Title block */}
       <div className="border-b border-white/8 pb-4">
         <p
-          className="font-mono text-[10px] tracking-[0.18em] uppercase mb-2"
+          className="font-mono text-[10px] tracking-[0.18em] uppercase mb-2 font-medium"
           style={{ color: artifact.accent }}
         >
           {artifact.tags[0]}
@@ -206,7 +217,7 @@ function DossierContent({ artifact }: { artifact: VisualArtifact }) {
           {artifact.title}{" "}
           <span
             className="font-serif italic font-normal normal-case"
-            style={{ color: artifact.accent, opacity: 0.8 }}
+            style={{ color: artifact.accent, opacity: 0.85 }}
           >
             {artifact.titleAccent}
           </span>
@@ -214,26 +225,50 @@ function DossierContent({ artifact }: { artifact: VisualArtifact }) {
       </div>
 
       {/* Technical Specifications Grid */}
-      <div>
-        <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-3">
-          // SPECIFICATIONS
-        </p>
-        <div className="grid grid-cols-2 gap-2.5">
-          {artifact.specs.map((spec, i) => (
-            <div
-              key={i}
-              className="p-2.5 border border-white/6 bg-white/[0.015] flex flex-col gap-0.5"
-            >
-              <span className="font-mono text-[8px] tracking-[0.15em] uppercase text-white/35">
-                {spec.label}
-              </span>
-              <span className="font-mono text-[10.5px] text-white/85">
-                {spec.value}
-              </span>
-            </div>
-          ))}
+      {artifact.specs.length > 0 && (
+        <div>
+          <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2.5">
+            // SPECIFICATIONS
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {artifact.specs.map((spec, i) => (
+              <div
+                key={i}
+                className="p-2.5 border border-white/6 bg-white/[0.015] flex flex-col gap-0.5"
+              >
+                <span className="font-mono text-[8px] tracking-[0.15em] uppercase text-white/35">
+                  {spec.label}
+                </span>
+                <span className="font-mono text-[10.5px] text-white/85">
+                  {spec.value}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Expanded Tech Stack with Authentic Logos */}
+      {artifact.tags && artifact.tags.length > 0 && (
+        <TechStackGrid
+          tags={artifact.tags}
+          title="// TECHNOLOGIES & TOOLS"
+        />
+      )}
+
+      {/* Collaborators row if present */}
+      {artifact.collaborators && (
+        <div>
+          <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
+            // COLLABORATORS & TEAM
+          </p>
+          <div className="p-2.5 border border-white/6 bg-white/[0.015]">
+            <span className="font-mono text-[10.5px] text-white/80">
+              {artifact.collaborators}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Overview / Brief */}
       <div>
@@ -245,27 +280,47 @@ function DossierContent({ artifact }: { artifact: VisualArtifact }) {
         </p>
       </div>
 
-      {/* Art Direction / Notes */}
+      {/* Art Direction / Engineering Notes */}
       <div>
         <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
-          // ART DIRECTION & CRAFT
+          // {artifact.categoryLabel?.includes("CODE") ? "ARCHITECTURE & ENGINEERING" : "ART DIRECTION & CRAFT"}
         </p>
         <p className="font-sans text-[13px] leading-[1.7] text-white/60">
           {artifact.artDirection}
         </p>
       </div>
 
-      {/* Tags footer */}
-      <div className="pt-2 border-t border-white/6 flex flex-wrap gap-1.5">
-        {artifact.tags.map((tag, i) => (
-          <span
-            key={i}
-            className="font-mono text-[8px] uppercase tracking-[0.15em] px-2 py-1 border border-white/8 bg-white/[0.02] text-white/45"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
+      {/* External Action Links (Live Demo, In Development, Source Code) */}
+      {(artifact.liveUrl || artifact.githubUrl || artifact.inDevelopment) && (
+        <div className="pt-3 border-t border-white/6 flex flex-wrap items-center gap-3">
+          {artifact.liveUrl && (
+            <a
+              href={artifact.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-white/20 bg-white/[0.04] hover:bg-white/[0.1] hover:border-white/40 text-white font-mono text-[9px] uppercase tracking-[0.16em] transition-all rounded-[2px]"
+            >
+              <span>{artifact.liveButtonLabel || "LIVE DEMO ↗"}</span>
+            </a>
+          )}
+          {artifact.inDevelopment && (
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-amber-500/30 bg-amber-500/[0.08] text-amber-300 font-mono text-[9px] uppercase tracking-[0.16em] rounded-[2px]">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+              <span>IN DEVELOPMENT // WIP</span>
+            </div>
+          )}
+          {artifact.githubUrl && (
+            <a
+              href={artifact.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-white/15 bg-white/[0.02] hover:bg-white/[0.08] hover:border-white/30 text-white/70 hover:text-white font-mono text-[9px] uppercase tracking-[0.16em] transition-all rounded-[2px]"
+            >
+              <span>SOURCE CODE ↗</span>
+            </a>
+          )}
+        </div>
+      )}
 
       {/* Tactical dossier stamp */}
       <motion.div
@@ -303,7 +358,10 @@ function ArtifactModal({
 }) {
   const isLandscape =
     artifact.type === "thumbnail" ||
+    artifact.type === "code_project" ||
     artifact.aspectRatio === "16/9" ||
+    artifact.aspectRatio === "4/3" ||
+    !!artifact.modalImageSrc ||
     artifact.imageSrc.toLowerCase().includes("thumbnail");
 
   // ESC key listener
@@ -407,7 +465,10 @@ function ArtifactModal({
           <div className="p-4 sm:p-6 pb-0 flex flex-col gap-3">
             <div className="flex items-center gap-3">
               <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/30">
-                GRAPHIC DESIGN
+                {artifact.categoryLabel ||
+                  (artifact.subtitle.includes("CD-") || artifact.subtitle.includes("CODE")
+                    ? "CODE PROJECTS"
+                    : "GRAPHIC DESIGN")}
               </span>
               <span className="text-white/15 font-mono text-[8px]">{"//"}</span>
               <span
@@ -419,7 +480,7 @@ function ArtifactModal({
             </div>
             <div className="pb-3 border-b border-white/8">
               <p
-                className="font-mono text-[10px] tracking-[0.18em] uppercase mb-1.5"
+                className="font-mono text-[10px] tracking-[0.18em] uppercase mb-1.5 font-medium"
                 style={{ color: artifact.accent }}
               >
                 {artifact.tags[0]}
@@ -428,7 +489,7 @@ function ArtifactModal({
                 {artifact.title}{" "}
                 <span
                   className="font-serif italic font-normal normal-case"
-                  style={{ color: artifact.accent, opacity: 0.8 }}
+                  style={{ color: artifact.accent, opacity: 0.85 }}
                 >
                   {artifact.titleAccent}
                 </span>
@@ -436,10 +497,10 @@ function ArtifactModal({
             </div>
           </div>
 
-          {/* ── MIDDLE: Full-width landscape image ── */}
+          {/* ── MIDDLE: Full-width landscape banner image (16:9) ── */}
           <div className="relative w-full bg-black/40 flex items-center justify-center p-3 sm:p-5">
             <ArtifactMedia
-              src={artifact.imageSrc}
+              src={artifact.modalImageSrc || artifact.imageSrc}
               alt={`${artifact.title} ${artifact.titleAccent}`}
               accent={artifact.accent}
               prefix={artifact.title}
@@ -479,28 +540,52 @@ function ArtifactModal({
           {/* ── BOTTOM: Info & specs ── */}
           <div className="p-4 sm:p-6 pt-4 flex flex-col gap-5">
             {/* Specs */}
-            <div>
-              <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-3">
-                // SPECIFICATIONS
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                {artifact.specs.map((spec, i) => (
-                  <div
-                    key={i}
-                    className="p-2.5 border border-white/6 bg-white/[0.015] flex flex-col gap-0.5"
-                  >
-                    <span className="font-mono text-[8px] tracking-[0.15em] uppercase text-white/35">
-                      {spec.label}
-                    </span>
-                    <span className="font-mono text-[10.5px] text-white/85">
-                      {spec.value}
-                    </span>
-                  </div>
-                ))}
+            {artifact.specs.length > 0 && (
+              <div>
+                <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2.5">
+                  // SPECIFICATIONS
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {artifact.specs.map((spec, i) => (
+                    <div
+                      key={i}
+                      className="p-2.5 border border-white/6 bg-white/[0.015] flex flex-col gap-0.5"
+                    >
+                      <span className="font-mono text-[8px] tracking-[0.15em] uppercase text-white/35">
+                        {spec.label}
+                      </span>
+                      <span className="font-mono text-[10.5px] text-white/85">
+                        {spec.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Overview & Art Direction side by side on desktop, stacked on mobile */}
+            {/* Expanded Tech Stack with Authentic Logos */}
+            {artifact.tags && artifact.tags.length > 0 && (
+              <TechStackGrid
+                tags={artifact.tags}
+                title="// TECHNOLOGIES & TOOLS"
+              />
+            )}
+
+            {/* Collaborators row if present */}
+            {artifact.collaborators && (
+              <div>
+                <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
+                  // COLLABORATORS & TEAM
+                </p>
+                <div className="p-2.5 border border-white/6 bg-white/[0.015]">
+                  <span className="font-mono text-[10.5px] text-white/80">
+                    {artifact.collaborators}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Overview & Art Direction / Engineering Notes side by side on desktop */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
@@ -512,7 +597,10 @@ function ArtifactModal({
               </div>
               <div>
                 <p className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/35 mb-2">
-                  // ART DIRECTION & CRAFT
+                  //{" "}
+                  {artifact.categoryLabel?.includes("CODE")
+                    ? "ARCHITECTURE & ENGINEERING"
+                    : "ART DIRECTION & CRAFT"}
                 </p>
                 <p className="font-sans text-[13px] leading-[1.7] text-white/60">
                   {artifact.artDirection}
@@ -520,17 +608,37 @@ function ArtifactModal({
               </div>
             </div>
 
-            {/* Tags */}
-            <div className="pt-2 border-t border-white/6 flex flex-wrap gap-1.5">
-              {artifact.tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className="font-mono text-[8px] uppercase tracking-[0.15em] px-2 py-1 border border-white/8 bg-white/[0.02] text-white/45"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+            {/* External Action Links (Live Demo, In Development, Source Code) */}
+            {(artifact.liveUrl || artifact.githubUrl || artifact.inDevelopment) && (
+              <div className="pt-3 border-t border-white/6 flex flex-wrap items-center gap-3">
+                {artifact.liveUrl && (
+                  <a
+                    href={artifact.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-white/20 bg-white/[0.04] hover:bg-white/[0.1] hover:border-white/40 text-white font-mono text-[9px] uppercase tracking-[0.16em] transition-all rounded-[2px]"
+                  >
+                    <span>{artifact.liveButtonLabel || "LIVE DEMO ↗"}</span>
+                  </a>
+                )}
+                {artifact.inDevelopment && (
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-amber-500/30 bg-amber-500/[0.08] text-amber-300 font-mono text-[9px] uppercase tracking-[0.16em] rounded-[2px]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+                    <span>IN DEVELOPMENT // WIP</span>
+                  </div>
+                )}
+                {artifact.githubUrl && (
+                  <a
+                    href={artifact.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-white/15 bg-white/[0.02] hover:bg-white/[0.08] hover:border-white/30 text-white/70 hover:text-white font-mono text-[9px] uppercase tracking-[0.16em] transition-all rounded-[2px]"
+                  >
+                    <span>SOURCE CODE ↗</span>
+                  </a>
+                )}
+              </div>
+            )}
 
             {/* Dossier stamp */}
             <motion.div
@@ -643,12 +751,14 @@ export function ExpandableArtifactCards({
   sectionDelay = 0.05,
   prefix = "GD",
   emptyCount = 4,
+  cardAspectClass,
 }: {
   artifacts: VisualArtifact[];
   accent: string;
   sectionDelay?: number;
   prefix?: string;
   emptyCount?: number;
+  cardAspectClass?: string;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const openArtifact = artifacts.find((a) => a.id === openId) ?? null;
@@ -662,6 +772,7 @@ export function ExpandableArtifactCards({
             key={i}
             prefix={prefix}
             accent={accent}
+            aspectRatioClass={cardAspectClass || "aspect-[4/3]"}
             delay={sectionDelay + 0.08 + i * 0.09}
           />
         ))}
@@ -685,6 +796,11 @@ export function ExpandableArtifactCards({
   );
 
   const hasBothGroups = posters.length > 0 && thumbnails.length > 0;
+
+  // Check if all items are 4:3 code projects or explicitly 4:3
+  const isAllFourThree = artifacts.every(
+    (a) => a.aspectRatio === "4/3" || a.type === "code_project"
+  );
 
   return (
     <>
@@ -744,12 +860,39 @@ export function ExpandableArtifactCards({
             </div>
           </div>
         </div>
+      ) : isAllFourThree ? (
+        <div className="w-full">
+          <div className="flex items-center justify-between mb-3.5 px-0.5">
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+              <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/50">
+                CODE ARCHIVE // 4:3 GRID (2×2)
+              </span>
+            </div>
+            <span className="font-mono text-[9px] tracking-[0.2em] text-white/25">
+              [{artifacts.length} ASSETS]
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
+            {artifacts.map((artifact, i) => (
+              <ArtifactGridCard
+                key={artifact.id}
+                artifact={artifact}
+                aspectRatioClass={cardAspectClass || "aspect-[4/3]"}
+                delay={sectionDelay + 0.08 + i * 0.09}
+                onOpen={() => setOpenId(artifact.id)}
+              />
+            ))}
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
           {artifacts.map((artifact, i) => (
             <ArtifactGridCard
               key={artifact.id}
               artifact={artifact}
+              aspectRatioClass={cardAspectClass}
               delay={sectionDelay + 0.08 + i * 0.09}
               onOpen={() => setOpenId(artifact.id)}
             />
