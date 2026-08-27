@@ -123,10 +123,9 @@ export function Contact() {
     <section
       id="contact"
       className="relative w-full overflow-hidden bg-transparent"
-      style={{ minHeight: "100vh" }}
     >
       {/* ── CONTENT WRAPPER ─────────────────────────────────── */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 py-24 sm:py-32 flex flex-col justify-center min-h-screen">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 flex flex-col justify-center" style={{ paddingTop: "clamp(2rem, 5vh, 6rem)", paddingBottom: "clamp(2rem, 5vh, 8rem)" }}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
