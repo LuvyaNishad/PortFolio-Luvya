@@ -40,7 +40,7 @@ export default function Home() {
         <div
           className="absolute top-0 left-0 right-0 overflow-hidden"
           style={{
-            height: "calc(100vh + 220px)",
+            height: "calc(100vh + clamp(80px, 15vh, 220px))",
             zIndex: 0,
             maskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
