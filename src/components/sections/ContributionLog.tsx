@@ -393,11 +393,11 @@ export function ContributionLog() {
           aria-hidden="true"
         />
 
-        <div className="relative z-10 mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-14 py-20 lg:py-28">
+        <div className="relative z-10 mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-14" style={{ paddingTop: "clamp(2rem, 4vh, 5rem)", paddingBottom: "clamp(2rem, 4vh, 7rem)" }}>
           {/* Top metadata */}
           <motion.div
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-            className="flex flex-wrap items-center justify-between gap-4 mb-12"
+            className="flex flex-wrap items-center justify-between gap-4" style={{ marginBottom: "clamp(1.5rem, 3vh, 3rem)" }}
           >
             <div className="flex items-center gap-3">
               <span className="font-mono text-[8px] uppercase tracking-[0.22em] text-[#c5261a]">Archive Footer Logs</span>
