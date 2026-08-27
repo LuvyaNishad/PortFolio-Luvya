@@ -162,7 +162,8 @@ export function Intro() {
   return (
     <section
       id="about"
-      className="relative w-full px-6 pt-5 md:px-8 md:pt-8 lg:pt-12 pb-0 scroll-mt-32 md:scroll-mt-40 flex justify-center"
+      className="relative w-full px-6 md:px-8 pb-0 scroll-mt-32 md:scroll-mt-40 flex justify-center"
+      style={{ paddingTop: "clamp(0.5rem, 1.5vh, 3rem)" }}
     >
       {/* ── BUBBLE / CENTER-OUTWARD UNROLL CONTAINER ── */}
       <motion.div
