@@ -95,7 +95,11 @@ function CategoryBlock({
     <div
       ref={containerRef}
       id={category.id}
-      className="relative py-16 lg:py-20 scroll-mt-24 md:scroll-mt-32"
+      className="relative scroll-mt-24 md:scroll-mt-32"
+      style={{
+        paddingTop: "clamp(1.5rem, 3.5vh, 4rem)",
+        paddingBottom: "clamp(1.5rem, 3.5vh, 4rem)",
+      }}
     >
       {/* Left vertical sidebar text with parallax slide */}
       <div className="hidden lg:flex absolute left-0 top-0 bottom-0 items-center pointer-events-none">
@@ -138,7 +142,7 @@ function CategoryBlock({
           duration: 0.7,
           ease: [0.16, 1, 0.3, 1],
         }}
-        className="mb-10 lg:pl-8"
+        className="mb-[clamp(1rem,2.5vh,2.5rem)] lg:pl-8"
       >
         <span
           className="font-mono text-[10px] uppercase tracking-[0.2em]"
@@ -249,7 +253,7 @@ export function BuiltFromScratch() {
       <div className="hidden lg:block absolute top-6 left-6 h-8 w-8 border-l-2 border-t-2 border-[#c5261a]/40" />
       <div className="hidden lg:block absolute top-6 right-6 h-8 w-8 border-r-2 border-t-2 border-white/10" />
 
-      <div className="relative z-10 mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-14 pt-20 pb-6">
+      <div className="relative z-10 mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-14 pb-6" style={{ paddingTop: "clamp(1.5rem, 3.5vh, 5rem)" }}>
         {/* Category subsections */}
         {categories.map((cat, idx) => (
           <div key={cat.id}>
