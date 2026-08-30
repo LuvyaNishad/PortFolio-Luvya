@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ExpandableArtifactCards } from "@/components/ui/ExpandableArtifactCard";
 import { ExpandableMotionCards } from "@/components/ui/ExpandableMotionCard";
 import { ShowcaseSlot } from "@/components/ui/ShowcaseSlot";
+import { CautionTapeOverlay } from "@/components/ui/CautionTapeOverlay";
 import { VISUAL_ARTIFACTS } from "@/data/visualArtifacts";
 import { MOTION_ARTIFACTS } from "@/data/motionArtifacts";
 import { CODE_PROJECTS } from "@/data/codeProjects";
@@ -177,16 +178,36 @@ function CategoryBlock({
             emptyCount={category.cardCount}
           />
         ) : category.id === "video-edits-showcase" ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
-            <ExpandableMotionCards
-              artifacts={MOTION_ARTIFACTS}
-              accent={category.accent}
-              sectionDelay={sectionDelay}
+          MOTION_ARTIFACTS.length === 0 ? (
+            <CautionTapeOverlay
               prefix={category.cardPrefix}
-              emptyCount={category.cardCount}
+              accent={category.accent}
+              categoryTitle="Motion & Storytelling"
+              slotCount={4}
+              aspectRatioClass="aspect-[9/16] sm:aspect-[9/14]"
+              delay={sectionDelay}
             />
-          </div>
-        ) : category.id === "code-projects-showcase" ? (
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+              <ExpandableMotionCards
+                artifacts={MOTION_ARTIFACTS}
+                accent={category.accent}
+                sectionDelay={sectionDelay}
+                prefix={category.cardPrefix}
+                emptyCount={category.cardCount}
+              />
+            </div>
+          )
+        ) : category.id === "ui-ux-design-showcase" ? (
+          <CautionTapeOverlay
+            prefix={category.cardPrefix}
+            accent={category.accent}
+            categoryTitle="Interface Systems"
+            slotCount={4}
+            aspectRatioClass="aspect-[4/3]"
+            delay={sectionDelay}
+          />
+        ) : (
           <div className="w-full">
             <ExpandableArtifactCards
               artifacts={CODE_PROJECTS}
@@ -196,18 +217,6 @@ function CategoryBlock({
               emptyCount={category.cardCount}
               cardAspectClass="aspect-[4/3]"
             />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
-            {Array.from({ length: category.cardCount }).map((_, i) => (
-              <ShowcaseSlot
-                key={i}
-                prefix={category.cardPrefix}
-                accent={category.accent}
-                aspectRatioClass="aspect-[4/3]"
-                delay={sectionDelay + 0.08 + i * 0.09}
-              />
-            ))}
           </div>
         )}
       </div>
