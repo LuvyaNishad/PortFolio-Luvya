@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { LightBeamButton } from "@/components/ui/LightBeamButton";
+import { ResumeDropdown } from "@/components/ui/ResumeDropdown";
 import { LimelightNav } from "@/components/ui/limelight-nav";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { siteConfig } from "@/config/site";
@@ -86,17 +86,8 @@ export function Navbar() {
           labelClassName="text-[9px] font-mono tracking-[0.1em] sm:text-[10px] sm:tracking-[0.13em] md:text-[11px] md:tracking-[0.15em]"
         />
 
-        {/* Resume button — shown only when a resume URL is configured */}
-        {siteConfig.resumeUrl && (
-          <LightBeamButton
-            href={siteConfig.resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-2 hidden px-5 py-2 text-[11px] tracking-[0.15em] sm:inline-flex"
-          >
-            RESUME <span className="text-white/50">→</span>
-          </LightBeamButton>
-        )}
+        {/* Resume dropdown — shown only when resume URLs are configured */}
+        <ResumeDropdown />
       </div>
     </motion.header>
   );
