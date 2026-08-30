@@ -12,7 +12,7 @@
  *  To go live:
  *    1. Set NEXT_PUBLIC_SITE_URL in your host (e.g. Vercel) to your
  *       real domain — it drives canonical URLs, OG images & sitemap.
- *    2. Fill in `resumeUrl` and any social links you want shown.
+ *    2. Fill in `resumes` URLs and any social links you want shown.
  *       Empty links are automatically hidden (no dead "#" links).
  */
 
@@ -88,11 +88,14 @@ export const siteConfig = {
   email: "workwithluvya@gmail.com",
 
   /**
-   * Resume link. Leave "" to hide the Resume button entirely.
-   * Drop a hosted PDF link here, or place resume.pdf in /public and
-   * set this to "/resume.pdf".
+   * Resume links. Leave both "" to hide the Resume button entirely.
+   * Place your PDF files in /public/resumes/ and reference them here,
+   * or use hosted URLs.
    */
-  resumeUrl: "",
+  resumes: {
+    design: "/resumes/design-resume.pdf",
+    developer: "/resumes/developer-resume.pdf",
+  },
 
   /**
    * Social links. Order is preserved. Any entry with an empty href is
