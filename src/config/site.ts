@@ -93,8 +93,8 @@ export const siteConfig = {
    * or use hosted URLs.
    */
   resumes: {
-    design: "/resumes/design-resume.pdf",
-    developer: "/resumes/developer-resume.pdf",
+    design: "/resumes/design_resume.pdf",
+    developer: "/resumes/developer_resume.pdf",
   },
 
   /**
