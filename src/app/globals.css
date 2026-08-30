@@ -193,6 +193,43 @@ body {
   }
 }
 
+/* ─── Caution / Police Tape Animations ────────────── */
+@keyframes tape-scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes tape-scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-tape-left {
+  animation: tape-scroll-left 22s linear infinite;
+}
+
+.animate-tape-right {
+  animation: tape-scroll-right 26s linear infinite;
+}
+
+.hazard-stripe {
+  background: repeating-linear-gradient(
+    -45deg,
+    #000000,
+    #000000 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+
 /* ─── Liquid Glass Animation ──────────────────────── */
 @keyframes moveBackground {
   from {
