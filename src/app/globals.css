@@ -164,6 +164,35 @@ body {
   animation: border-spin 3s linear infinite;
 }
 
+/* ─── Resume Button Animations ───────────────── */
+@property --resume-gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes resume-border-spin {
+  from { --resume-gradient-angle: 0deg; }
+  to   { --resume-gradient-angle: 360deg; }
+}
+
+.animate-resume-border-spin {
+  animation: resume-border-spin 4s linear infinite;
+}
+
+@keyframes resume-dot-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.85);
+    box-shadow: 0 0 4px 1px rgba(197, 168, 128, 0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px 2px rgba(197, 168, 128, 0.55);
+  }
+}
+
 /* ─── Liquid Glass Animation ──────────────────────── */
 @keyframes moveBackground {
   from {
