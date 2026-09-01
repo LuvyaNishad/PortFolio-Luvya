@@ -28,8 +28,7 @@ const fontIbmPlex = IBM_Plex_Mono({
 });
 
 /* Tab title & OG headline. Leads with the real name (siteConfig.seoName)
-   so search results read "Luvya Nishad — Designer & Developer"; the
-   "Aurelius" brand stays in the UI and in the JSON-LD alternateName. */
+   so search results read "Luvya Nishad — Designer & Developer". */
 const titleDefault = `${siteConfig.seoName} — ${siteConfig.role}`;
 
 export const metadata: Metadata = {
