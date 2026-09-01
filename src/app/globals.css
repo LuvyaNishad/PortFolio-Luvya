@@ -31,9 +31,9 @@
   /* ------- Scaling Variables ------- */
   --section-gap: clamp(0.7rem, 1.5vw, 1rem);
   --section-font-base: clamp(0.95rem, 1.1vw, 1.1rem);
-  --section-panel-width: clamp(260px, 28vw, 320px);
-  --tool-card-width: clamp(90px, 11vw, 118px);
-  --tool-card-height: clamp(95px, 11vw, 118px);
+  --section-panel-width: clamp(220px, 20vw, 275px);
+  --tool-card-width: clamp(75px, 8.5vw, 108px);
+  --tool-card-height: clamp(88px, 9.5vw, 108px);
 }
 
 @theme inline {
@@ -147,6 +147,12 @@ body {
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #3a3a3e; }
+
+/* ─── Hide Next.js Dev Indicator Badge ────────────── */
+[data-nextjs-dev-indicator],
+[data-nextjs-dev-indicator-wrapper] {
+  display: none !important;
+}
 
 /* ─── LightBeam Button Animation ──────────────────── */
 @property --gradient-angle {
@@ -405,7 +411,7 @@ body {
   flex: 1;
   display: flex;
   align-items: center;
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1rem;
   min-width: 0;
   position: relative;
   z-index: 3;
@@ -415,11 +421,14 @@ body {
   display: flex;
   gap: 0;
   flex-wrap: nowrap;
+  width: 100%;
 }
 
 /* ── Individual tool card ────────────────────── */
 .tool-card {
-  width: var(--tool-card-width);
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: var(--tool-card-width);
   height: var(--tool-card-height);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 3px;
@@ -427,7 +436,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   background: rgba(255, 255, 255, 0.015);
   transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   margin-right: -1px;
@@ -611,11 +620,6 @@ body {
     padding: 0.75rem 1rem;
   }
 
-  .tool-card {
-    width: var(--tool-card-width);
-    height: var(--tool-card-height);
-  }
-
   .tools-sys-status {
     display: none;
   }
@@ -641,11 +645,14 @@ body {
   .tools-grid {
     flex-wrap: wrap;
     gap: 0;
+    width: 100%;
   }
 
   .tool-card {
-    width: var(--tool-card-width);
-    height: var(--tool-card-height);
+    flex: 1 1 calc(25% - 1px);
+    min-width: 72px;
+    max-width: none;
+    height: clamp(80px, 22vw, 100px);
   }
 
   .tools-right-edge {
