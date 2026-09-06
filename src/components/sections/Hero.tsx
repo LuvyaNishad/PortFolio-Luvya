@@ -740,21 +740,41 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: impactHappened ? 1 : 0, y: impactHappened ? 0 : 14 }}
           transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
-          className="flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full px-2 pb-[clamp(0.5rem,1.5vh,1rem)]"
+          className="flex flex-col items-center gap-2.5 sm:gap-3 w-full px-2 pb-[clamp(0.5rem,1.5vh,1rem)]"
         >
-          <LightBeamButton href="#built-from-scratch" className="text-[9.5px] sm:text-[11px] px-5 sm:px-7 py-2.5 sm:py-3 tracking-[0.16em] sm:tracking-[0.2em]">
-            VIEW MY WORK <span className="text-white/40 ml-1">→</span>
-          </LightBeamButton>
+          <div className="flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full">
+            <LightBeamButton href="#built-from-scratch" className="text-[9.5px] sm:text-[11px] px-5 sm:px-7 py-2.5 sm:py-3 tracking-[0.16em] sm:tracking-[0.2em]">
+              VIEW MY WORK <span className="text-white/40 ml-1">→</span>
+            </LightBeamButton>
 
-          <a
-            href="#contact"
-            className="h-[40px] sm:h-[46px] inline-flex items-center justify-center px-4 sm:px-7 rounded-full border border-white/10 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 text-[9.5px] sm:text-[10.5px] font-mono tracking-[0.16em] sm:tracking-[0.2em] text-white/60 uppercase group"
-          >
-            GET IN TOUCH
-            <span className="text-white/30 ml-1.5 sm:ml-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">
-              ↗
-            </span>
-          </a>
+            <a
+              href="#contact"
+              className="h-[40px] sm:h-[46px] inline-flex items-center justify-center px-4 sm:px-7 rounded-full border border-white/10 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 text-[9.5px] sm:text-[10.5px] font-mono tracking-[0.16em] sm:tracking-[0.2em] text-white/60 uppercase group"
+            >
+              GET IN TOUCH
+              <span className="text-white/30 ml-1.5 sm:ml-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">
+                ↗
+              </span>
+            </a>
+          </div>
+
+          {/* ── Resume Button (gold accent, centered below CTAs) ── */}
+          {(siteConfig.resumes.design.trim().length > 0 || siteConfig.resumes.developer.trim().length > 0) && (
+            <a
+              href="/resumes/design"
+              className="group relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-neutral-950/80 px-5 py-2 sm:px-6 sm:py-2.5 text-[9px] sm:text-[10px] font-mono tracking-[0.16em] sm:tracking-[0.2em] uppercase text-white/70 hover:text-white transition-all duration-300 border border-[rgba(197,168,128,0.25)] hover:border-[rgba(197,168,128,0.45)] shadow-[0_0_20px_-8px_rgba(197,168,128,0.25)] hover:shadow-[0_0_28px_-6px_rgba(197,168,128,0.45)]"
+            >
+              {/* Pulsing gold dot */}
+              <span
+                className="block w-[5px] h-[5px] rounded-full bg-[#c5a880]"
+                style={{ animation: "resume-dot-pulse 2.5s ease-in-out infinite" }}
+              />
+              RESUME
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 group-hover:opacity-80 transition-opacity">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </a>
+          )}
         </motion.div>
       </div>
 
