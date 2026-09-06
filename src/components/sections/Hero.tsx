@@ -6,6 +6,7 @@ import Image from "next/image";
 import { LightBeamButton } from "@/components/ui/LightBeamButton";
 import { TextScramble } from "@/components/ui/text-scramble";
 import { siteConfig } from "@/config/site";
+import { ResumeModal } from "@/components/ui/ResumeModal";
 
 /* ── Debris Particle Data Definition (Scaled for larger monolith) ── */
 interface DebrisParticle {
@@ -73,6 +74,7 @@ export function Hero() {
   const [telemetryRaw, setTelemetryComplete] = useState(false);
   const [designingRaw, setDesigningComplete] = useState(false);
   const [subtitleRaw, setSubtitleComplete] = useState(false);
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
 
   const impactHappened = reduce || impactRaw;
   const telemetryComplete = reduce || telemetryRaw;
@@ -760,9 +762,9 @@ export function Hero() {
 
           {/* ── Resume Button (gold accent, centered below CTAs) ── */}
           {(siteConfig.resumes.design.trim().length > 0 || siteConfig.resumes.developer.trim().length > 0) && (
-            <a
-              href="/resumes/design"
-              className="group relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-neutral-950/80 px-5 py-2 sm:px-6 sm:py-2.5 text-[9px] sm:text-[10px] font-mono tracking-[0.16em] sm:tracking-[0.2em] uppercase text-white/70 hover:text-white transition-all duration-300 border border-[rgba(197,168,128,0.25)] hover:border-[rgba(197,168,128,0.45)] shadow-[0_0_20px_-8px_rgba(197,168,128,0.25)] hover:shadow-[0_0_28px_-6px_rgba(197,168,128,0.45)]"
+            <button
+              onClick={() => setResumeModalOpen(true)}
+              className="group relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-neutral-950/80 px-5 py-2 sm:px-6 sm:py-2.5 text-[9px] sm:text-[10px] font-mono tracking-[0.16em] sm:tracking-[0.2em] uppercase text-white/70 hover:text-white transition-all duration-300 border border-[rgba(197,168,128,0.25)] hover:border-[rgba(197,168,128,0.45)] shadow-[0_0_20px_-8px_rgba(197,168,128,0.25)] hover:shadow-[0_0_28px_-6px_rgba(197,168,128,0.45)] cursor-pointer"
             >
               {/* Pulsing gold dot */}
               <span
@@ -773,8 +775,9 @@ export function Hero() {
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 group-hover:opacity-80 transition-opacity">
                 <polyline points="6 9 12 15 18 9" />
               </svg>
-            </a>
+            </button>
           )}
+          <ResumeModal isOpen={resumeModalOpen} onClose={() => setResumeModalOpen(false)} />
         </motion.div>
       </div>
 

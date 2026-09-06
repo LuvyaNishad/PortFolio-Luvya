@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { siteConfig } from "@/config/site";
+import { ResumeModal } from "@/components/ui/ResumeModal";
 
 /**
  * ResumeDropdown
@@ -52,12 +53,23 @@ const DownloadIcon = () => (
 
 export function ResumeDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Check if at least one resume is configured
   const hasResumes =
     siteConfig.resumes.design.trim().length > 0 ||
     siteConfig.resumes.developer.trim().length > 0;
+
+  // Detect mobile (below sm breakpoint = 640px)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   const close = useCallback(() => setIsOpen(false), []);
 
@@ -110,7 +122,13 @@ export function ResumeDropdown() {
     <div ref={containerRef} className="relative">
       {/* ─── Trigger Button ─── */}
       <motion.button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (isMobile) {
+            setModalOpen(true);
+          } else {
+            setIsOpen(!isOpen);
+          }
+        }}
         whileHover={{ scale: 1.04 }}
         whileTap={{ scale: 0.96 }}
         aria-expanded={isOpen}
@@ -265,6 +283,8 @@ export function ResumeDropdown() {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Mobile: fullscreen resume modal */}
+      <ResumeModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 }
