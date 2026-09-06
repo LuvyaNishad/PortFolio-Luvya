@@ -174,7 +174,8 @@ export function ResumeDropdown() {
         </motion.svg>
       </motion.button>
 
-      {/* ─── Dropdown Panel ─── */}
+      {/* ─── Dropdown Panel (desktop only — mobile uses the modal) ─── */}
+      {!isMobile && (
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -283,6 +284,7 @@ export function ResumeDropdown() {
           </motion.div>
         )}
       </AnimatePresence>
+      )}
       {/* Mobile: fullscreen resume modal */}
       <ResumeModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
