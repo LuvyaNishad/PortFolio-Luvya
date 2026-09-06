@@ -107,7 +107,7 @@ export function ResumeDropdown() {
   };
 
   return (
-    <div ref={containerRef} className="relative hidden sm:block">
+    <div ref={containerRef} className="relative">
       {/* ─── Trigger Button ─── */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
@@ -115,7 +115,7 @@ export function ResumeDropdown() {
         whileTap={{ scale: 0.96 }}
         aria-expanded={isOpen}
         aria-haspopup="true"
-        className="group relative isolate inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-full bg-neutral-950 px-5 py-2 ml-2 text-[11px] font-mono tracking-[0.18em] uppercase text-white/80 hover:text-white transition-all duration-300 shadow-[0_0_20px_-8px_rgba(197,168,128,0.3)] hover:shadow-[0_0_28px_-6px_rgba(197,168,128,0.5)] border-0 cursor-pointer focus:outline-none"
+        className="group relative isolate inline-flex items-center justify-center gap-1.5 sm:gap-2.5 overflow-hidden rounded-full bg-neutral-950 px-3 py-1.5 sm:px-5 sm:py-2 ml-1 sm:ml-2 text-[9px] sm:text-[11px] font-mono tracking-[0.14em] sm:tracking-[0.18em] uppercase text-white/80 hover:text-white transition-all duration-300 shadow-[0_0_20px_-8px_rgba(197,168,128,0.3)] hover:shadow-[0_0_28px_-6px_rgba(197,168,128,0.5)] border-0 cursor-pointer focus:outline-none"
       >
         {/* Rotating gold gradient border */}
         <div
@@ -164,7 +164,7 @@ export function ResumeDropdown() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute right-0 top-[calc(100%+10px)] z-[60] w-[240px] overflow-hidden rounded-xl"
+            className="absolute right-0 top-[calc(100%+10px)] z-[60] w-[220px] sm:w-[240px] overflow-hidden rounded-xl"
             style={{
               background: "rgba(10, 10, 14, 0.85)",
               backdropFilter: "blur(24px) saturate(1.3) brightness(0.82)",
