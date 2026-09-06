@@ -113,7 +113,7 @@ function CategoryBlock({
           }}
           className="font-mono text-[8px] uppercase tracking-[0.28em] text-white/15"
         >
-          AURELIUS LIBRARY // SECTION {category.index}
+          LUVYA LIBRARY // SECTION {category.index}
         </motion.span>
       </div>
 

@@ -330,7 +330,7 @@ function DossierContent({ artifact }: { artifact: VisualArtifact }) {
         className="pt-2 flex items-center justify-between border-t border-dashed border-white/8"
       >
         <span className="font-mono text-[8px] tracking-[0.2em] text-white/20 uppercase">
-          RECORD VERIFIED // AURELIUS ARCHIVE
+          RECORD VERIFIED // LUVYA ARCHIVE
         </span>
         <div className="relative h-4 w-4 flex items-center justify-center">
           <div className="absolute h-full w-px bg-white/15" />
@@ -648,7 +648,7 @@ function ArtifactModal({
               className="pt-2 flex items-center justify-between border-t border-dashed border-white/8"
             >
               <span className="font-mono text-[8px] tracking-[0.2em] text-white/20 uppercase">
-                RECORD VERIFIED // AURELIUS ARCHIVE
+                RECORD VERIFIED // LUVYA ARCHIVE
               </span>
               <div className="relative h-4 w-4 flex items-center justify-center">
                 <div className="absolute h-full w-px bg-white/15" />

@@ -41,12 +41,10 @@ export interface AboutSpec {
  * An empty array hides the grid.
  */
 export const aboutSpecs: AboutSpec[] = [
-  // ⚠️ Replace with a true figure, or delete this row.
-  { label: "EXPERIENCE", value: "5+ Years Crafting Digital Systems" },
+  { label: "EXPERIENCE", value: "2+ Years Crafting Digital Systems" },
   { label: "METHODOLOGY", value: "Intentional, Tactile & Systems-First" },
-  { label: "CORE TOOLS", value: "Figma, React, Next.js, Framer, Tailwind" },
-  // ⚠️ Keep this current, or delete this row — a stale quarter dates the site.
-  { label: "STATUS", value: "Available for Q1/Q2 Projects" },
+  { label: "CORE TOOLS", value: "Figma, React, Next.js, Framer, TypeScript" },
+  { label: "STATUS", value: "Open for Opportunities & Projects" },
 ];
 
 export interface TimelineEntry {
@@ -62,30 +60,34 @@ export interface TimelineEntry {
 
 /**
  * "02. JOURNEY & EDUCATION" — newest first.
- *
- * ⚠️ EXAMPLE DATA. Rewrite with your real roles and education, or set
- *    this to [] to hide the section until you're ready.
  */
 export const aboutTimeline: TimelineEntry[] = [
   {
-    year: "2023 - Present",
-    title: "Senior UI/UX Designer",
-    company: "Freelance / Global",
+    year: "May 2026 - Aug 2026",
+    title: "Summer Research Intern",
+    company: "IIIT Delhi",
     description:
-      "Designing end-to-end digital experiences, scaling design systems, and building interactive web apps using React and Next.js.",
+      "Conducting academic research and software development under faculty supervision, exploring interactive systems and digital design architectures.",
   },
   {
-    year: "2021 - 2023",
-    title: "Product Designer",
-    company: "Tech Solutions Inc.",
+    year: "2024 - 2028",
+    title: "B.Tech in Computer Science & Design (CSD)",
+    company: "IIIT Delhi",
     description:
-      "Led the redesign of core enterprise applications, improving user retention and streamlining complex workflows.",
+      "Undergraduate student at Indraprastha Institute of Information Technology Delhi, studying at the intersection of computer science, interface engineering, and visual systems.",
   },
   {
-    year: "2018 - 2021",
-    title: "B.Des in Visual Communication",
-    company: "Design Institute",
+    year: "2024",
+    title: "Senior Secondary (Class XII - CBSE)",
+    company: "Ahlcon International School, Delhi",
     description:
-      "Graduated with honors. Specialized in human-computer interaction, typography, and creative technology.",
+      "Completed Class 12 CBSE board curriculum with core focus on Mathematics, Science, and Computer Science fundamentals.",
+  },
+  {
+    year: "2022",
+    title: "Secondary School (Class X - CBSE)",
+    company: "Ahlcon International School, Delhi",
+    description:
+      "Completed Class 10 CBSE board examinations with strong academic foundation in science, mathematics, and computing.",
   },
 ];

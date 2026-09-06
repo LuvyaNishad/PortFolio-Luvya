@@ -42,7 +42,7 @@ export const SITE_URL: string =
 /** Real name. Leads the browser tab title and search results. */
 const LEGAL_NAME = "Luvya Nishad";
 /** Brand / alias shown inside the site's own UI. */
-const BRAND_NAME = "Aurelius";
+const BRAND_NAME = "Luvya";
 
 export const siteConfig = {
   /** Brand / display name shown in headings and in-site UI. */
@@ -52,9 +52,7 @@ export const siteConfig = {
   /**
    * Name that leads the browser tab title, Open Graph card and search
    * results. Set to the real name so anyone googling "Luvya Nishad"
-   * finds this site; "Aurelius" still shows throughout the UI and is
-   * registered as an `alternateName` in the structured data.
-   * Swap to BRAND_NAME if you'd rather lead with the brand.
+   * finds this site.
    */
   seoName: LEGAL_NAME,
   /** Logo initials mark (footer, etc.). */
@@ -75,7 +73,7 @@ export const siteConfig = {
 
   /** SEO meta description (~150–160 chars ideal). */
   description:
-    "Luvya Nishad (Aurelius) — designer and developer crafting cinematic, user-centered digital experiences, from interface design to production frontend engineering.",
+    "Luvya Nishad — designer and developer crafting cinematic, user-centered digital experiences, from interface design to production frontend engineering.",
 
   /** Availability line shown in the hero. */
   availability: "Available for exciting projects",
@@ -103,9 +101,9 @@ export const siteConfig = {
    */
   socials: [
     { key: "github", label: "GitHub", href: "https://github.com/LuvyaNishad" },
-    { key: "x", label: "Twitter", href: "https://x.com" },
-    { key: "instagram", label: "Instagram", href: "https://instagram.com" },
-    { key: "linkedin", label: "LinkedIn", href: "https://linkedin.com" },
+    { key: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/luvyanishad7/" },
+    { key: "x", label: "Twitter", href: "https://x.com/LuvYuh_png" },
+    { key: "instagram", label: "Instagram", href: "https://www.instagram.com/luvyuh.smth/" },
   ] as SocialLink[],
 
   /** GitHub username used by the live contribution heatmap. */
